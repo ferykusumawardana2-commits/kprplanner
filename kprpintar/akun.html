@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Akun saya — KPR PINTAR</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23147fa6'/%3E%3Cpath d='m14 31 18-14 18 14v18a2 2 0 0 1-2 2H16a2 2 0 0 1-2-2z' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/site.css" />
+    <link rel="stylesheet" href="assets/modern.css" />
+    <style>
+      .acc {
+        display: grid;
+        grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+        gap: 22px;
+        margin-top: 26px;
+        align-items: start;
+      }
+      .me {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+      }
+      .me .avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+      }
+      .me b {
+        display: block;
+        color: var(--ink);
+        font-size: 17px;
+        overflow-wrap: anywhere;
+      }
+      .me span {
+        font-size: 14px;
+        color: var(--muted);
+        overflow-wrap: anywhere;
+      }
+      .access h2 {
+        font-size: 1rem;
+        color: var(--muted);
+        font-weight: 700;
+        font-family: var(--f-body);
+        letter-spacing: 0;
+        margin-bottom: 10px;
+      }
+      .access .st {
+        font: 800 clamp(1.5rem, 3vw, 2rem)/1.12 var(--f-head);
+        letter-spacing: -0.03em;
+        color: var(--ink);
+      }
+      .access .st.none {
+        color: var(--amber-d);
+      }
+      .access p {
+        margin-top: 8px;
+        font-size: 15px;
+      }
+      .access .acts {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+      }
+      .wrap-x {
+        overflow-x: auto;
+      }
+      .hist h2 {
+        font-size: 1.25rem;
+        margin-bottom: 14px;
+      }
+      .empty {
+        padding: 30px;
+        text-align: center;
+        color: var(--muted);
+        border: 1.5px dashed var(--line2);
+        border-radius: 14px;
+      }
+      @media (max-width: 900px) {
+        .acc {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="container">
+        <a class="brand" href="index.html"
+          ><span class="brand-mark"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />
+              <path d="M9 21v-8h6v8" /></svg></span
+          ><span><b>KPR PINTAR</b><small>by AF Creative Media</small></span></a
+        >
+        <nav class="nav-links" aria-label="Menu">
+          <a href="index.html?paket=semua">Paket harga</a
+          ><a href="akun.html">Akun saya</a><a href="app.html">Kalkulator</a>
+        </nav>
+        <div class="nav-auth" id="navAuth"></div>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-label="Buka menu"
+          aria-expanded="false"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-simple">
+      <div class="container">
+        <h1>Akun saya</h1>
+        <div id="view">
+          <div class="card" style="margin-top: 26px">Memuat akunmu…</div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-foot">
+      <div class="container" style="padding: 24px 0">
+        <p class="foot-note" style="margin: 0; padding: 0; border: 0">
+          © 2026 KPR PINTAR by AF Creative Media. ·
+          <a href="legal.html#syarat">Syarat &amp; Ketentuan</a> ·
+          <a href="legal.html#privasi">Kebijakan Privasi</a>
+        </p>
+      </div>
+    </footer>
+
+    <script src="assets/config.js"></script>
+    <script src="assets/core.js"></script>
+    <script src="assets/ui.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        var A = window.RCApi,
+          U = window.RCUI,
+          view = document.getElementById("view");
+
+        function accessCard(u, open) {
+          var body, acts;
+          if (u.is_admin) {
+            body =
+              '<div class="st">Akses admin</div><p>Semua fitur tersedia untuk akun admin.</p>';
+            acts =
+              '<a class="btn btn-primary" href="app.html">Buka kalkulator</a>';
+          } else if (A.hasAccess(u)) {
+            var activePackages = [];
+            var legacyAccess = A.hasLegacyAccess(u);
+            if (legacyAccess) {
+              activePackages.push(
+                A.legacyPlanName(u) +
+                  " — semua fitur" +
+                  (u.lifetime
+                    ? " (Lifetime)"
+                    : u.akses_sampai
+                      ? " sampai " + A.tgl(u.akses_sampai)
+                      : ""),
+              );
+            }
+            ["rencana", "tools"].forEach(function (group) {
+              if (
+                legacyAccess
+                  ? !A.hasScopedPlanAccess(u, group)
+                  : !A.hasPlanAccess(u, group)
+              )
+                return;
+              var until =
+                group === "rencana"
+                  ? u.akses_rencana_sampai
+                  : u.akses_tools_sampai;
+              activePackages.push(
+                (group === "rencana" ? "Rencana Rumahku" : "Financial Tools") +
+                  " — " +
+                  (A.hasLifetimeAccess(u, group)
+                    ? "Lifetime"
+                    : until || u.akses_sampai
+                      ? "aktif sampai " + A.tgl(until || u.akses_sampai)
+                      : "aktif"),
+              );
+            });
+            body =
+              '<div class="st">Paket aktif</div><ul><li>' +
+              activePackages.join("</li><li>") +
+              "</li></ul>";
+            acts =
+              '<a class="btn btn-primary" href="app.html">Buka kalkulator</a><a class="btn btn-ghost" href="index.html?paket=semua">Kelola paket</a>';
+          } else {
+            body =
+              '<div class="st none">Belum ada akses aktif</div><p>' +
+              (u.akses_sampai ||
+              u.akses_rencana_sampai ||
+              u.akses_tools_sampai
+                ? "Masa akses paket sebelumnya sudah berakhir. "
+                : "") +
+              "Pilih paket untuk membuka kalkulator.</p>";
+            acts = open
+              ? '<a class="btn btn-primary" href="bayar.html?order=' +
+                encodeURIComponent(open.id) +
+                '">Lanjutkan pembayaran</a>'
+              : '<a class="btn btn-primary" href="index.html?paket=semua">Pilih paket</a>';
+          }
+          return (
+            '<section class="card access"><h2>Status akses</h2>' +
+            body +
+            '<div class="acts">' +
+            acts +
+            "</div></section>"
+          );
+        }
+
+        function history(orders) {
+          if (!orders.length)
+            return '<div class="empty">Belum ada pesanan.</div>';
+          return (
+            '<div class="wrap-x"><table class="tbl"><thead><tr><th>Tanggal</th><th>Paket</th><th class="num">Total</th><th>Status</th><th></th></tr></thead><tbody>' +
+            orders
+              .map(function (o) {
+                var act =
+                  o.status === "menunggu_bayar" || o.status === "ditolak"
+                    ? '<a class="btn btn-sm btn-primary" href="bayar.html?order=' +
+                      encodeURIComponent(o.id) +
+                      '">Lanjutkan</a>'
+                    : '<a class="btn btn-sm btn-ghost" href="bayar.html?order=' +
+                      encodeURIComponent(o.id) +
+                      '">Lihat</a>';
+                return (
+                  "<tr><td>" +
+                  A.tgl(o.created_at) +
+                  "</td><td>" +
+                  U.esc(o.plan_nama) +
+                  '</td><td class="num">' +
+                  A.rp(o.total) +
+                  "</td><td>" +
+                  U.badge(o.status) +
+                  '</td><td class="num">' +
+                  act +
+                  "</td></tr>"
+                );
+              })
+              .join("") +
+            "</tbody></table></div>"
+          );
+        }
+
+        U.start({ protect: "akun" }).then(function (user) {
+          if (!user) {
+            if (A.blocked) return;
+            view.innerHTML =
+              '<div class="card" style="margin-top:26px;text-align:center;padding:40px 26px"><h2 style="font-size:1.5rem;margin-bottom:8px">Masuk untuk melihat akunmu</h2><p style="margin-bottom:18px">Status akses dan riwayat pesananmu tersimpan di akun.</p><button class="btn btn-primary btn-lg" type="button" data-act="login"><span>Masuk dengan Email</span></button></div>';
+            return;
+          }
+          A.refreshUser()
+            .then(function () {
+              return A.getMyOrders();
+            })
+            .then(function (orders) {
+              var u = A.getUser();
+              var open = orders.filter(function (o) {
+                return (
+                  o.status === "menunggu_bayar" ||
+                  o.status === "menunggu_verifikasi" ||
+                  o.status === "ditolak"
+                );
+              })[0];
+              view.innerHTML =
+                '<div class="acc"><div style="display:grid;gap:22px"><section class="card"><div class="me">' +
+                U.avatar(u) +
+                "<div><b>" +
+                U.esc(u.nama || "Pengguna") +
+                "</b><span>" +
+                U.esc(u.email || "") +
+                "</span></div></div>" +
+                '<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">' +
+                (u.is_admin
+                  ? '<a class="btn btn-ghost btn-sm" href="admin.html">Panel admin</a>'
+                  : "") +
+                '<button class="btn btn-ghost btn-sm" type="button" data-act="logout">Keluar</button></div></section>' +
+                (open && open.status === "menunggu_verifikasi"
+                  ? '<div class="notice">' +
+                    U.icon.info +
+                    '<span>Pembayaranmu sedang diperiksa admin. <a href="bayar.html?order=' +
+                    encodeURIComponent(open.id) +
+                    '"><b>Lihat status</b></a></span></div>'
+                  : "") +
+                "</div>" +
+                '<div style="display:grid;gap:22px">' +
+                accessCard(u, open) +
+                '<section class="card hist"><h2>Riwayat pesanan</h2>' +
+                history(orders) +
+                "</section></div></div>";
+            })
+            .catch(function (e) {
+              view.innerHTML =
+                '<div class="notice bad" style="margin-top:26px">' +
+                U.icon.info +
+                "<span>" +
+                U.esc(e.message) +
+                "</span></div>";
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>

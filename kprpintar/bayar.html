@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Pembayaran — KPR PINTAR</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23147fa6'/%3E%3Cpath d='m14 31 18-14 18 14v18a2 2 0 0 1-2 2H16a2 2 0 0 1-2-2z' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/site.css" />
+    <link rel="stylesheet" href="assets/modern.css" />
+    <style>
+      .pay {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 28px;
+        align-items: start;
+        margin-top: 26px;
+      }
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 700;
+        font-size: 14.5px;
+        text-decoration: none;
+      }
+      .blk {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 26px;
+      }
+      .blk + .blk {
+        margin-top: 18px;
+      }
+      .blk h2 {
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .blk h2 .n {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--ink);
+        color: #fff;
+        font: 800 15px var(--f-head);
+        flex: none;
+      }
+      .blk > .sub {
+        color: var(--muted);
+        font-size: 14.5px;
+        margin-bottom: 18px;
+      }
+      .amount {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        background: var(--brand-50);
+        border: 1px solid #cfe5ef;
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin-bottom: 16px;
+      }
+      .amount small {
+        display: block;
+        color: #3c6a80;
+        font-weight: 600;
+        font-size: 13px;
+      }
+      .amount b {
+        display: block;
+        font: 800 clamp(1.7rem, 4vw, 2.3rem)/1.1 var(--f-head);
+        letter-spacing: -0.03em;
+        color: var(--ink);
+      }
+      .amount b i {
+        font-style: normal;
+        color: var(--amber-d);
+        background: var(--amber-50);
+        border-radius: 8px;
+        padding: 0 6px;
+      }
+      .banks {
+        display: grid;
+        gap: 10px;
+      }
+      .bank {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border: 1.5px solid var(--line);
+        border-radius: 14px;
+        padding: 14px 16px;
+        flex-wrap: wrap;
+      }
+      .bank .nm {
+        font-weight: 800;
+        color: var(--ink);
+        font-size: 15px;
+      }
+      .bank .no {
+        font: 800 20px var(--f-head);
+        letter-spacing: 0.02em;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+      }
+      .bank .an {
+        font-size: 13.5px;
+        color: var(--muted);
+      }
+      .form {
+        display: grid;
+        gap: 16px;
+      }
+      .form .row2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .wa-consent {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .wa-consent input {
+        margin-top: 3px;
+      }
+      .drop {
+        position: relative;
+        display: block;
+        border: 2px dashed var(--line2);
+        border-radius: 16px;
+        background: #f9fcfd;
+        padding: 22px;
+        text-align: center;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+      }
+      .drop:hover,
+      .drop.over {
+        border-color: var(--brand);
+        background: var(--brand-50);
+      }
+      .drop.err {
+        border-color: var(--red);
+        background: #fffafa;
+      }
+      .drop input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .drop b {
+        display: block;
+        color: var(--ink);
+        font-size: 15px;
+      }
+      .drop span {
+        display: block;
+        font-size: 13.5px;
+        color: var(--muted);
+      }
+      .prev {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        border: 1.5px solid var(--line);
+        border-radius: 16px;
+        padding: 10px;
+        background: #fff;
+      }
+      .prev img {
+        width: 84px;
+        height: 84px;
+        object-fit: cover;
+        border-radius: 10px;
+        background: #eef3f7;
+        flex: none;
+      }
+      .prev div {
+        min-width: 0;
+        flex: 1;
+        font-size: 14px;
+      }
+      .prev b {
+        display: block;
+        color: var(--ink);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .sum {
+        position: sticky;
+        top: 90px;
+      }
+      .sum h2 {
+        font-size: 1.15rem;
+        margin-bottom: 14px;
+      }
+      .sum dl {
+        margin: 0;
+        display: grid;
+        gap: 10px;
+        font-size: 14.5px;
+      }
+      .sum dl div {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .sum dt {
+        color: var(--muted);
+      }
+      .sum dd {
+        margin: 0;
+        font-weight: 700;
+        color: var(--ink);
+        text-align: right;
+      }
+      .sum .tot {
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+        font-size: 16px;
+      }
+      .sum .tot dd {
+        font: 800 22px var(--f-head);
+        letter-spacing: -0.02em;
+      }
+      .sum .btn {
+        margin-top: 16px;
+      }
+      .done {
+        text-align: center;
+        padding: 38px 26px;
+      }
+      .done .big {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        margin: 0 auto 16px;
+        background: var(--aqua-50);
+        color: var(--aqua-d);
+      }
+      .done .big.blue {
+        background: var(--brand-50);
+        color: var(--brand-d);
+      }
+      .done .big.gray {
+        background: #eef2f5;
+        color: #5a6c7a;
+      }
+      .done .big svg {
+        width: 32px;
+        height: 32px;
+      }
+      .done h2 {
+        display: block;
+        font-size: 1.6rem;
+        margin-bottom: 8px;
+      }
+      .done p {
+        max-width: 46ch;
+        margin: 0 auto 18px;
+      }
+      .done .row {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .det {
+        max-width: 420px;
+        margin: 0 auto 20px;
+        text-align: left;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px 16px;
+        font-size: 14.5px;
+        display: grid;
+        gap: 8px;
+      }
+      .det div {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .det dt {
+        color: var(--muted);
+      }
+      .det dd {
+        margin: 0;
+        font-weight: 700;
+        color: var(--ink);
+        text-align: right;
+        overflow-wrap: anywhere;
+      }
+      .det-wrap {
+        margin: 0;
+      }
+      @media (max-width: 900px) {
+        .pay {
+          grid-template-columns: 1fr;
+        }
+        .sum {
+          position: static;
+          order: -1;
+        }
+        .form .row2 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="container">
+        <a class="brand" href="index.html"
+          ><span class="brand-mark"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />
+              <path d="M9 21v-8h6v8" /></svg></span
+          ><span><b>KPR PINTAR</b><small>by AF Creative Media</small></span></a
+        >
+        <nav class="nav-links" aria-label="Menu">
+          <a href="index.html?paket=semua">Paket harga</a
+          ><a href="akun.html">Akun saya</a><a href="app.html">Kalkulator</a>
+        </nav>
+        <div class="nav-auth" id="navAuth"></div>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-label="Buka menu"
+          aria-expanded="false"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="page-simple">
+      <div class="container">
+        <a class="back" href="index.html?paket=semua">← Kembali ke daftar paket</a>
+        <h1 style="margin-top: 14px">Pembayaran</h1>
+        <div id="view">
+          <div class="blk" style="margin-top: 26px">Memuat pesanan…</div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-foot">
+      <div class="container" style="padding: 24px 0">
+        <p class="foot-note" style="margin: 0; padding: 0; border: 0">
+          © 2026 KPR PINTAR by AF Creative Media. ·
+          <a href="legal.html#syarat">Syarat &amp; Ketentuan</a> ·
+          <a href="legal.html#privasi">Kebijakan Privasi</a>
+        </p>
+      </div>
+    </footer>
+
+    <script src="assets/config.js"></script>
+    <script src="assets/core.js"></script>
+    <script src="assets/ui.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        var A = window.RCApi,
+          U = window.RCUI,
+          $ = function (id) {
+            return document.getElementById(id);
+          };
+        var BANKS = [
+          "BCA",
+          "BRI",
+          "BNI",
+          "Mandiri",
+          "BSI",
+          "CIMB Niaga",
+          "Permata",
+          "Bank Jago",
+          "SeaBank",
+          "Dana",
+          "OVO",
+          "GoPay",
+          "ShopeePay",
+          "LinkAja",
+        ];
+        var order = null,
+          settings = null,
+          file = null,
+          poll = null;
+        var view = $("view");
+
+        function short(id) {
+          return String(id).replace(/-/g, "").slice(-8).toUpperCase();
+        }
+        function today() {
+          var d = new Date();
+          d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+          return d.toISOString().slice(0, 10);
+        }
+        function normalizeWhatsApp(raw) {
+          var number = String(raw || "").replace(/\D/g, "");
+          if (number.indexOf("0") === 0)
+            number = "62" + number.slice(1);
+          else if (number.indexOf("8") === 0)
+            number = "62" + number;
+          return /^62[1-9]\d{7,12}$/.test(number) ? number : "";
+        }
+        function waLink(msg) {
+          var n = settings && settings.bisnis.whatsapp;
+          return n
+            ? "https://wa.me/" + n + "?text=" + encodeURIComponent(msg)
+            : "";
+        }
+
+        function summary(o) {
+          var canCancel =
+            o.status === "menunggu_bayar" || o.status === "ditolak";
+          return (
+            '<aside class="blk sum" aria-label="Ringkasan pesanan"><h2>Ringkasan pesanan</h2><dl>' +
+            "<div><dt>Paket</dt><dd>" +
+            U.esc(o.plan_nama) +
+            "</dd></div>" +
+            "<div><dt>Akses</dt><dd>" +
+            (o.durasi_hari == null
+              ? "Seumur hidup"
+              : A.durasiLabel(o.durasi_hari)) +
+            "</dd></div>" +
+            "<div><dt>Harga paket</dt><dd>" +
+            A.rp(o.harga_dasar) +
+            "</dd></div>" +
+            (o.kode_unik
+              ? "<div><dt>Kode unik</dt><dd>" +
+                A.rp(o.kode_unik) +
+                "</dd></div>"
+              : "") +
+            '<div class="tot"><dt>Total transfer</dt><dd>' +
+            A.rp(o.total) +
+            "</dd></div>" +
+            "<div><dt>Status</dt><dd>" +
+            U.badge(o.status) +
+            "</dd></div>" +
+            "<div><dt>No. pesanan</dt><dd>#" +
+            short(o.id) +
+            "</dd></div></dl>" +
+            (canCancel
+              ? '<button class="btn btn-danger btn-block" type="button" id="cancelBtn">Batalkan pesanan</button>'
+              : "") +
+            "</aside>"
+          );
+        }
+
+        function amountHtml(o) {
+          var t = A.rp(o.total);
+          if (o.kode_unik && o.harga_dasar % 1000 === 0)
+            return t.slice(0, -3) + "<i>" + t.slice(-3) + "</i>";
+          return t;
+        }
+
+        function bankList() {
+          var r = settings.pembayaran.rekening || [];
+          if (!r.length)
+            return (
+              '<div class="notice warn">' +
+              U.icon.info +
+              "<span>Rekening tujuan belum diatur. Hubungi admin untuk mendapatkan nomor rekening.</span></div>"
+            );
+          return (
+            '<div class="banks">' +
+            r
+              .map(function (b, i) {
+                return (
+                  '<div class="bank"><div><div class="nm">' +
+                  U.esc(b.bank) +
+                  '</div><div class="no">' +
+                  U.esc(b.nomor) +
+                  '</div><div class="an">a.n. ' +
+                  U.esc(b.atas_nama) +
+                  "</div></div>" +
+                  '<button class="btn btn-ghost btn-sm" type="button" data-copy="' +
+                  U.esc(String(b.nomor).replace(/\s/g, "")) +
+                  '" data-label="Nomor rekening">' +
+                  U.icon.copy +
+                  "Salin nomor</button></div>"
+                );
+              })
+              .join("") +
+            "</div>"
+          );
+        }
+
+        function formBlock(o) {
+          var nm = o.nama_pengirim || "",
+            bk = o.bank_pengirim || "",
+            wa = o.nomor_telepon ? "+" + o.nomor_telepon : "";
+          return (
+            '<section class="blk"><h2><span class="n">2</span>Konfirmasi pembayaran</h2><p class="sub">Setelah transfer, isi data di bawah dan unggah buktinya supaya admin bisa memeriksa.</p>' +
+            '<form class="form" id="proofForm" novalidate>' +
+            '<div class="row2"><div class="field"><label for="fNama">Nama pemilik rekening pengirim</label><input class="inp" id="fNama" autocomplete="name" value="' +
+            U.esc(nm) +
+            '" placeholder="Sesuai nama di rekening / e-wallet"><span class="errmsg" id="eNama" hidden></span></div>' +
+            '<div class="field"><label for="fBank">Bank atau e-wallet pengirim</label><input class="inp" id="fBank" list="bankList" value="' +
+            U.esc(bk) +
+            '" placeholder="Contoh: BCA, Dana"><datalist id="bankList">' +
+            BANKS.map(function (b) {
+              return '<option value="' + b + '">';
+            }).join("") +
+            '</datalist><span class="errmsg" id="eBank" hidden></span></div></div>' +
+            '<div class="field"><label for="fWa">Nomor WhatsApp</label><input class="inp" id="fWa" type="tel" inputmode="tel" autocomplete="tel" value="' +
+            U.esc(wa) +
+            '" placeholder="081234567890"><span class="hint">Nomor ini menerima notifikasi saat bukti pembayaran berhasil dikirim. Masukkan nomor aktif, misalnya 0812… atau +62812…</span><span class="errmsg" id="eWa" hidden></span></div>' +
+            '<label class="wa-consent"><input type="checkbox" id="fWaConsent"' +
+            (o.whatsapp_opt_in ? " checked" : "") +
+            '> Saya setuju menerima notifikasi WhatsApp terkait pembayaran ini.</label><span class="errmsg" id="eWaConsent" hidden></span>' +
+            '<div class="field"><label for="fTgl">Tanggal transfer</label><input class="inp" id="fTgl" type="date" value="' +
+            (o.tgl_transfer || today()) +
+            '" max="' +
+            today() +
+            '"><span class="errmsg" id="eTgl" hidden></span></div>' +
+            '<div class="field"><span class="lbl">Bukti transfer</span><div id="dropWrap"></div><span class="hint">Foto atau screenshot (JPG, PNG, WebP). Nominal, tanggal, dan rekening tujuan harus terlihat jelas.</span><span class="errmsg" id="eFile" hidden></span></div>' +
+            '<div class="field"><label for="fCat">Catatan <span style="font-weight:500;color:var(--muted)">(opsional)</span></label><textarea class="inp" id="fCat" placeholder="Misalnya: transfer dari rekening milik suami/istri">' +
+            U.esc(o.catatan || "") +
+            "</textarea></div>" +
+            '<button class="btn btn-primary btn-lg" type="submit" id="sendBtn">Kirim konfirmasi pembayaran</button></form></section>'
+          );
+        }
+
+        function renderDrop() {
+          var w = $("dropWrap");
+          if (!w) return;
+          if (file) {
+            w.innerHTML =
+              '<div class="prev"><img alt="Pratinjau bukti transfer" src="' +
+              URL.createObjectURL(file) +
+              '"><div><b>' +
+              U.esc(file.name) +
+              '</b><span style="color:var(--muted)">' +
+              Math.max(1, Math.round(file.size / 1024)) +
+              ' KB</span></div><button type="button" class="btn btn-ghost btn-sm" id="rmFile">Ganti</button></div>';
+            $("rmFile").addEventListener("click", function () {
+              file = null;
+              renderDrop();
+            });
+          } else {
+            w.innerHTML =
+              '<label class="drop" id="drop"><input type="file" id="fFile" accept="image/jpeg,image/png,image/webp,image/*"><b>Pilih foto bukti transfer</b><span>atau seret dan lepas file ke sini</span></label>';
+            var d = $("drop"),
+              f = $("fFile");
+            f.addEventListener("change", function () {
+              pick(f.files[0]);
+            });
+            ["dragenter", "dragover"].forEach(function (ev) {
+              d.addEventListener(ev, function (e) {
+                e.preventDefault();
+                d.classList.add("over");
+              });
+            });
+            ["dragleave", "drop"].forEach(function (ev) {
+              d.addEventListener(ev, function (e) {
+                e.preventDefault();
+                d.classList.remove("over");
+              });
+            });
+            d.addEventListener("drop", function (e) {
+              pick(e.dataTransfer.files[0]);
+            });
+          }
+        }
+        function pick(f) {
+          if (!f) return;
+          if (!/^image\//.test(f.type)) {
+            U.toast("File harus berupa gambar (JPG, PNG, atau WebP).", "bad");
+            return;
+          }
+          file = f;
+          var e = $("eFile");
+          e.hidden = true;
+          renderDrop();
+        }
+
+        function fieldErr(id, eid, msg) {
+          var i = $(id),
+            e = $(eid);
+          if (msg) {
+            if (i) i.classList.add("err");
+            e.textContent = msg;
+            e.hidden = false;
+          } else {
+            if (i) i.classList.remove("err");
+            e.hidden = true;
+          }
+          return !msg;
+        }
+
+        function submitProof(ev) {
+          ev.preventDefault();
+          var nama = $("fNama").value.trim(),
+            bank = $("fBank").value.trim(),
+            nomorTelepon = normalizeWhatsApp($("fWa").value),
+            whatsappOptIn = $("fWaConsent").checked,
+            tgl = $("fTgl").value;
+          var ok = true,
+            first = null;
+          function chk(good, id, eid, msg) {
+            var g = fieldErr(id, eid, good ? "" : msg);
+            if (!g && !first) first = id;
+            ok = ok && g;
+          }
+          chk(
+            nama.length >= 3,
+            "fNama",
+            "eNama",
+            "Isi nama pemilik rekening pengirim.",
+          );
+          chk(
+            bank.length >= 2,
+            "fBank",
+            "eBank",
+            "Isi bank atau e-wallet pengirim.",
+          );
+          chk(
+            !!nomorTelepon,
+            "fWa",
+            "eWa",
+            "Masukkan nomor WhatsApp Indonesia yang valid.",
+          );
+          chk(
+            whatsappOptIn,
+            "fWaConsent",
+            "eWaConsent",
+            "Setujui notifikasi WhatsApp untuk melanjutkan.",
+          );
+          chk(!!tgl, "fTgl", "eTgl", "Pilih tanggal transfer.");
+          var hasFile = !!file;
+          var df = $("drop");
+          if (df) df.classList.toggle("err", !hasFile);
+          if (!hasFile) {
+            var e = $("eFile");
+            e.textContent = "Unggah foto bukti transfer.";
+            e.hidden = false;
+            ok = false;
+            if (!first) first = "dropWrap";
+          }
+          if (!ok) {
+            var t = $(first);
+            if (t) {
+              t.scrollIntoView({ block: "center", behavior: "smooth" });
+              if (t.focus && first !== "dropWrap")
+                t.focus({ preventScroll: true });
+            }
+            return;
+          }
+          var btn = $("sendBtn");
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spin"></span>Mengirim…';
+          A.uploadProof(file, order.id)
+            .then(function (path) {
+              return A.submitProof(order.id, {
+                bukti_path: path,
+                nama_pengirim: nama,
+                bank_pengirim: bank,
+                tgl_transfer: tgl,
+                catatan: $("fCat").value,
+                nomor_telepon: nomorTelepon,
+                whatsapp_opt_in: whatsappOptIn,
+              });
+            })
+            .then(function (o) {
+              order = o;
+              file = null;
+              render();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              if (A.mode !== "supabase") {
+                U.toast(
+                  "Konfirmasi demo terkirim. Notifikasi WhatsApp tidak dikirim dalam mode demo.",
+                  "ok",
+                );
+                return;
+              }
+              return A.sendPaymentNotification(o.id).then(
+                function () {
+                  U.toast(
+                    "Konfirmasi terkirim dan notifikasi WhatsApp sudah dikirim.",
+                    "ok",
+                  );
+                },
+                function (e) {
+                  U.toast(
+                    "Konfirmasi terkirim, tetapi notifikasi WhatsApp gagal: " +
+                      e.message,
+                    "bad",
+                  );
+                },
+              );
+            })
+            .catch(function (e) {
+              btn.disabled = false;
+              btn.textContent = "Kirim konfirmasi pembayaran";
+              U.toast(e.message, "bad");
+            });
+        }
+
+        function render() {
+          var o = order,
+            main = "";
+          document.title = "Pembayaran #" + short(o.id) + " — KPR PINTAR";
+          clearInterval(poll);
+          if (o.status === "menunggu_bayar" || o.status === "ditolak") {
+            var rj =
+              o.status === "ditolak"
+                ? '<div class="notice bad" style="margin-bottom:18px">' +
+                  U.icon.info +
+                  "<span><b>Pembayaranmu ditolak.</b> " +
+                  U.esc(o.alasan_tolak || "") +
+                  " Perbaiki lalu kirim konfirmasi lagi di bawah.</span></div>"
+                : "";
+            main =
+              rj +
+              '<section class="blk"><h2><span class="n">1</span>Transfer sesuai nominal</h2><p class="sub">Transfer ke salah satu rekening di bawah. Nominalnya harus tepat sampai digit terakhir.</p>' +
+              '<div class="amount"><div><small>Total yang harus ditransfer</small><b>' +
+              amountHtml(o) +
+              "</b></div>" +
+              '<button class="btn btn-ghost" type="button" data-copy="' +
+              o.total +
+              '" data-label="Nominal">' +
+              U.icon.copy +
+              "Salin nominal</button></div>" +
+              (o.kode_unik
+                ? '<p class="hint" style="margin:-4px 0 16px;color:var(--muted);font-size:13.5px">' +
+                  (o.harga_dasar % 1000 === 0
+                    ? "Tiga digit terakhir (<b>" +
+                      String(o.total).slice(-3) +
+                      "</b>) adalah kode unik"
+                    : "Total sudah memuat kode unik <b>" +
+                      A.rp(o.kode_unik) +
+                      "</b>") +
+                  " supaya pembayaranmu mudah dikenali. Nominal ini sudah final, tidak ada biaya lain.</p>"
+                : "") +
+              bankList() +
+              (settings.pembayaran.catatan
+                ? '<p style="margin-top:14px;font-size:14px;color:var(--muted)">' +
+                  U.esc(settings.pembayaran.catatan) +
+                  "</p>"
+                : "") +
+              "</section>" +
+              formBlock(o);
+          } else if (o.status === "menunggu_verifikasi") {
+            var wa = waLink(
+              "Halo admin, saya sudah transfer " +
+                A.rp(o.total) +
+                " untuk paket " +
+                o.plan_nama +
+                " (pesanan #" +
+                short(o.id) +
+                "). Mohon dicek ya, terima kasih.",
+            );
+            main =
+              '<section class="blk done"><div class="big blue">' +
+              U.icon.check +
+              "</div><h2>Konfirmasi terkirim</h2><p>Admin sedang memeriksa pembayaranmu. Setelah disetujui, akses kalkulator terbuka otomatis dan halaman ini akan ikut diperbarui.</p>" +
+              '<dl class="det"><div><dt>Pengirim</dt><dd>' +
+              U.esc(o.nama_pengirim || "–") +
+              "</dd></div><div><dt>Bank / e-wallet</dt><dd>" +
+              U.esc(o.bank_pengirim || "–") +
+              "</dd></div><div><dt>Tanggal transfer</dt><dd>" +
+              A.tgl(o.tgl_transfer) +
+              "</dd></div><div><dt>Dikirim</dt><dd>" +
+              A.tglJam(o.dikirim_at) +
+              "</dd></div></dl>" +
+              '<div class="row"><button class="btn btn-ghost" type="button" id="refreshBtn">Cek status sekarang</button>' +
+              (wa
+                ? '<a class="btn btn-aqua" target="_blank" rel="noopener" href="' +
+                  U.esc(wa) +
+                  '">Beri tahu admin via WhatsApp</a>'
+                : "") +
+              "</div></section>";
+            poll = setInterval(refresh, 20000);
+          } else if (o.status === "disetujui") {
+            main =
+              '<section class="blk done"><div class="big">' +
+              U.icon.check +
+              "</div><h2>Pembayaran disetujui</h2><p>" +
+              (o.durasi_hari == null
+                ? "Aksesmu sekarang berlaku seumur hidup."
+                : "Aksesmu sudah aktif.") +
+              ' Selamat menghitung rencana rumahmu.</p><div class="row"><a class="btn btn-primary btn-lg" href="app.html">Buka kalkulator</a><a class="btn btn-ghost btn-lg" href="akun.html">Lihat akun</a></div></section>';
+          } else {
+            main =
+              '<section class="blk done"><div class="big gray">' +
+              U.icon.info +
+              '</div><h2>Pesanan dibatalkan</h2><p>Pesanan ini sudah tidak aktif. Kamu bisa memilih paket lagi kapan saja.</p><div class="row"><a class="btn btn-primary btn-lg" href="index.html?paket=semua">Pilih paket</a></div></section>';
+          }
+          view.innerHTML =
+            '<div class="pay"><div>' + main + "</div>" + summary(o) + "</div>";
+          renderDrop();
+          var f = $("proofForm");
+          if (f) f.addEventListener("submit", submitProof);
+        }
+
+        function refresh() {
+          return A.getOrder(order.id).then(
+            function (o) {
+              if (!o) return;
+              var changed = o.status !== order.status;
+              order = o;
+              if (changed) {
+                render();
+                if (o.status === "disetujui")
+                  U.toast("Pembayaranmu disetujui!", "ok");
+              }
+            },
+            function () {},
+          );
+        }
+
+        document.addEventListener("click", function (e) {
+          var c = e.target.closest("[data-copy]");
+          if (c) {
+            U.copy(c.dataset.copy, c.dataset.label);
+            return;
+          }
+          if (e.target.closest("#refreshBtn")) {
+            A.getOrder(order.id).then(
+              function (o) {
+                var ch = o.status !== order.status;
+                order = o;
+                if (ch) render();
+                else U.toast("Masih menunggu verifikasi admin.");
+              },
+              function (er) {
+                U.toast(er.message, "bad");
+              },
+            );
+            return;
+          }
+          if (e.target.closest("#cancelBtn")) {
+            U.confirm(
+              "Pesanan ini akan dibatalkan. Kamu masih bisa memesan paket lagi nanti.",
+              {
+                title: "Batalkan pesanan?",
+                ok: "Ya, batalkan",
+                cancel: "Tidak",
+                danger: true,
+              },
+            ).then(function (y) {
+              if (!y) return;
+              A.cancelOrder(order.id).then(
+                function (o) {
+                  order = o;
+                  render();
+                  U.toast("Pesanan dibatalkan.");
+                },
+                function (er) {
+                  U.toast(er.message, "bad");
+                },
+              );
+            });
+          }
+        });
+
+        function loginCard() {
+          view.innerHTML =
+            '<div class="blk done" style="margin-top:26px"><div class="big blue">' +
+            U.icon.info +
+            '</div><h2>Masuk dulu untuk melanjutkan</h2><p>Pesananmu akan tersimpan di akunmu, jadi bisa dilanjutkan dari perangkat mana pun.</p><div class="row"><button class="btn btn-primary btn-lg" type="button" data-act="login"><span>Masuk dengan Email</span></button></div></div>';
+        }
+
+        U.start().then(function (user) {
+          if (!user) {
+            if (!A.blocked && !user && document.body.contains(view)) {
+              loginCard();
+            }
+            return;
+          }
+          var q = new URLSearchParams(location.search),
+            oid = q.get("order"),
+            pid = q.get("plan");
+          A.getSettings()
+            .then(function (s) {
+              settings = s;
+              if (oid) return A.getOrder(oid);
+              if (pid) return A.createOrder(pid);
+              return A.getMyOrders().then(function (list) {
+                return (
+                  list.filter(function (o) {
+                    return (
+                      o.status === "menunggu_bayar" ||
+                      o.status === "menunggu_verifikasi" ||
+                      o.status === "ditolak"
+                    );
+                  })[0] || null
+                );
+              });
+            })
+            .then(function (o) {
+              if (!o) {
+                view.innerHTML =
+                  '<div class="blk done" style="margin-top:26px"><div class="big gray">' +
+                  U.icon.info +
+                  '</div><h2>Belum ada pesanan</h2><p>Pilih paket dulu untuk membuat pesanan.</p><div class="row"><a class="btn btn-primary btn-lg" href="index.html?paket=semua">Lihat paket harga</a></div></div>';
+                return;
+              }
+              order = o;
+              if (history.replaceState)
+                history.replaceState(
+                  null,
+                  "",
+                  "bayar.html?order=" + encodeURIComponent(o.id),
+                );
+              render();
+            })
+            .catch(function (e) {
+              view.innerHTML =
+                '<div class="blk" style="margin-top:26px"><div class="notice bad">' +
+                U.icon.info +
+                "<span>" +
+                U.esc(e.message) +
+                '</span></div><p style="margin-top:16px"><a class="btn btn-primary" href="index.html?paket=semua">Kembali ke paket</a> <a class="btn btn-ghost" href="akun.html">Akun saya</a></p></div>';
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>

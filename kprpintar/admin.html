@@ -1,0 +1,1494 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Admin — KPR PINTAR</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230f2a43'/%3E%3Cpath d='m14 31 18-14 18 14v18a2 2 0 0 1-2 2H16a2 2 0 0 1-2-2z' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="assets/site.css" />
+    <link rel="stylesheet" href="assets/modern.css" />
+    <style>
+      body {
+        background: var(--paper);
+      }
+      .nav .tagadm {
+        margin-left: 2px;
+        padding: 3px 10px;
+        border-radius: 8px;
+        background: var(--ink);
+        color: #fff;
+        font: 800 12px var(--f-body);
+      }
+      .adm {
+        display: grid;
+        grid-template-columns: 210px minmax(0, 1fr);
+        gap: 28px;
+        padding: 30px 0 70px;
+        align-items: start;
+      }
+      .side {
+        position: sticky;
+        top: 92px;
+        display: grid;
+        gap: 4px;
+      }
+      .side a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--ink2);
+        font-weight: 700;
+        font-size: 15px;
+      }
+      .side a:hover {
+        background: #e9f1f6;
+      }
+      .side a[aria-current="page"] {
+        background: var(--ink);
+        color: #fff;
+      }
+      .cnt {
+        min-width: 22px;
+        padding: 1px 7px;
+        border-radius: 999px;
+        background: var(--amber);
+        color: #3d2506;
+        font: 800 12px/1.6 var(--f-body);
+        text-align: center;
+      }
+      .side a[aria-current="page"] .cnt {
+        background: #fff;
+        color: var(--ink);
+      }
+      .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .head h1 {
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+      }
+      .head p {
+        color: var(--muted);
+        font-size: 14.5px;
+        margin-top: 4px;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .stat {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+      }
+      .stat small {
+        display: block;
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .stat b {
+        display: block;
+        margin-top: 6px;
+        font: 800 1.65rem/1.1 var(--f-head);
+        letter-spacing: -0.03em;
+        color: var(--ink);
+        overflow-wrap: anywhere;
+      }
+      .stat.hot {
+        background: var(--ink);
+        border-color: var(--ink);
+      }
+      .stat.hot small {
+        color: #9fc0d6;
+      }
+      .stat.hot b {
+        color: #fff;
+      }
+      .stat.hot a {
+        display: inline-block;
+        margin-top: 10px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 13.5px;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        margin-top: 18px;
+        overflow: hidden;
+      }
+      .panel > h2 {
+        font-size: 1.1rem;
+        padding: 18px 20px 0;
+      }
+      .panel .wrap-x {
+        overflow-x: auto;
+      }
+      .bar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+      .bar .inp {
+        max-width: 300px;
+        min-height: 42px;
+      }
+      .fchips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .who {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+      .who .avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+      }
+      .who > div b {
+        display: block;
+        color: var(--ink);
+        font-size: 14.5px;
+        line-height: 1.25;
+      }
+      .who > div span {
+        display: block;
+        color: var(--muted);
+        font-size: 12.5px;
+        line-height: 1.25;
+        max-width: 230px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .tbl tr.rowlink {
+        cursor: pointer;
+      }
+      .tbl tr.rowlink:hover td {
+        background: #f6fafc;
+      }
+      .empty {
+        padding: 36px;
+        text-align: center;
+        color: var(--muted);
+      }
+      .ordgrid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        gap: 22px;
+      }
+      .proof {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #f1f5f8;
+        min-height: 240px;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+      .proof img {
+        display: block;
+        width: 100%;
+        max-height: 58vh;
+        object-fit: contain;
+        cursor: zoom-in;
+      }
+      .proof .none {
+        padding: 30px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      dl.kv {
+        margin: 0;
+        display: grid;
+        gap: 9px;
+        font-size: 14.5px;
+      }
+      dl.kv div {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        border-bottom: 1px solid #edf2f6;
+        padding-bottom: 8px;
+      }
+      dl.kv dt {
+        color: var(--muted);
+      }
+      dl.kv dd {
+        margin: 0;
+        text-align: right;
+        font-weight: 700;
+        color: var(--ink);
+        overflow-wrap: anywhere;
+      }
+      .big-amt {
+        font: 800 1.6rem/1.1 var(--f-head);
+        letter-spacing: -0.03em;
+      }
+      .reasons {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin: 8px 0 10px;
+      }
+      .plan-ed {
+        padding: 20px;
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 14px;
+      }
+      .plan-ed:first-of-type {
+        border-top: 0;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .grid3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        align-items: start;
+      }
+      .sw {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .sw input {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--brand);
+      }
+      .rek {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr 1.4fr auto;
+        gap: 10px;
+        align-items: end;
+        margin-bottom: 10px;
+      }
+      .sect {
+        padding: 20px;
+        display: grid;
+        gap: 14px;
+      }
+      .sect + .sect {
+        border-top: 1px solid var(--line);
+      }
+      .sect h3 {
+        font-size: 1.05rem;
+      }
+      @media (max-width: 1000px) {
+        .adm {
+          grid-template-columns: 1fr;
+          gap: 16px;
+          padding-top: 18px;
+        }
+        .side {
+          position: static;
+          display: flex;
+          overflow-x: auto;
+          gap: 6px;
+          padding-bottom: 4px;
+          margin: 0 -16px;
+          padding-inline: 16px;
+        }
+        .side a {
+          white-space: nowrap;
+          flex: none;
+        }
+        .stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .ordgrid {
+          grid-template-columns: 1fr;
+        }
+        .grid2,
+        .grid3 {
+          grid-template-columns: 1fr;
+        }
+        .rek {
+          grid-template-columns: 1fr 1fr;
+        }
+        .rek .btn {
+          grid-column: 1/-1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="container">
+        <a class="brand" href="index.html"
+          ><span class="brand-mark"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />
+              <path d="M9 21v-8h6v8" /></svg></span
+          ><span><b>KPR PINTAR</b><small>Panel admin</small></span></a
+        >
+        <nav class="nav-links" aria-label="Menu">
+          <a href="index.html">Lihat situs</a><a href="app.html">Kalkulator</a>
+        </nav>
+        <div class="nav-auth" id="navAuth"></div>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-label="Buka menu"
+          aria-expanded="false"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="container" id="root">
+      <div class="card" style="margin-top: 30px">Memeriksa akses…</div>
+    </main>
+
+    <script src="assets/config.js"></script>
+    <script src="assets/core.js"></script>
+    <script src="assets/ui.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        var A = window.RCApi,
+          U = window.RCUI,
+          esc = U.esc;
+        var root = document.getElementById("root");
+        var S = {
+          filter: "menunggu_verifikasi",
+          q: "",
+          orders: [],
+          users: [],
+          plans: [],
+          settings: null,
+        };
+        var FILTERS = [
+          ["menunggu_verifikasi", "Perlu diverifikasi"],
+          ["menunggu_bayar", "Menunggu bayar"],
+          ["disetujui", "Disetujui"],
+          ["ditolak", "Ditolak"],
+          ["dibatalkan", "Dibatalkan"],
+          ["semua", "Semua"],
+        ];
+        var NAV = [
+          ["ringkasan", "Ringkasan"],
+          ["pesanan", "Pesanan"],
+          ["pengguna", "Pengguna"],
+          ["paket", "Paket harga"],
+          ["pengaturan", "Pengaturan"],
+        ];
+        var content;
+
+        function short(id) {
+          return String(id).replace(/-/g, "").slice(-8).toUpperCase();
+        }
+        function who(p) {
+          p = p || {};
+          return (
+            '<div class="who">' +
+            U.avatar(p) +
+            '<div style="min-width:0"><b>' +
+            esc(p.nama || "–") +
+            "</b><span>" +
+            esc(p.email || "") +
+            "</span></div></div>"
+          );
+        }
+        function err(e) {
+          U.toast(e.message || String(e), "bad");
+        }
+        function loading() {
+          content.innerHTML =
+            '<div class="panel"><div class="empty">Memuat…</div></div>';
+        }
+        function head(t, sub, extra) {
+          return (
+            '<div class="head"><div><h1>' +
+            t +
+            "</h1>" +
+            (sub ? "<p>" + sub + "</p>" : "") +
+            "</div>" +
+            (extra || "") +
+            "</div>"
+          );
+        }
+        function badgeCount() {
+          A.adminStats().then(
+            function (s) {
+              var a = document.querySelector(".side a[data-t=pesanan]");
+              if (!a) return;
+              var c = a.querySelector(".cnt");
+              if (c) c.remove();
+              if (s.menunggu_verifikasi > 0)
+                a.insertAdjacentHTML(
+                  "beforeend",
+                  '<span class="cnt" title="Perlu diverifikasi">' +
+                    s.menunggu_verifikasi +
+                    "</span>",
+                );
+            },
+            function () {},
+          );
+        }
+
+        /* ---------- kerangka ---------- */
+        function shell() {
+          root.innerHTML =
+            (A.mode === "demo" ? "" : "") +
+            '<div class="adm"><nav class="side" aria-label="Menu admin">' +
+            NAV.map(function (n) {
+              return (
+                '<a href="#' + n[0] + '" data-t="' + n[0] + '">' + n[1] + "</a>"
+              );
+            }).join("") +
+            '</nav><section id="content" aria-live="polite"></section></div>';
+          content = document.getElementById("content");
+          window.addEventListener("hashchange", route);
+          route();
+          badgeCount();
+        }
+        function route() {
+          var t = (location.hash || "#ringkasan").slice(1);
+          if (!TABS[t]) t = "ringkasan";
+          document.querySelectorAll(".side a").forEach(function (a) {
+            if (a.dataset.t === t) a.setAttribute("aria-current", "page");
+            else a.removeAttribute("aria-current");
+          });
+          document.title =
+            NAV.filter(function (n) {
+              return n[0] === t;
+            })[0][1] + " — Admin KPR PINTAR";
+          loading();
+          TABS[t]();
+        }
+
+        /* ---------- ringkasan ---------- */
+        function tabRingkasan() {
+          Promise.all([
+            A.adminStats(),
+            A.adminOrders({ status: "menunggu_verifikasi", limit: 5 }),
+          ])
+            .then(function (r) {
+              var s = r[0],
+                list = r[1];
+              function st(l, v, cls, extra) {
+                return (
+                  '<div class="stat ' +
+                  (cls || "") +
+                  '"><small>' +
+                  l +
+                  "</small><b>" +
+                  v +
+                  "</b>" +
+                  (extra || "") +
+                  "</div>"
+                );
+              }
+              content.innerHTML =
+                head(
+                  "Ringkasan",
+                  "Gambaran cepat penjualan dan pembayaran yang menunggu.",
+                ) +
+                '<div class="stats">' +
+                st(
+                  "Perlu diverifikasi",
+                  s.menunggu_verifikasi,
+                  "hot",
+                  '<a href="#pesanan" data-goto="menunggu_verifikasi">' +
+                    (s.menunggu_verifikasi
+                      ? "Periksa sekarang"
+                      : "Tidak ada antrean") +
+                    "</a>",
+                ) +
+                st("Menunggu pembayaran", s.menunggu_bayar) +
+                st("Pendapatan bulan ini", A.rp(s.pendapatan_bulan_ini)) +
+                st("Total pendapatan", A.rp(s.pendapatan_total)) +
+                st("Pesanan disetujui", s.pesanan_disetujui) +
+                st("Pengguna terdaftar", s.pengguna) +
+                st("Akses aktif", s.akses_aktif) +
+                st("Pemegang Lifetime", s.lifetime) +
+                "</div>" +
+                '<div class="panel"><h2>Menunggu verifikasi</h2>' +
+                (list.length
+                  ? ordersTable(list)
+                  : '<div class="empty">Tidak ada pembayaran yang menunggu. Semua sudah beres.</div>') +
+                "</div>";
+            })
+            .catch(err);
+        }
+
+        /* ---------- pesanan ---------- */
+        function ordersTable(rows) {
+          return (
+            '<div class="wrap-x"><table class="tbl"><thead><tr><th>Dikirim / dibuat</th><th>Pembeli</th><th>Paket</th><th class="num">Total</th><th>Status</th><th></th></tr></thead><tbody>' +
+            rows
+              .map(function (o) {
+                return (
+                  '<tr class="rowlink" data-open="' +
+                  esc(o.id) +
+                  '"><td>' +
+                  A.tglJam(o.dikirim_at || o.created_at) +
+                  "</td><td>" +
+                  who(o.pengguna) +
+                  "</td><td>" +
+                  esc(o.plan_nama) +
+                  '</td><td class="num"><b>' +
+                  A.rp(o.total) +
+                  "</b></td><td>" +
+                  U.badge(o.status) +
+                  '</td><td class="num"><button class="btn btn-sm ' +
+                  (o.status === "menunggu_verifikasi"
+                    ? "btn-primary"
+                    : "btn-ghost") +
+                  '" type="button" data-open="' +
+                  esc(o.id) +
+                  '">' +
+                  (o.status === "menunggu_verifikasi" ? "Periksa" : "Detail") +
+                  "</button></td></tr>"
+                );
+              })
+              .join("") +
+            "</tbody></table></div>"
+          );
+        }
+        function visibleOrders() {
+          var q = S.q.toLowerCase().trim();
+          return S.orders.filter(function (o) {
+            if (!q) return true;
+            var p = o.pengguna || {};
+            return (
+              [
+                p.nama,
+                p.email,
+                o.plan_nama,
+                o.nama_pengirim,
+                short(o.id),
+                String(o.total),
+              ]
+                .join(" ")
+                .toLowerCase()
+                .indexOf(q) > -1
+            );
+          });
+        }
+        function drawOrders() {
+          var rows = visibleOrders();
+          document.getElementById("ordBody").innerHTML = rows.length
+            ? ordersTable(rows)
+            : '<div class="empty">Tidak ada pesanan pada filter ini.</div>';
+        }
+        function tabPesanan() {
+          A.adminOrders({ status: S.filter })
+            .then(function (rows) {
+              S.orders = rows;
+              content.innerHTML =
+                head(
+                  "Pesanan",
+                  "Periksa bukti transfer, lalu setujui atau tolak.",
+                  '<button class="btn btn-ghost btn-sm" type="button" id="csvBtn">Ekspor CSV</button>',
+                ) +
+                '<div class="bar"><div class="fchips" role="group" aria-label="Filter status">' +
+                FILTERS.map(function (f) {
+                  return (
+                    '<button class="chip" type="button" data-f="' +
+                    f[0] +
+                    '" aria-pressed="' +
+                    (S.filter === f[0]) +
+                    '">' +
+                    f[1] +
+                    "</button>"
+                  );
+                }).join("") +
+                '</div><input class="inp" id="ordQ" type="search" placeholder="Cari nama, email, nominal…" value="' +
+                esc(S.q) +
+                '" aria-label="Cari pesanan"></div>' +
+                '<div class="panel" id="ordBody"></div>';
+              drawOrders();
+            })
+            .catch(err);
+        }
+        function csvOrders() {
+          var rows = visibleOrders(),
+            h = [
+              "No. pesanan",
+              "Dibuat",
+              "Nama",
+              "Email",
+              "Paket",
+              "Harga",
+              "Kode unik",
+              "Total",
+              "Status",
+              "Pengirim",
+              "Bank pengirim",
+              "Tgl transfer",
+              "Diproses",
+            ];
+          function c(v) {
+            v = v == null ? "" : String(v);
+            return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+          }
+          var lines = [h.join(",")].concat(
+            rows.map(function (o) {
+              var p = o.pengguna || {};
+              return [
+                short(o.id),
+                o.created_at,
+                p.nama,
+                p.email,
+                o.plan_nama,
+                o.harga_dasar,
+                o.kode_unik,
+                o.total,
+                (A.STATUS[o.status] || {}).label,
+                o.nama_pengirim,
+                o.bank_pengirim,
+                o.tgl_transfer,
+                o.diproses_at,
+              ]
+                .map(c)
+                .join(",");
+            }),
+          );
+          var blob = new Blob(["﻿" + lines.join("\n")], {
+              type: "text/csv;charset=utf-8",
+            }),
+            a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "pesanan-rumah-cerdas.csv";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+
+        var REASONS = [
+          "Nominal tidak sesuai",
+          "Bukti transfer tidak terbaca",
+          "Dana belum masuk ke rekening",
+          "Nama pengirim tidak sesuai",
+        ];
+        function openOrder(id) {
+          var o = S.orders.filter(function (x) {
+            return x.id === id;
+          })[0];
+          if (!o) return;
+          var dlg = U.mk(
+            '<dialog class="wide"><div class="dlg" style="position:relative"><button class="dlg-x" type="button" aria-label="Tutup" data-x>&times;</button>' +
+              "<h3>Pesanan #" +
+              short(o.id) +
+              " " +
+              U.badge(o.status) +
+              '</h3><p class="sub">Cocokkan nominal dan rekening tujuan di bukti dengan mutasi rekeningmu sebelum menyetujui.</p>' +
+              '<div class="ordgrid"><div><div class="proof" id="proofBox"><div class="none">' +
+              (o.bukti_path
+                ? "Memuat bukti…"
+                : "Pembeli belum mengunggah bukti transfer.") +
+              "</div></div></div>" +
+              '<div><dl class="kv"><div><dt>Total transfer</dt><dd class="big-amt">' +
+              A.rp(o.total) +
+              "</dd></div><div><dt>Pembeli</dt><dd>" +
+              esc((o.pengguna || {}).nama || "–") +
+              '<br><span style="font-weight:500;color:var(--muted)">' +
+              esc((o.pengguna || {}).email || "") +
+              "</span></dd></div>" +
+              "<div><dt>Paket</dt><dd>" +
+              esc(o.plan_nama) +
+              " (" +
+              (o.durasi_hari == null
+                ? "Lifetime"
+                : A.durasiLabel(o.durasi_hari)) +
+              ")</dd></div>" +
+              "<div><dt>Harga + kode unik</dt><dd>" +
+              A.rp(o.harga_dasar) +
+              " + " +
+              A.rp(o.kode_unik) +
+              "</dd></div>" +
+              "<div><dt>Nama pengirim</dt><dd>" +
+              esc(o.nama_pengirim || "–") +
+              "</dd></div><div><dt>Bank / e-wallet</dt><dd>" +
+              esc(o.bank_pengirim || "–") +
+              "</dd></div>" +
+              "<div><dt>Tanggal transfer</dt><dd>" +
+              A.tgl(o.tgl_transfer) +
+              "</dd></div><div><dt>Dikirim</dt><dd>" +
+              A.tglJam(o.dikirim_at) +
+              "</dd></div>" +
+              (o.catatan
+                ? "<div><dt>Catatan pembeli</dt><dd>" +
+                  esc(o.catatan) +
+                  "</dd></div>"
+                : "") +
+              (o.alasan_tolak
+                ? "<div><dt>Alasan penolakan</dt><dd>" +
+                  esc(o.alasan_tolak) +
+                  "</dd></div>"
+                : "") +
+              (o.diproses_at
+                ? "<div><dt>Diproses</dt><dd>" +
+                  A.tglJam(o.diproses_at) +
+                  "</dd></div>"
+                : "") +
+              "</dl>" +
+              '<div id="actBox" style="margin-top:18px"></div></div></div></div></dialog>',
+          );
+          document.body.appendChild(dlg);
+          var act = dlg.querySelector("#actBox");
+          function actions() {
+            if (o.status === "disetujui" || o.status === "dibatalkan") {
+              act.innerHTML =
+                '<div class="notice">' +
+                U.icon.info +
+                "<span>Pesanan ini sudah " +
+                (o.status === "disetujui"
+                  ? "disetujui dan aksesnya aktif."
+                  : "dibatalkan pembeli.") +
+                "</span></div>";
+              return;
+            }
+            act.innerHTML =
+              '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-aqua" type="button" id="okBtn">Setujui &amp; aktifkan akses</button><button class="btn btn-danger" type="button" id="noBtn">Tolak…</button></div>' +
+              '<div id="rejBox" hidden style="margin-top:14px"><label class="lbl" for="rejTxt">Alasan penolakan (dibaca pembeli)</label><div class="reasons">' +
+              REASONS.map(function (r) {
+                return (
+                  '<button class="chip" type="button" data-r="' +
+                  esc(r) +
+                  '">' +
+                  esc(r) +
+                  "</button>"
+                );
+              }).join("") +
+              "</div>" +
+              '<textarea class="inp" id="rejTxt" placeholder="Tulis alasan agar pembeli tahu apa yang perlu diperbaiki"></textarea><div class="dlg-actions" style="margin-top:12px"><button class="btn btn-ghost" type="button" id="rejCancel">Batal</button><button class="btn btn-danger" type="button" id="rejGo">Kirim penolakan</button></div></div>';
+          }
+          actions();
+          dlg.addEventListener("click", function (e) {
+            if (e.target === dlg || e.target.closest("[data-x]")) {
+              dlg.close();
+              return;
+            }
+            if (e.target.closest("#proofBox img")) {
+              window.open(e.target.src, "_blank", "noopener");
+              return;
+            }
+            var r = e.target.closest("[data-r]");
+            if (r) {
+              dlg.querySelector("#rejTxt").value = r.dataset.r;
+              return;
+            }
+            if (e.target.closest("#noBtn")) {
+              dlg.querySelector("#rejBox").hidden = false;
+              dlg.querySelector("#rejTxt").focus();
+              return;
+            }
+            if (e.target.closest("#rejCancel")) {
+              dlg.querySelector("#rejBox").hidden = true;
+              return;
+            }
+            if (e.target.closest("#okBtn")) {
+              var go = function () {
+                var b = dlg.querySelector("#okBtn");
+                b.disabled = true;
+                b.innerHTML = '<span class="spin"></span>Memproses…';
+                A.adminApprove(o.id).then(
+                  function () {
+                    U.toast("Disetujui. Akses pembeli sudah aktif.", "ok");
+                    dlg.close();
+                    refreshTab();
+                  },
+                  function (er) {
+                    b.disabled = false;
+                    b.textContent = "Setujui & aktifkan akses";
+                    err(er);
+                  },
+                );
+              };
+              if (!o.bukti_path)
+                U.confirm(
+                  "Pembeli belum mengunggah bukti transfer. Setujui hanya jika kamu sudah memastikan uangnya masuk.",
+                  { title: "Setujui tanpa bukti?", ok: "Ya, setujui" },
+                ).then(function (y) {
+                  if (y) go();
+                });
+              else go();
+              return;
+            }
+            if (e.target.closest("#rejGo")) {
+              var txt = dlg.querySelector("#rejTxt").value.trim();
+              if (!txt) {
+                dlg.querySelector("#rejTxt").classList.add("err");
+                U.toast("Tulis alasan penolakan dulu.", "bad");
+                return;
+              }
+              var b2 = e.target.closest("#rejGo");
+              b2.disabled = true;
+              A.adminReject(o.id, txt).then(
+                function () {
+                  U.toast(
+                    "Pembayaran ditolak. Pembeli akan melihat alasannya.",
+                    "ok",
+                  );
+                  dlg.close();
+                  refreshTab();
+                },
+                function (er) {
+                  b2.disabled = false;
+                  err(er);
+                },
+              );
+            }
+          });
+          dlg.addEventListener("close", function () {
+            dlg.remove();
+          });
+          dlg.showModal();
+          if (o.bukti_path)
+            A.proofUrl(o.bukti_path).then(
+              function (url) {
+                var b = dlg.querySelector("#proofBox");
+                if (b)
+                  b.innerHTML =
+                    '<img src="' +
+                    esc(url) +
+                    '" alt="Bukti transfer #' +
+                    short(o.id) +
+                    '" title="Klik untuk memperbesar">';
+              },
+              function (er) {
+                var b = dlg.querySelector("#proofBox");
+                if (b)
+                  b.innerHTML =
+                    '<div class="none">Bukti tidak bisa dimuat: ' +
+                    esc(er.message) +
+                    "</div>";
+              },
+            );
+        }
+        function refreshTab() {
+          badgeCount();
+          route();
+        }
+
+        /* ---------- pengguna ---------- */
+        function accessBadge(u) {
+          if (u.is_admin)
+            return '<span class="badge" data-tone="green">Admin</span>';
+          var active = [];
+          var legacyAccess = A.hasLegacyAccess(u);
+          if (legacyAccess)
+            active.push(
+              A.legacyPlanName(u) +
+                " · semua fitur" +
+                (u.lifetime
+                  ? " Lifetime"
+                  : u.akses_sampai
+                    ? " sampai " + A.tgl(u.akses_sampai)
+                    : ""),
+            );
+          ["rencana", "tools"].forEach(function (group) {
+            if (
+              legacyAccess
+                ? !A.hasScopedPlanAccess(u, group)
+                : !A.hasPlanAccess(u, group)
+            )
+              return;
+            var until =
+              group === "rencana"
+                ? u.akses_rencana_sampai
+                : u.akses_tools_sampai;
+            var label = group === "rencana" ? "Rencana" : "Tools";
+            active.push(
+              label +
+                " " +
+                (A.hasLifetimeAccess(u, group)
+                  ? "Lifetime"
+                  : until || u.akses_sampai
+                    ? "sampai " + A.tgl(until || u.akses_sampai)
+                    : "aktif"),
+            );
+          });
+          if (active.length)
+            return (
+              '<span class="badge" data-tone="blue">' +
+              esc(active.join(" · ")) +
+              "</span>"
+            );
+          return (
+            '<span class="badge" data-tone="gray">' +
+            (u.akses_sampai ||
+            u.akses_rencana_sampai ||
+            u.akses_tools_sampai
+              ? "Akses berakhir"
+              : "Belum ada akses") +
+            "</span>"
+          );
+        }
+        function drawUsers() {
+          var rows = S.users;
+          document.getElementById("usrBody").innerHTML = rows.length
+            ? '<div class="wrap-x"><table class="tbl"><thead><tr><th>Pengguna</th><th>Terdaftar</th><th>Akses</th><th></th></tr></thead><tbody>' +
+              rows
+                .map(function (u) {
+                  return (
+                    "<tr><td>" +
+                    who(u) +
+                    (u.is_admin
+                      ? ' <span class="badge" data-tone="amber" style="margin-top:4px">Admin</span>'
+                      : "") +
+                    "</td><td>" +
+                    A.tgl(u.created_at) +
+                    "</td><td>" +
+                    accessBadge(u) +
+                    '</td><td class="num"><button class="btn btn-sm btn-ghost" type="button" data-access="' +
+                    esc(u.id) +
+                    '">Atur akses</button></td></tr>'
+                  );
+                })
+                .join("") +
+              "</tbody></table></div>"
+            : '<div class="empty">Tidak ada pengguna yang cocok.</div>';
+        }
+        var usrTimer;
+        function tabPengguna(q) {
+          A.adminUsers(q || "")
+            .then(function (rows) {
+              S.users = rows;
+              if (!document.getElementById("usrBody")) {
+                content.innerHTML =
+                  head(
+                    "Pengguna",
+                    "Semua akun yang pernah masuk. Atur akses secara manual untuk hadiah atau kompensasi.",
+                  ) +
+                  '<div class="bar"><input class="inp" id="usrQ" type="search" placeholder="Cari nama atau email…" aria-label="Cari pengguna" value="' +
+                  esc(q || "") +
+                  '"></div><div class="panel" id="usrBody"></div>';
+              }
+              drawUsers();
+            })
+            .catch(err);
+        }
+        function openAccess(id) {
+          var u = S.users.filter(function (x) {
+            return x.id === id;
+          })[0];
+          if (!u) return;
+          var dlg = U.mk(
+            '<dialog><div class="dlg" style="position:relative"><button class="dlg-x" type="button" aria-label="Tutup" data-x>&times;</button><h3>Atur akses</h3><p class="sub">' +
+              esc(u.nama || u.email) +
+              "<br>Sekarang: " +
+              accessBadge(u) +
+              "</p>" +
+              '<div class="field"><label for="acMode">Tindakan</label><select class="inp" id="acMode"><option value="tambah">Tambah hari akses</option><option value="tanggal">Tentukan tanggal berakhir</option><option value="lifetime">Jadikan Lifetime</option><option value="cabut">Cabut akses</option></select></div>' +
+              '<div class="field" id="acDays" style="margin-top:14px"><label for="acN">Jumlah hari</label><input class="inp" id="acN" type="number" min="1" value="30"><span class="hint">Dihitung dari sisa akses saat ini, atau dari hari ini jika sudah berakhir.</span></div>' +
+              '<div class="field" id="acDate" style="margin-top:14px" hidden><label for="acD">Berakhir pada</label><input class="inp" id="acD" type="date"></div>' +
+              '<div class="dlg-actions"><button class="btn btn-ghost" type="button" data-x>Batal</button><button class="btn btn-primary" type="button" id="acGo">Simpan</button></div></div></dialog>',
+          );
+          document.body.appendChild(dlg);
+          var mode = dlg.querySelector("#acMode");
+          mode.addEventListener("change", function () {
+            dlg.querySelector("#acDays").hidden = mode.value !== "tambah";
+            dlg.querySelector("#acDate").hidden = mode.value !== "tanggal";
+          });
+          dlg.addEventListener("click", function (e) {
+            if (e.target === dlg || e.target.closest("[data-x]")) {
+              dlg.close();
+              return;
+            }
+            if (!e.target.closest("#acGo")) return;
+            var m = mode.value,
+              payload;
+            if (m === "tambah") {
+              var n = parseInt(dlg.querySelector("#acN").value, 10);
+              if (!(n > 0)) {
+                U.toast("Isi jumlah hari yang benar.", "bad");
+                return;
+              }
+              var base = Math.max(
+                Date.now(),
+                u.akses_sampai && !u.lifetime
+                  ? new Date(u.akses_sampai).getTime()
+                  : 0,
+              );
+              payload = {
+                lifetime: false,
+                akses_sampai: new Date(base + n * 86400000).toISOString(),
+              };
+            } else if (m === "tanggal") {
+              var d = dlg.querySelector("#acD").value;
+              if (!d) {
+                U.toast("Pilih tanggalnya dulu.", "bad");
+                return;
+              }
+              payload = {
+                lifetime: false,
+                akses_sampai: new Date(d + "T23:59:59").toISOString(),
+              };
+            } else if (m === "lifetime")
+              payload = { lifetime: true, akses_sampai: null };
+            else payload = { lifetime: false, akses_sampai: null };
+            var go = function () {
+              A.adminSetAccess(u.id, payload).then(function () {
+                U.toast("Akses diperbarui.", "ok");
+                dlg.close();
+                tabPengguna(
+                  document.getElementById("usrQ")
+                    ? document.getElementById("usrQ").value
+                    : "",
+                );
+              }, err);
+            };
+            if (m === "cabut")
+              U.confirm(
+                "Akses " + (u.nama || u.email) + " akan dicabut sekarang juga.",
+                { title: "Cabut akses?", ok: "Cabut", danger: true },
+              ).then(function (y) {
+                if (y) go();
+              });
+            else go();
+          });
+          dlg.addEventListener("close", function () {
+            dlg.remove();
+          });
+          dlg.showModal();
+        }
+
+        /* ---------- paket ---------- */
+        function planEditor(p, isNew) {
+          var life =
+            p.durasi_hari == null && !isNew
+              ? true
+              : p.durasi_hari == null && isNew
+                ? false
+                : false;
+          if (!isNew && p.durasi_hari == null) life = true;
+          var id = esc(p.id || ""),
+            group = A.planGroup(p);
+          return (
+            '<div class="plan-ed" data-plan="' +
+            id +
+            '" data-new="' +
+            (isNew ? 1 : 0) +
+            '">' +
+            '<div class="grid2"><div class="field"><label>Nama paket</label><input class="inp" data-k="nama" value="' +
+            esc(p.nama || "") +
+            '" placeholder="Contoh: Bulanan"></div>' +
+            '<div class="field"><label>Harga (Rp)</label><input class="inp" data-k="harga" type="number" min="0" step="1000" value="' +
+            (p.harga == null ? "" : p.harga) +
+            '" placeholder="39000"></div></div>' +
+            '<div class="field"><label>Fitur yang dibuka</label><select class="inp" data-k="akses_grup">' +
+            '<option value="rencana"' +
+            (group === "rencana" ? " selected" : "") +
+            ">Rencana Rumahku</option>" +
+            '<option value="tools"' +
+            (group === "tools" ? " selected" : "") +
+            ">Financial Tools</option>" +
+            '<option value="semua"' +
+            (group === "semua" ? " selected" : "") +
+            ">Semua fitur (paket lama)</option></select></div>" +
+            '<div class="field"><label>Deskripsi singkat</label><input class="inp" data-k="deskripsi" value="' +
+            esc(p.deskripsi || "") +
+            '"></div>' +
+            '<div class="grid3"><div class="field"><label>Durasi (hari)</label><input class="inp" data-k="durasi" type="number" min="1" value="' +
+            (life ? "" : p.durasi_hari || 30) +
+            '"' +
+            (life ? " disabled" : "") +
+            '><label class="sw" style="margin-top:6px"><input type="checkbox" data-k="life"' +
+            (life ? " checked" : "") +
+            "> Lifetime (tanpa batas waktu)</label></div>" +
+            '<div class="field"><label>Label sorotan</label><input class="inp" data-k="sorotan" value="' +
+            esc(p.sorotan || "") +
+            '" placeholder="Kosongkan jika tidak perlu"></div>' +
+            '<div class="field"><label>Urutan tampil</label><input class="inp" data-k="urutan" type="number" value="' +
+            (p.urutan == null ? 9 : p.urutan) +
+            '"></div></div>' +
+            '<div class="field"><label>Fitur (satu per baris)</label><textarea class="inp" data-k="fitur" rows="5">' +
+            esc((p.fitur || []).join("\n")) +
+            "</textarea></div>" +
+            '<div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap"><label class="sw"><input type="checkbox" data-k="aktif"' +
+            (p.aktif === false ? "" : " checked") +
+            "> Tampilkan di halaman harga</label>" +
+            '<div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" type="button" data-save>Simpan paket</button>' +
+            (isNew
+              ? '<button class="btn btn-ghost btn-sm" type="button" data-discard>Batal</button>'
+              : '<button class="btn btn-danger btn-sm" type="button" data-del>Hapus</button>') +
+            "</div></div></div>"
+          );
+        }
+        function tabPaket() {
+          A.adminPlans()
+            .then(function (plans) {
+              S.plans = plans;
+              content.innerHTML =
+                head(
+                  "Paket harga",
+                  "Atur hak akses, harga, dan durasi setiap paket. Paket baru nonaktif sampai harga dan masa aktif ditentukan.",
+                  '<button class="btn btn-primary btn-sm" type="button" id="addPlan">+ Tambah paket</button>',
+                ) +
+                '<div class="panel" id="planList">' +
+                (plans.length
+                  ? plans
+                      .map(function (p) {
+                        return planEditor(p, false);
+                      })
+                      .join("")
+                  : '<div class="empty">Belum ada paket.</div>') +
+                "</div>";
+            })
+            .catch(err);
+        }
+        function savePlan(box) {
+          function v(k) {
+            return box.querySelector("[data-k=" + k + "]");
+          }
+          var isNew = box.dataset.new === "1",
+            nama = v("nama").value.trim(),
+            harga = parseInt(v("harga").value, 10),
+            life = v("life").checked,
+            dur = parseInt(v("durasi").value, 10);
+          if (!nama) {
+            U.toast("Isi nama paket.", "bad");
+            v("nama").focus();
+            return;
+          }
+          if (!(harga >= 0)) {
+            U.toast("Isi harga dengan angka.", "bad");
+            v("harga").focus();
+            return;
+          }
+          if (v("aktif").checked && !(harga > 0)) {
+            U.toast("Paket aktif harus memiliki harga lebih dari Rp0.", "bad");
+            v("harga").focus();
+            return;
+          }
+          if (!life && !(dur > 0)) {
+            U.toast("Isi durasi dalam hari, atau centang Lifetime.", "bad");
+            v("durasi").focus();
+            return;
+          }
+          var id = box.dataset.plan;
+          if (isNew) {
+            var base = A.slug(nama),
+              n = 1;
+            id = base;
+            var ids = S.plans.map(function (p) {
+              return p.id;
+            });
+            while (ids.indexOf(id) > -1) id = base + "-" + ++n;
+          }
+          var p = {
+            id: id,
+            nama: nama,
+            deskripsi: v("deskripsi").value.trim() || null,
+            harga: harga,
+            durasi_hari: life ? null : dur,
+            akses_grup: A.planGroup({
+              id: id,
+              akses_grup: v("akses_grup").value,
+            }),
+            fitur: v("fitur")
+              .value.split("\n")
+              .map(function (x) {
+                return x.trim();
+              })
+              .filter(Boolean),
+            sorotan: v("sorotan").value.trim() || null,
+            aktif: v("aktif").checked,
+            urutan: parseInt(v("urutan").value, 10) || 0,
+          };
+          A.adminSavePlan(p).then(function () {
+            U.toast('Paket "' + nama + '" disimpan.', "ok");
+            tabPaket();
+          }, err);
+        }
+
+        /* ---------- pengaturan ---------- */
+        function rekRow(r) {
+          return (
+            '<div class="rek"><div class="field"><label>Bank / e-wallet</label><input class="inp" data-r="bank" value="' +
+            esc(r.bank || "") +
+            '" placeholder="BCA"></div><div class="field"><label>Nomor rekening</label><input class="inp" data-r="nomor" inputmode="numeric" value="' +
+            esc(r.nomor || "") +
+            '"></div><div class="field"><label>Atas nama</label><input class="inp" data-r="atas_nama" value="' +
+            esc(r.atas_nama || "") +
+            '"></div><button class="btn btn-danger btn-sm" type="button" data-rmrek aria-label="Hapus rekening">Hapus</button></div>'
+          );
+        }
+        function normWa(v) {
+          var d = String(v || "").replace(/[^0-9]/g, "");
+          if (d.indexOf("0") === 0) d = "62" + d.slice(1);
+          else if (d.indexOf("8") === 0) d = "62" + d;
+          return d;
+        }
+        function tabPengaturan() {
+          A.getSettings()
+            .then(function (s) {
+              S.settings = s;
+              var b = s.bisnis,
+                p = s.pembayaran;
+              content.innerHTML =
+                head(
+                  "Pengaturan",
+                  "Rekening tujuan transfer dan kontak yang tampil ke pembeli.",
+                ) +
+                '<div class="panel"><div class="sect"><h3>Rekening tujuan transfer</h3><div id="rekList">' +
+                (p.rekening.length ? p.rekening : [{}]).map(rekRow).join("") +
+                '</div><div><button class="btn btn-ghost btn-sm" type="button" id="addRek">+ Tambah rekening</button></div>' +
+                '<label class="sw"><input type="checkbox" id="kodeUnik"' +
+                (p.kode_unik ? " checked" : "") +
+                "> Tambahkan kode unik (1–999) ke nominal transfer agar pembayaran mudah dikenali</label>" +
+                '<div class="field"><label for="catBayar">Catatan di halaman pembayaran</label><textarea class="inp" id="catBayar" rows="2">' +
+                esc(p.catatan) +
+                '</textarea></div><div><button class="btn btn-primary" type="button" id="saveBayar">Simpan rekening</button></div></div>' +
+                '<div class="sect"><h3>Kontak &amp; identitas</h3><div class="grid2"><div class="field"><label for="bNama">Nama bisnis</label><input class="inp" id="bNama" value="' +
+                esc(b.nama) +
+                '"></div><div class="field"><label for="bBy">Dikelola oleh</label><input class="inp" id="bBy" value="' +
+                esc(b.by) +
+                '"></div>' +
+                '<div class="field"><label for="bWa">Nomor WhatsApp admin</label><input class="inp" id="bWa" inputmode="tel" value="' +
+                esc(b.whatsapp) +
+                '" placeholder="08123456789"><span class="hint">Tampil sebagai tombol WhatsApp di footer dan halaman pembayaran. Boleh dikosongkan.</span></div><div class="field"><label for="bMail">Email kontak</label><input class="inp" id="bMail" type="email" value="' +
+                esc(b.email) +
+                '"></div></div><div><button class="btn btn-primary" type="button" id="saveBisnis">Simpan kontak</button></div></div></div>';
+            })
+            .catch(err);
+        }
+
+        /* ---------- peristiwa ---------- */
+        function wire() {
+          document.addEventListener("click", function (e) {
+            var t = e.target;
+            var f = t.closest("[data-f]");
+            if (f) {
+              S.filter = f.dataset.f;
+              tabPesanan();
+              return;
+            }
+            var g = t.closest("[data-goto]");
+            if (g) {
+              S.filter = g.dataset.goto;
+              return;
+            }
+            var o = t.closest("[data-open]");
+            if (o && content && content.contains(o)) {
+              if (t.closest("button[data-open]") || !t.closest("button"))
+                openOrder(o.dataset.open);
+              return;
+            }
+            var a = t.closest("[data-access]");
+            if (a) {
+              openAccess(a.dataset.access);
+              return;
+            }
+            if (t.closest("#csvBtn")) {
+              csvOrders();
+              return;
+            }
+            if (t.closest("#addPlan")) {
+              if (!document.querySelector('[data-new="1"]')) {
+                var l = document.getElementById("planList");
+                var empty = l.querySelector(".empty");
+                if (empty) empty.remove();
+                l.insertAdjacentHTML(
+                  "afterbegin",
+                  planEditor({ aktif: true, urutan: S.plans.length + 1 }, true),
+                );
+                l.querySelector("[data-k=nama]").focus();
+              }
+              return;
+            }
+            var box = t.closest(".plan-ed");
+            if (box && t.closest("[data-save]")) {
+              savePlan(box);
+              return;
+            }
+            if (box && t.closest("[data-discard]")) {
+              box.remove();
+              return;
+            }
+            if (box && t.closest("[data-del]")) {
+              var nm = box.querySelector("[data-k=nama]").value;
+              U.confirm(
+                'Paket "' +
+                  nm +
+                  '" akan dihapus dari halaman harga. Pesanan lama tetap tersimpan lengkap.',
+                { title: "Hapus paket?", ok: "Hapus", danger: true },
+              ).then(function (y) {
+                if (y)
+                  A.adminDeletePlan(box.dataset.plan).then(function () {
+                    U.toast("Paket dihapus.", "ok");
+                    tabPaket();
+                  }, err);
+              });
+              return;
+            }
+            if (t.closest("#addRek")) {
+              document
+                .getElementById("rekList")
+                .insertAdjacentHTML("beforeend", rekRow({}));
+              return;
+            }
+            if (t.closest("[data-rmrek]")) {
+              t.closest(".rek").remove();
+              return;
+            }
+            if (t.closest("#saveBayar")) {
+              var rek = [].map
+                .call(document.querySelectorAll("#rekList .rek"), function (r) {
+                  function g(k) {
+                    return r.querySelector("[data-r=" + k + "]").value.trim();
+                  }
+                  return {
+                    bank: g("bank"),
+                    nomor: g("nomor"),
+                    atas_nama: g("atas_nama"),
+                  };
+                })
+                .filter(function (r) {
+                  return r.bank || r.nomor;
+                });
+              for (var i = 0; i < rek.length; i++)
+                if (!rek[i].bank || !rek[i].nomor || !rek[i].atas_nama) {
+                  U.toast(
+                    "Lengkapi bank, nomor, dan nama pemilik pada setiap rekening.",
+                    "bad",
+                  );
+                  return;
+                }
+              A.adminSaveSettings(
+                "pembayaran",
+                {
+                  rekening: rek,
+                  kode_unik: document.getElementById("kodeUnik").checked,
+                  catatan: document.getElementById("catBayar").value.trim(),
+                },
+                false,
+              ).then(function () {
+                U.toast("Rekening disimpan.", "ok");
+              }, err);
+              return;
+            }
+            if (t.closest("#saveBisnis")) {
+              var wa = normWa(document.getElementById("bWa").value);
+              document.getElementById("bWa").value = wa;
+              A.adminSaveSettings(
+                "bisnis",
+                {
+                  nama:
+                    document.getElementById("bNama").value.trim() ||
+                    "KPR PINTAR",
+                  by: document.getElementById("bBy").value.trim(),
+                  whatsapp: wa,
+                  email: document.getElementById("bMail").value.trim(),
+                },
+                true,
+              ).then(function () {
+                U.toast("Kontak disimpan.", "ok");
+              }, err);
+            }
+          });
+          document.addEventListener("input", function (e) {
+            if (e.target.id === "ordQ") {
+              S.q = e.target.value;
+              drawOrders();
+            }
+            if (e.target.id === "usrQ") {
+              clearTimeout(usrTimer);
+              var v = e.target.value;
+              usrTimer = setTimeout(function () {
+                tabPengguna(v);
+              }, 250);
+            }
+          });
+          document.addEventListener("change", function (e) {
+            if (e.target.matches && e.target.matches("[data-k=life]")) {
+              var d = e.target
+                .closest(".plan-ed")
+                .querySelector("[data-k=durasi]");
+              d.disabled = e.target.checked;
+              if (!e.target.checked && !d.value) d.value = 30;
+            }
+          });
+        }
+
+        var TABS = {
+          ringkasan: tabRingkasan,
+          pesanan: tabPesanan,
+          pengguna: function () {
+            tabPengguna("");
+          },
+          paket: tabPaket,
+          pengaturan: tabPengaturan,
+        };
+
+        U.start({ protect: "admin" }).then(function (user) {
+          if (A.blocked) return;
+          if (!user) {
+            root.innerHTML =
+              '<div class="card" style="margin:40px auto;max-width:520px;text-align:center;padding:40px 26px"><h1 style="font-size:1.6rem;margin-bottom:8px">Masuk sebagai admin</h1><p style="margin-bottom:18px">Gunakan email dan password akun yang sudah kamu jadikan admin.</p><button class="btn btn-primary btn-lg" type="button" data-act="login"><span>Masuk dengan Email</span></button></div>';
+            return;
+          }
+          A.refreshUser().then(function () {
+            if (!A.getUser().is_admin) {
+              root.innerHTML =
+                '<div class="card" style="margin:40px auto;max-width:560px;padding:34px"><h1 style="font-size:1.5rem;margin-bottom:8px">Akun ini bukan admin</h1><p style="margin-bottom:12px">Kamu masuk sebagai <b>' +
+                esc(A.getUser().email) +
+                '</b>. Halaman ini hanya untuk admin.</p><p style="font-size:14.5px;color:var(--muted)">Pemilik situs bisa menjadikan akun ini admin lewat SQL Editor Supabase: <code>update public.profiles set is_admin = true where email = \'' +
+                esc(A.getUser().email) +
+                "';</code> Langkah lengkap ada di PANDUAN-PASANG.md." +
+                (A.mode === "demo"
+                  ? ' Pada mode demo, pilih "Masuk sebagai Admin Demo".'
+                  : "") +
+                '</p><p style="margin-top:18px"><a class="btn btn-ghost" href="index.html">Kembali ke situs</a> <button class="btn btn-ghost" type="button" data-act="logout">Keluar</button></p></div>';
+              return;
+            }
+            wire();
+            shell();
+          }, err);
+        });
+      })();
+    </script>
+  </body>
+</html>

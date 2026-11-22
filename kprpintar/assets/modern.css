@@ -1,0 +1,362 @@
+/* KPR PINTAR — visual layer 2026 */
+:root {
+  --modern-bg: #f3f7f9;
+  --modern-ink: #102a43;
+  --modern-brand: #087ca9;
+  --modern-teal: #087d72;
+  --modern-line: #dbe7ec;
+  --modern-shadow: 0 18px 45px -28px rgba(10, 43, 66, .42);
+}
+
+html {
+  scrollbar-color: #b6cbd6 var(--modern-bg);
+}
+
+body {
+  background:
+    radial-gradient(circle at 8% 3%, rgba(45, 157, 190, .07), transparent 24rem),
+    radial-gradient(circle at 92% 12%, rgba(24, 145, 126, .06), transparent 22rem),
+    var(--modern-bg);
+}
+
+.nav {
+  border-bottom: 1px solid rgba(188, 205, 215, .82);
+  background: rgba(255, 255, 255, .88);
+  box-shadow: 0 8px 30px -24px rgba(10, 43, 66, .38);
+}
+.nav .container {
+  min-height: 72px;
+}
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: linear-gradient(145deg, #1492bd, #087493);
+  box-shadow: 0 10px 22px -10px rgba(8, 124, 169, .7);
+}
+.nav-links a {
+  position: relative;
+  border-radius: 10px;
+  transition: color .18s ease, background .18s ease, transform .18s ease;
+}
+.nav-links a:hover {
+  transform: translateY(-1px);
+}
+.nav-auth .btn-primary,
+.nav-auth .btn-ghost {
+  min-height: 42px;
+  border-radius: 11px;
+}
+
+.btn,
+.chip,
+.nav-toggle,
+.primary-tab,
+button {
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
+}
+.btn-primary,
+.btn-aqua {
+  box-shadow: 0 10px 24px -12px rgba(8, 124, 169, .75);
+}
+.btn-primary:hover,
+.btn-aqua:hover,
+.primary-tab:hover,
+.chip:hover,
+button.btn:hover {
+  transform: translateY(-1px);
+}
+
+.card,
+.blk,
+.panel,
+.stat,
+.pay-summary,
+.hk {
+  border-radius: 18px !important;
+  border-color: var(--modern-line) !important;
+  box-shadow: var(--modern-shadow) !important;
+}
+.card,
+.panel,
+.blk {
+  background: rgba(255, 255, 255, .96);
+}
+.inp,
+select.inp,
+textarea.inp,
+.field input,
+.field select,
+.field textarea {
+  border-radius: 12px;
+  border-color: #cadbe4;
+  background: #fbfdfe;
+}
+.inp:focus,
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #1689ae;
+  box-shadow: 0 0 0 4px rgba(20, 143, 185, .12);
+}
+
+.badge {
+  border: 1px solid rgba(16, 42, 67, .05);
+}
+.tbl th {
+  background: #f7fafb;
+}
+.tbl tbody tr {
+  transition: background .15s ease;
+}
+.tbl tbody tr:hover {
+  background: #f8fbfc;
+}
+
+dialog {
+  border: 1px solid rgba(208, 223, 231, .95);
+  box-shadow: 0 35px 90px -24px rgba(7, 38, 59, .55) !important;
+}
+dialog::backdrop {
+  background: rgba(8, 34, 52, .58);
+  backdrop-filter: blur(5px);
+}
+.dlg-x {
+  background: #edf4f7;
+}
+
+.site-foot {
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  background:
+    radial-gradient(circle at 85% 100%, rgba(74, 181, 179, .13), transparent 20rem),
+    #0b2236;
+}
+
+.page-simple {
+  min-height: calc(100vh - 180px);
+  padding: 38px 0 70px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(20, 127, 166, .08), transparent 28rem),
+    transparent;
+}
+.page-simple h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+/* Landing */
+.hero {
+  background:
+    radial-gradient(circle at 86% 20%, rgba(19, 151, 172, .10), transparent 24rem),
+    linear-gradient(180deg, #fff 0%, #fbfdfe 100%);
+}
+.hero h1 {
+  max-width: 680px;
+}
+.hero::before {
+  opacity: .72;
+}
+.sim {
+  border: 1px solid rgba(185, 205, 215, .9) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 28px 58px -34px rgba(10, 43, 66, .58) !important;
+}
+.sec.alt {
+  background:
+    linear-gradient(180deg, rgba(242, 247, 249, .92), rgba(248, 251, 252, .92));
+}
+.cards .card,
+.steps-grid .step,
+.compare .card,
+.price-grid .price,
+.faq details {
+  border-radius: 18px;
+  box-shadow: var(--modern-shadow);
+}
+
+/* Account and payment */
+.acc,
+.pay,
+.adm {
+  animation: view-in .38s ease-out both;
+}
+.access,
+.hist,
+.blk,
+.sum {
+  border: 1px solid var(--modern-line);
+  border-radius: 18px;
+  box-shadow: var(--modern-shadow);
+  background: #fff;
+}
+.amount,
+.bank,
+.drop,
+.prev,
+.det {
+  border-color: #d7e4ea !important;
+  border-radius: 16px !important;
+}
+.amount {
+  background: linear-gradient(135deg, #edf7fb, #f7fbfc) !important;
+}
+.drop {
+  background: #fbfdfe;
+}
+.sum {
+  padding: 20px;
+  background: rgba(255, 255, 255, .96);
+}
+
+/* Admin */
+.adm .side {
+  padding: 8px;
+  border: 1px solid var(--modern-line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .95);
+  box-shadow: var(--modern-shadow);
+}
+.side a {
+  border-radius: 10px;
+  transition: background .16s ease, color .16s ease, transform .16s ease;
+}
+.side a:hover {
+  transform: translateX(2px);
+}
+.panel {
+  overflow: hidden;
+}
+.stat {
+  background: rgba(255, 255, 255, .96);
+}
+
+/* Calculator */
+.app {
+  max-width: 1340px;
+  padding-top: 18px;
+}
+.app .hero {
+  border: 1px solid rgba(173, 199, 209, .38);
+  border-radius: 24px;
+  box-shadow: 0 22px 48px -32px rgba(7, 43, 66, .58);
+  background:
+    radial-gradient(circle at 82% 0, rgba(110, 211, 187, .14), transparent 22rem),
+    linear-gradient(118deg, #0a263a 0%, #123e53 58%, #176b78 100%);
+}
+.app .hero h1 {
+  letter-spacing: -.045em;
+}
+.app .hero-micro,
+.app .btn {
+  backdrop-filter: blur(8px);
+}
+.primary-wrap {
+  margin: 16px 0 24px;
+  padding: 7px;
+  border: 1px solid var(--modern-line);
+  border-radius: 17px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 12px 35px -26px rgba(10, 43, 66, .45);
+}
+.primary-nav {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.primary-tab {
+  border: 0;
+  border-radius: 12px;
+}
+.primary-tab.active {
+  box-shadow: 0 8px 20px -12px rgba(12, 98, 128, .6);
+}
+.app .card,
+.app .cash-card,
+.app .pro-form,
+.app .pr-card,
+.app .hc-hero,
+.app details.card {
+  border: 1px solid var(--modern-line) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 16px 38px -30px rgba(10, 43, 66, .42) !important;
+  background: rgba(255, 255, 255, .98);
+}
+.app .section-lead {
+  padding: 4px 2px 18px;
+}
+.app .stepper {
+  border: 1px solid var(--modern-line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .82);
+  padding: 8px;
+  box-shadow: 0 12px 32px -28px rgba(10, 43, 66, .45);
+}
+.app .st.on {
+  border-radius: 12px;
+}
+.app input,
+.app select,
+.app textarea {
+  border-radius: 11px;
+  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.app input:focus,
+.app select:focus,
+.app textarea:focus {
+  border-color: #1689ae;
+  box-shadow: 0 0 0 4px rgba(20, 143, 185, .11);
+  outline: 0;
+}
+.app .tabs,
+.app .subtabs,
+.app .to-tabs {
+  border-radius: 14px;
+  background: #edf3f6;
+  padding: 5px;
+}
+
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .nav .container {
+    min-height: 64px;
+  }
+  .primary-wrap {
+    overflow-x: auto;
+  }
+  .app {
+    padding-inline: 14px;
+  }
+  .app .hero {
+    padding: 28px 24px;
+  }
+  .page-simple {
+    padding-top: 28px;
+  }
+  .adm .side {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .brand-mark {
+    width: 38px;
+    height: 38px;
+  }
+  .card,
+  .blk,
+  .panel {
+    border-radius: 16px !important;
+  }
+  .page-simple {
+    padding-inline: 0;
+  }
+  .app .hero {
+    border-radius: 20px;
+  }
+  .primary-wrap {
+    margin-inline: -6px;
+  }
+}
