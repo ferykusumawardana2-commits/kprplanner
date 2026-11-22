@@ -653,6 +653,8 @@ create policy "bukti: lihat milik sendiri atau admin" on storage.objects
   using (bucket_id = 'bukti'
          and ((storage.foldername(name))[1] = (select auth.uid())::text or public.is_admin()));
 
+-- Refresh PostgREST's function cache so newly created or updated RPCs are available.
+notify pgrst, 'reload schema';
 
 -- ---------------------------------------------------------------------
 -- 9. JADIKAN DIRIMU ADMIN  (langkah manual, sekali saja)

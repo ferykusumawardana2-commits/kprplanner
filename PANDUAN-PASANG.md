@@ -182,5 +182,6 @@ Jika perlu, minta konsultan hukum memeriksanya sebelum situs dibuka untuk umum. 
 | "Access blocked: app has not completed verification" | Aplikasi Google masih berstatus Testing. Tambahkan akunmu sebagai test user, atau ubah ke In production. |
 | Setelah dijadikan admin masih "Akun ini bukan admin" | Keluar dan masuk lagi, pastikan emailnya persis sama dengan yang dipakai login. |
 | Membeli Rencana Rumahku ikut membuka Financial Tools (atau sebaliknya) | Perbarui file website dan jalankan ulang seluruh `supabase-setup.sql` di proyek Supabase. Pastikan paket Rencana Rumahku memakai ID `rencana-rumahku` dan Financial Tools memakai ID `financial-tools`, lalu coba pesanan baru. |
+| `Could not find the function public.submit_proof(...) in the schema cache` | Jalankan ulang seluruh `supabase-setup.sql` di **SQL Editor** Supabase untuk membuat RPC terbaru. Script meminta PostgREST memuat ulang schema cache; tunggu sebentar, lalu muat ulang halaman pembayaran. |
 | Unggah bukti gagal | File bukan gambar atau terlalu besar. Pakai JPG/PNG/WebP. |
 | "Rekening tujuan belum diatur" di halaman bayar | Isi rekening di **Admin → Pengaturan**. |
