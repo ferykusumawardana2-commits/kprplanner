@@ -1643,7 +1643,8 @@
           <div>
             <h2 id="subscriptionTitle">Pilih paket langganan</h2>
             <p id="subscriptionDescription">
-              Akses dibuka setelah pembayaranmu diverifikasi.
+              Bandingkan paket yang tersedia. Akses dibuka setelah pembayaranmu
+              diverifikasi.
             </p>
           </div>
           <button
@@ -1677,18 +1678,6 @@
           tools: "Paket 2",
           semua: "Paket 3",
         };
-        if (packageLabels[requestedPackage]) {
-          $("subscriptionTitle").textContent =
-            requestedPackage === "semua"
-              ? packageLabels[requestedPackage]
-              : packageLabels[requestedPackage] + " & Upgrade";
-          $("subscriptionDescription").textContent =
-            requestedPackage === "semua"
-              ? "Pilih Paket 3. Akses dibuka setelah pembayaran diverifikasi."
-              : "Pilih " +
-                packageLabels[requestedPackage] +
-                " atau paket lebih tinggi. Harga upgrade dihitung otomatis jika kamu memiliki paket aktif.";
-        }
 
         /* ---------- simulasi cepat: kapan DP cukup ---------- */
         var S = { harga: 250e6, awal: 20e6, bln: 3.6e6, g: 4, dp: 0.2 };
@@ -2028,16 +2017,8 @@
           Promise.all([RCApi.getPlans(), orderRequest]).then(
             function (result) {
               var plans = result[0],
-                orders = result[1],
-                packageRanks = { rencana: 1, tools: 2, semua: 3 },
-                minimumRank = packageRanks[requestedPackage] || 0;
-              var visiblePlans = plans.filter(function (p) {
-                return (
-                  !minimumRank ||
-                  (packageRanks[RCApi.planGroup(p)] || 0) >= minimumRank
-                );
-              });
-              if (!visiblePlans.length) {
+                orders = result[1];
+              if (!plans.length) {
                 $("subscriptionPlans").innerHTML =
                   '<div class="plans-state">' +
                   (packageLabels[requestedPackage]
@@ -2048,7 +2029,7 @@
                 return;
               }
               $("subscriptionPlans").innerHTML =
-                visiblePlans
+                plans
                   .map(function (p) {
                     return planCard(p, user, orders);
                   })
