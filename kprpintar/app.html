@@ -8,7 +8,7 @@
       name="description"
       content="Simulator KPR gratis: bandingkan ambil KPR cepat atau menabung dulu, dengan rekomendasi dinamis."
     />
-    <title>KPR Planner Pro by AF Creative Media — Simulator KPR</title>
+    <title>KPR Planner by AF Creative Media — Simulator KPR</title>
     <style>
       :root {
         --night: #10273d;
@@ -244,6 +244,7 @@
         width: 100%;
       }
       .primary-tab {
+        position: relative;
         border: none;
         background: transparent;
         border-radius: 11px;
@@ -257,6 +258,30 @@
         color: #63798b;
         flex: 1;
         transition: 0.18s;
+      }
+      .primary-tab.package-locked {
+        cursor: not-allowed;
+      }
+      .package-lock {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        display: grid;
+        place-items: center;
+        width: 18px;
+        height: 18px;
+        border: 0;
+        background: transparent;
+        color: #a7542b;
+        pointer-events: none;
+      }
+      .package-lock svg {
+        display: block;
+        width: 11px;
+        height: 11px;
+      }
+      .primary-tab.active .package-lock {
+        color: #fff;
       }
       .primary-tab .nav-num {
         display: inline-grid;
@@ -3010,7 +3035,7 @@
       }
     </style>
     <style id="pro-tools">
-      /* ===== KPR Planner Pro: alat analisis (Health Check, Pelunasan Dipercepat, Take Over) ===== */
+      /* ===== KPR Planner: alat analisis (Health Check, Pelunasan Dipercepat, Take Over) ===== */
       /* --- navigasi utama: 2 menu lama + 3 alat analisis --- */
       .primary-nav {
         align-items: stretch;
@@ -5048,7 +5073,7 @@
         }
       }
 
-      /* ================= Catatan Kas: penataan mengikuti Ruang Finansial (tema KPR Planner Pro tetap) ================= */
+      /* ================= Catatan Kas: penataan mengikuti Ruang Finansial (tema KPR Planner tetap) ================= */
       #lgRoot h2 {
         margin: 0;
       }
@@ -5573,7 +5598,7 @@
         display: none;
       }
 
-      /* ===== KPR Planner Pro: kerangka menu kiri, alur penggunaan, kartu langkah berikutnya ===== */
+      /* ===== KPR Planner: kerangka menu kiri, alur penggunaan, kartu langkah berikutnya ===== */
       .primary-cap {
         display: none;
       }
@@ -6033,6 +6058,81 @@
         border-radius: 14px;
         background: #fff;
       }
+      .debt-entry-dialog {
+        width: min(820px, calc(100vw - 28px));
+        max-width: none;
+        max-height: calc(100vh - 28px);
+        padding: 0;
+        overflow: visible;
+        border: 0;
+        background: transparent;
+        box-shadow: none !important;
+      }
+      .debt-entry-dialog::backdrop {
+        background: rgba(8, 34, 52, 0.56);
+        backdrop-filter: blur(4px);
+      }
+      .debt-entry-card {
+        max-height: calc(100vh - 28px);
+        overflow: auto;
+        padding: 22px;
+        border: 1px solid #dce6ee;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 28px 75px rgba(8, 34, 52, 0.35);
+      }
+      .debt-entry-head,
+      .debt-entry-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .debt-entry-head {
+        margin-bottom: 12px;
+      }
+      .debt-entry-head h2 {
+        margin: 0;
+        color: #17364a;
+        font-size: 19px;
+      }
+      .debt-entry-close {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border: 1px solid #dce6ee;
+        border-radius: 11px;
+        background: #f5f9fa;
+        color: #37576b;
+        font-size: 23px;
+      }
+      .debt-entry-dialog .dl-item {
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+      .debt-entry-dialog .dl-item > .pr-x {
+        display: none;
+      }
+      .debt-entry-actions {
+        justify-content: flex-end;
+        margin-top: 16px;
+      }
+      .debt-entry-actions button {
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid #c9dbe5;
+        border-radius: 10px;
+        background: #fff;
+        color: #1d5262;
+        font-weight: 800;
+      }
+      .debt-entry-actions [data-debt-dialog-action="save"] {
+        border-color: #176777;
+        background: #176777;
+        color: #fff;
+      }
       .dl-item > .pr-x {
         display: block;
         margin: 2px 0 4px auto;
@@ -6062,6 +6162,16 @@
       }
       .fx-actions {
         margin-top: 8px;
+      }
+      @media (max-width: 650px) {
+        .debt-entry-dialog {
+          width: calc(100vw - 20px);
+          max-height: calc(100vh - 20px);
+        }
+        .debt-entry-card {
+          max-height: calc(100vh - 20px);
+          padding: 15px;
+        }
       }
       .fx-note {
         margin: 10px 0 0;
@@ -6752,7 +6862,7 @@
         }
       }
 
-      /* ===== KPR Planner Pro: Ringkasan dan Arus Kas (memakai token tema aplikasi, tanpa palet baru) ===== */
+      /* ===== KPR Planner: Ringkasan dan Arus Kas (memakai token tema aplikasi, tanpa palet baru) ===== */
       #homeView,
       #cashView {
         min-width: 0;
@@ -8179,7 +8289,6 @@
         }
       }
     </style>
-  </head>
     <style id="rc-gate-css">
       html.rc-locked body > *:not(#rcGate):not(#rcBar) {
         display: none !important;
@@ -8241,7 +8350,10 @@
         border-radius: 12px;
         background: #fff;
         color: #0f2a43;
-        font: 700 15px "Plus Jakarta Sans", system-ui, sans-serif;
+        font:
+          700 15px "Plus Jakarta Sans",
+          system-ui,
+          sans-serif;
         text-decoration: none;
         cursor: pointer;
       }
@@ -8251,7 +8363,7 @@
         color: #fff;
       }
       #rcGate .g-btn:hover {
-        filter: brightness(.97);
+        filter: brightness(0.97);
       }
       #rcGate .g-err {
         margin-top: 12px;
@@ -8267,7 +8379,10 @@
       #rcBar {
         background: #0f2a43;
         color: #cfe0ec;
-        font: 13.5px "Plus Jakarta Sans", system-ui, sans-serif;
+        font:
+          13.5px "Plus Jakarta Sans",
+          system-ui,
+          sans-serif;
       }
       #rcBar .b-in {
         display: flex;
@@ -8289,7 +8404,10 @@
         border: 0;
         padding: 0;
         background: none;
-        font: 700 13.5px "Plus Jakarta Sans", system-ui, sans-serif;
+        font:
+          700 13.5px "Plus Jakarta Sans",
+          system-ui,
+          sans-serif;
         text-decoration: underline;
         text-underline-offset: 3px;
         cursor: pointer;
@@ -8309,279 +8427,468 @@
         }
       }
     </style>
-    <style id="dashboard-polish">
-      body {
-        background:
-          radial-gradient(ellipse at 8% 0, #e5eff3 0, transparent 34%),
-          #f4f7f9;
-      }
-      .app {
-        max-width: 1580px;
-        padding: 24px 28px 56px;
-      }
-      .hero {
-        min-height: 194px;
-        align-items: center;
-        border: 1px solid #ffffff24;
-        box-shadow: 0 22px 50px -30px #102f4559;
-      }
-      .hero h1 {
-        letter-spacing: -1px;
-      }
-      .primary-wrap {
-        border-color: #e2eaf0;
-        box-shadow: 0 16px 38px -28px #173f5552;
-      }
-      .primary-tab {
-        border: 1px solid transparent;
-        transition:
-          background 0.18s ease,
-          color 0.18s ease,
-          box-shadow 0.18s ease,
-          border-color 0.18s ease;
-      }
-      .primary-tab.active {
-        box-shadow: 0 8px 18px -12px #0f59645c;
-      }
-      .content-view {
-        padding-top: 24px;
-      }
-      .section-lead {
-        margin-bottom: 18px;
-      }
-      .section-lead h2 {
-        letter-spacing: -0.8px;
-      }
-      .input-card,
-      .card,
-      .panel {
-        border-color: #e1e9ee;
-        box-shadow: 0 12px 32px -25px #193c5147;
-      }
-      .input-card {
-        border-radius: 20px;
-      }
-      .input-card-head {
-        background: linear-gradient(120deg, #fff 10%, #f5faf9 100%);
-      }
-      .input-grid {
-        gap: 16px;
-      }
-      .field input,
-      .field select {
-        background: #fbfcfd;
-        border-color: #d3dfe7;
-      }
-      .field input:focus,
-      .field input:focus-visible,
-      .field select:focus-visible {
-        outline: 3px solid #d6f0eb;
-        border-color: #1b9585;
-        background: #fff;
-      }
-      .stepper {
-        border-color: #dfe8ed;
-        box-shadow: 0 8px 24px -22px #193c5147;
-      }
-      .fill-note {
-        border-radius: 12px;
-        background: #eff7f8;
-        padding: 12px 14px;
-      }
-      .data-bottom {
-        box-shadow: 0 14px 28px -22px #102f4580;
-      }
-      .tabs {
-        position: sticky;
-        top: 10px;
-        z-index: 3;
-        backdrop-filter: blur(12px);
-      }
-      .stat,
-      .metric,
-      .mini {
-        border-radius: 15px;
-      }
-      .return-btn,
-      .action-primary,
-      .btn,
-      .tab,
-      .primary-tab {
-        -webkit-tap-highlight-color: transparent;
-      }
-      @media (min-width: 1000px) {
+    <style id="kpr-planner-workspace-theme">
+      @media screen {
+        :root {
+          --ink: #19392f;
+          --brand: #3e7654;
+          --brand-d: #25553d;
+          --aqua: #6b9659;
+          --amber: #e5ad61;
+          --body: #f5f6ef;
+          --paper: #fff;
+          --line: #dce5d9;
+          --muted: #748278;
+        }
+        body {
+          background:
+            radial-gradient(
+              circle at 8% 2%,
+              rgba(161, 190, 122, 0.16),
+              transparent 25rem
+            ),
+            radial-gradient(
+              circle at 96% 14%,
+              rgba(225, 173, 97, 0.1),
+              transparent 22rem
+            ),
+            #f5f6ef;
+          color: var(--ink);
+        }
         .app {
-          grid-template-columns: 248px minmax(0, 1fr);
-          column-gap: 24px;
-        }
-        .app > .primary-wrap {
-          top: 18px;
-          margin-top: -14px;
-          padding: 13px 10px;
-        }
-        .app > .content-view {
-          padding-top: 22px;
-        }
-      }
-      @media (max-width: 999px) {
-        .app {
-          padding: 18px 20px 42px;
-        }
-        .primary-wrap {
-          margin: -12px 16px 0;
-        }
-      }
-      @media (max-width: 650px) {
-        .app {
-          padding: 10px 12px 32px;
+          max-width: 1440px;
+          padding: 22px clamp(14px, 3vw, 36px) 56px;
         }
         .hero {
-          min-height: 0;
-          border-radius: 18px;
+          min-height: 100px;
+          padding: 19px 24px;
+          align-items: center;
+          border: 1px solid #ffffff2a;
+          border-radius: 24px;
+          background:
+            radial-gradient(
+              circle at 84% 8%,
+              rgba(212, 233, 135, 0.2),
+              transparent 20rem
+            ),
+            linear-gradient(122deg, #173b33 0%, #285943 60%, #49764c 100%);
+          box-shadow: 0 24px 48px -30px #173b3377;
         }
-        .hero p {
-          display: block;
+        .hero:before {
+          opacity: 0.32;
+        }
+        .hero:after {
+          background: #d4e98725;
+          filter: blur(35px);
+        }
+        .brandline {
+          gap: 12px;
+          color: #fff;
+          font-size: 14px;
+          letter-spacing: 0;
+        }
+        .brand-emblem {
+          width: 44px;
+          height: 44px;
+          border-radius: 14px;
+          background: #ffffff19;
+          border-color: #ffffff3d;
+        }
+        .brand-name {
+          display: flex;
+          flex-direction: column;
+          line-height: 1.25;
+        }
+        .brand-name b {
+          font-size: 17px;
+          letter-spacing: -0.3px;
+        }
+        .brand-name small {
+          color: #d4e987;
+          font-size: 11px;
+        }
+        .hero-side {
+          min-width: 0;
+          flex-direction: row;
+          align-items: center;
+          gap: 12px;
+        }
+        .hero-micro {
+          width: auto;
+          min-width: 185px;
+          padding: 11px 14px;
+          border-color: #ffffff35;
+          border-radius: 14px;
+          background: #ffffff12;
+        }
+        .hero-micro span {
+          color: #d4e987;
+          font-size: 10px;
+          letter-spacing: 0.6px;
+        }
+        .hero-micro b {
+          margin-top: 5px;
           font-size: 12px;
-          line-height: 1.55;
+        }
+        .hero-micro .micro-dots i {
+          background: #d4e987;
+        }
+        .hero-actions {
+          gap: 7px;
+        }
+        .hero .btn {
+          padding: 9px 11px;
+          border-radius: 11px;
+          backdrop-filter: blur(8px);
+        }
+        .hero-actions #export {
+          color: #19392f;
+          border-color: #d4e987;
+          background: #d4e987;
+        }
+        .hero-actions #export:hover {
+          background: #e0f39e;
         }
         .primary-wrap {
-          margin: -8px 8px 0;
+          margin: 14px 0 23px;
+          padding: 7px;
+          border-color: #dce5d9;
+          border-radius: 18px;
+          background: rgba(255, 255, 255, 0.94);
+          box-shadow: 0 14px 34px -26px #244b3b55;
+        }
+        .primary-nav {
+          gap: 4px;
+        }
+        .primary-tab {
+          border-radius: 12px;
+          color: #63766a;
+        }
+        .primary-tab:hover:not(.active) {
+          color: #25553d;
+          background: #f0f5eb;
+        }
+        .primary-tab .nav-ic {
+          background: #eef4e8;
+          color: #4b7c50;
+        }
+        .primary-tab.active {
+          background: linear-gradient(115deg, #285943, #3e7654);
+          box-shadow: 0 9px 20px -12px #285943aa;
+        }
+        .primary-tab.active .nav-ic {
+          background: #ffffff24;
+          color: #fff;
+        }
+        .primary-tab:focus-visible,
+        .btn:focus-visible,
+        .action-primary:focus-visible,
+        .hm-btn:focus-visible,
+        .hm-link:focus-visible {
+          outline-color: #8eae65;
         }
         .content-view {
-          padding-top: 18px;
+          padding-top: 17px;
         }
         .section-lead {
-          margin-bottom: 12px;
+          margin-bottom: 18px;
         }
-        .fill-note {
-          padding: 10px 11px;
+        .section-lead h2 {
+          color: #19392f;
+          font-weight: 850;
+          letter-spacing: -0.8px;
         }
-        .tabs {
-          top: 6px;
+        .section-lead p {
+          color: #68796e;
+        }
+        .card,
+        .panel,
+        .input-card,
+        .cash-card,
+        .pro-form,
+        .pr-card,
+        .hc-hero {
+          border-color: #dce5d9;
+          border-radius: 20px;
+          box-shadow: 0 16px 38px -30px #254b3855;
+        }
+        .card h2,
+        .card h3,
+        .input-heading h3 {
+          color: #19392f;
+        }
+        .input-card-head {
+          background: linear-gradient(125deg, #fff, #f3f6ed);
+          border-bottom-color: #e5ebdf;
+        }
+        .input-icon {
+          background: #e9f1df;
+          color: #3e7654;
+        }
+        .group-2 .input-icon {
+          background: #e5f1e7;
+          color: #427957;
+        }
+        .group-3 .input-icon {
+          background: #fff1db;
+          color: #a36a2d;
+        }
+        .section-kicker {
+          color: #3e7654;
+        }
+        .field input,
+        .field select,
+        .field textarea,
+        .inp {
+          border-color: #cbd9c8;
+          border-radius: 11px;
+          background: #fbfcf8;
+        }
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus,
+        .inp:focus {
+          border-color: #6b9659;
+          box-shadow: 0 0 0 4px #6b965922;
+        }
+        .tabs,
+        .subtabs,
+        .to-tabs {
+          background: #edf2e8;
+          border-color: #dce5d9;
+        }
+        .tab.active {
+          background: #3e7654;
+          box-shadow: 0 8px 18px -11px #285943aa;
+        }
+        .action-primary,
+        .btn-apply,
+        .hm-btn.pri {
+          border-color: #3e7654;
+          background: #3e7654;
+          color: #fff;
+          box-shadow: 0 10px 22px -13px #285943bb;
+        }
+        .action-primary:hover,
+        .btn-apply:hover,
+        .hm-btn.pri:hover {
+          background: #25553d;
+        }
+        .metric,
+        .preview-box {
+          border-color: #dce5d9;
+          background: #f8faf5;
+        }
+        .stat:first-child,
+        .data-bottom {
+          background: linear-gradient(135deg, #173b33, #285943);
+          border-color: #173b33;
+        }
+        .hm-hero.t-good {
+          border-color: #285943;
+          background: linear-gradient(125deg, #173b33, #285943);
+          color: #fff;
+        }
+        .hm-hero.t-good h3,
+        .hm-hero.t-good .hm-dpbox .n,
+        .hm-hero.t-good .hm-checks b {
+          color: #19392f;
+        }
+        .hm-hero.t-good .hm-main h3 {
+          color: #fff;
+        }
+        .hm-hero.t-good .hm-tag,
+        .hm-hero.t-good .hm-sub {
+          color: #e0eadf;
+        }
+        .hm-hero.t-good .hm-dpbox {
+          border-color: #ffffffb8;
+          background: #ffffffed;
+        }
+        .hm-hero.t-good .hm-checks .ck {
+          border-color: #ffffff4a;
+          background: #ffffffee;
+        }
+        .hm-hero.t-warn {
+          border-color: #ead9b9;
+          background: linear-gradient(125deg, #fffdf6, #f7eedb);
+        }
+        .hm-hero.t-bad {
+          border-color: #edc7bc;
+          background: linear-gradient(125deg, #fffaf7, #f7e4dc);
+        }
+        .hm-scn {
+          background: #edf2e8;
+        }
+        .hm-scn-b.on {
+          color: #25553d;
+          box-shadow: 0 2px 9px #254b3822;
+        }
+        .hm-scn-b.on small,
+        .hm-link {
+          color: #25553d;
+        }
+        .hm-sc {
+          border-color: #dce5d9;
+          border-radius: 18px;
+          box-shadow: 0 12px 28px -24px #254b3855;
+        }
+        .hm-sc.sel {
+          border-color: #6b9659;
+          box-shadow: 0 0 0 3px #6b96591f;
+        }
+        .hm-pill {
+          background: #edf4e9;
+          color: #25553d;
+        }
+        .hm-chip {
+          background: #e8f0df;
+          color: #25553d;
+        }
+        .hm-chip.sb {
+          background: #fff1db;
+          color: #80551e;
+        }
+        .hm-banner:not(.bad):not(.good) {
+          border-left-color: #6b9659;
+          background: #edf4e9;
+          color: #355d3d;
+        }
+        .hm-key i.g {
+          background: #6b9659;
+        }
+        .hm-key i.r {
+          background: #bd6858;
+        }
+        .hm-bar span {
+          background: linear-gradient(90deg, #6b9659, #9bbd61);
+        }
+        .hm-steps li.done {
+          border-color: #d4e4cc;
+          background: #f2f7ed;
+        }
+        .hm-steps li.done .hm-sn {
+          background: #6b9659;
+        }
+        .footer {
+          color: #78857a;
+        }
+        #rcGate {
+          background:
+            radial-gradient(circle at 50% 0, #e6eedb, transparent 25rem),
+            #f5f6ef;
+          color: #19392f;
+        }
+        #rcGate .g-card {
+          border-color: #dce5d9;
+          border-radius: 22px;
+          box-shadow: 0 30px 60px -40px #254b3866;
+        }
+        #rcGate .g-mark,
+        #rcGate .g-btn.main {
+          background: linear-gradient(145deg, #5c9161, #285943);
+        }
+        #rcGate .g-btn {
+          border-color: #c9d7c8;
+          color: #19392f;
+        }
+        #rcGate .g-small {
+          color: #748278;
+        }
+        #rcBar {
+          background: #173b33;
         }
       }
-      @media (prefers-reduced-motion: reduce) {
+      @media screen and (max-width: 900px) {
+        .app {
+          padding-inline: 16px;
+        }
+        .hero {
+          align-items: flex-start;
+        }
+        .hero-side {
+          flex-direction: column;
+          align-items: flex-end;
+        }
+      }
+      @media screen and (max-width: 650px) {
+        .app {
+          padding: 12px 12px 36px;
+        }
+        .hero {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 13px;
+          min-height: 0;
+          padding: 16px;
+          border-radius: 19px;
+        }
+        .hero-side {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-start;
+          margin-top: 0;
+        }
+        .hero-micro {
+          display: none;
+        }
+        .hero-actions {
+          justify-content: flex-start;
+          gap: 6px;
+        }
+        .hero .btn {
+          padding: 9px 10px;
+          font-size: 11px;
+        }
+        .primary-wrap {
+          margin: 11px 0 18px;
+          padding: 5px;
+          border-radius: 16px;
+        }
+        .primary-nav {
+          gap: 4px;
+        }
         .primary-tab {
-          transition: none;
+          min-height: 60px;
+          padding: 8px 3px;
+          border-radius: 10px;
+          font-size: 11px;
+        }
+        .primary-tab .pt-l {
+          text-align: center;
+        }
+        .content-view {
+          padding-top: 12px;
+        }
+        .section-lead h2 {
+          font-size: 22px;
+        }
+        .card,
+        .input-card,
+        .panel {
+          border-radius: 17px;
+        }
+        .hm-hero {
+          padding: 18px 16px;
         }
       }
     </style>
-    <style id="feature-lock-css">
-      .package-locked {
-        position: relative;
-        padding-right: 30px !important;
-        background: #eaf0f3aa;
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-      }
-      .package-lock {
-        position: absolute;
-        top: 5px;
-        right: 6px;
-        display: grid;
-        place-items: center;
-        width: 21px;
-        height: 21px;
-        border-radius: 7px;
-        background: #fff;
-        color: #176f79;
-        box-shadow: 0 2px 8px #18374b1f;
-      }
-      .package-lock svg {
-        width: 14px;
-        height: 14px;
-      }
-      .primary-tab.active .package-lock {
-        background: #ffffff2b;
-        color: #fff;
-      }
-      .feature-lock-dialog {
-        width: min(440px, calc(100% - 32px));
-        max-width: none;
-        padding: 0;
-        border: 1px solid #dce6ee;
-        border-radius: 20px;
-        color: #18374b;
-        box-shadow: 0 28px 80px #102f4552;
-      }
-      .feature-lock-dialog::backdrop {
-        background: #0a233ba8;
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-      }
-      .feature-lock-body {
-        padding: 28px;
-      }
-      .feature-lock-mark {
-        display: grid;
-        place-items: center;
-        width: 52px;
-        height: 52px;
-        margin-bottom: 17px;
-        border-radius: 16px;
-        background: #e8f4f1;
-        color: #167e73;
-        box-shadow: 0 8px 20px #167e731c;
-      }
-      .feature-lock-mark svg {
-        width: 27px;
-        height: 27px;
-      }
-      .feature-lock-body h2 {
-        margin: 0 0 9px;
-        font-size: 21px;
-        letter-spacing: -0.5px;
-      }
-      .feature-lock-body p {
-        margin: 0;
-        color: #63798a;
-        font-size: 14px;
-        line-height: 1.65;
-      }
-      .feature-lock-actions {
-        display: flex;
-        gap: 9px;
-        margin-top: 22px;
-      }
-      .feature-lock-actions button,
-      .feature-lock-actions a {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 44px;
-        padding: 0 15px;
-        border: 1px solid #d4e0e7;
-        border-radius: 11px;
-        background: #fff;
-        color: #365366;
-        font: inherit;
-        font-size: 13px;
-        font-weight: 750;
-        text-decoration: none;
-        cursor: pointer;
-      }
-      .feature-lock-actions a {
-        flex: 1;
-        border-color: #176f79;
-        background: #176f79;
-        color: #fff;
-      }
-      .feature-lock-actions a:hover {
-        background: #105b67;
-      }
-      @media (max-width: 520px) {
-        .feature-lock-body {
-          padding: 23px;
-        }
-      }
-    </style>
+    <meta name="robots" content="noindex" />
   </head>
   <body>
     <div id="rcBar" hidden></div>
     <div id="rcGate" role="status" aria-live="polite">
       <div class="g-card">
         <div class="g-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />
             <path d="M9 21v-8h6v8" />
           </svg>
@@ -8636,17 +8943,9 @@
                 <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />
                 <path d="M9 21v-8h6v8" /></svg></span
             ><span class="brand-name"
-              ><b>KPR Planner Pro</b><small>by AF Creative Media</small></span
+              ><b>KPR Planner</b><small>by AF Creative Media</small></span
             >
           </div>
-          <h1>
-            Rencana rumah lebih jelas.<br /><span>Keputusan lebih tenang.</span>
-          </h1>
-          <p>
-            Bandingkan ambil KPR lebih cepat atau menabung dulu. Isi datamu
-            sekali, lalu pelajari hasilnya dalam satu dashboard yang mudah
-            dibaca.
-          </p>
         </div>
         <div class="hero-side">
           <div class="hero-micro">
@@ -8736,6 +9035,7 @@
             ><span class="pt-l" data-desc="Bandingkan dua strategi"
               >Informasi Simulasi</span
             ></button
+          ><span class="primary-cap" aria-hidden="true">Pantau</span
           ><button
             class="primary-tab pt-main"
             data-view="cash"
@@ -8789,7 +9089,6 @@
             ><span class="pt-l" data-desc="Skor kesiapan KPR"
               >Health Check</span
             ></button
-          ><span class="primary-cap" aria-hidden="true">Pantau</span
           ><button
             class="primary-tab pt-main"
             data-view="ledger"
@@ -8948,8 +9247,8 @@
             aria-selected="false"
             tabindex="-1"
           >
-            <span class="dt-full">Utang &amp; Pinjol</span
-            ><span class="dt-short">Utang</span
+            <span class="dt-full">Hutang &amp; Cicilan</span
+            ><span class="dt-short">Hutang</span
             ><i class="dt-st" aria-hidden="true"></i></button
           ><button
             type="button"
@@ -8968,7 +9267,7 @@
         </nav>
         <p class="dv-hint" id="fillNote">
           Bagian <b>KPR &amp; DP</b>, <b>Sumber Dana DP</b>, <b>Penghasilan</b>,
-          dan <b>Pengeluaran</b> wajib terisi. <b>Utang &amp; Pinjol</b> dan
+          dan <b>Pengeluaran</b> wajib terisi. <b>Hutang &amp; Cicilan</b> dan
           <b>Asumsi</b> boleh dilewati. Kalau sebuah angka memang
           <b>tidak ada</b> atau <b>belum tahu</b>, isi <b>“-”</b> supaya
           tercatat sengaja, bukan terlewat.
@@ -9429,7 +9728,6 @@
                   </div>
                 </section>
                 <div id="fxIncome" class="fx-block fx-cards"></div>
-                <section class="dfc hc-extra" id="hcFormStab"></section>
               </div>
               <div
                 class="dpanel hidden"
@@ -9461,7 +9759,7 @@
                         type="number"
                       /><small class="tiny"
                         >Biaya hidup rutin keluarga setiap bulan. Cicilan yang
-                        kamu catat di <b>Utang &amp; Pinjol</b> dihitung
+                        kamu catat di <b>Hutang &amp; Cicilan</b> dihitung
                         terpisah, jadi jangan dimasukkan dua kali.</small
                       ></label
                     ><label class="field"
@@ -9512,18 +9810,20 @@
                   aria-live="polite"
                 ></div>
                 <section class="dfc">
-                  <h2>Utang dan pinjol</h2>
+                  <h2>Hutang dan cicilan lain</h2>
                   <p class="dfc-d">
-                    Catat cicilan utang dan pinjol yang masih berjalan. Untuk
-                    tiap strategi kamu bisa memilih <b>tetap dicicil</b> atau
-                    <b>dilunasi</b>. Cicilan di daftar ini dihitung
-                    <b>di luar</b> Pengeluaran bulanan.
+                    Catat hutang atau cicilan lain yang masih berjalan, apa pun
+                    jenisnya. Untuk tiap strategi kamu bisa memilih
+                    <b>tetap dicicil</b> (dibayar dari penghasilan) atau
+                    <b>dilunasi</b> (dari kas pada bulan yang kamu pilih).
+                    Cicilan di daftar ini dihitung <b>di luar</b> Pengeluaran
+                    bulanan, dan tidak terkait dengan pinjaman DP.
                   </p>
                   <div id="fxDebts" class="fx-block"></div>
                   <div class="dfg dfg-one dfg-debt">
                     <label class="field"
                       ><span
-                        >Cicilan utang yang sudah termasuk di Pengeluaran
+                        >Cicilan hutang yang sudah termasuk di Pengeluaran
                         bulanan (opsional)</span
                       ><input
                         id="debt"
@@ -9886,7 +10186,7 @@
         </section>
         <section class="tabcontent hidden" id="panduan">
           <div class="card">
-            <h2>Cara memakai KPR Planner Pro</h2>
+            <h2>Cara memakai KPR Planner</h2>
             <ol class="sol-list">
               <li>
                 <b>Ringkasan.</b> Halaman pertama berisi kesimpulan rencanamu
@@ -9898,7 +10198,7 @@
               <li>
                 <b>Isian Data.</b> Ada enam bagian: <b>KPR &amp; DP</b>,
                 <b>Sumber Dana DP</b>, <b>Penghasilan</b>, <b>Pengeluaran</b>,
-                <b>Utang &amp; Pinjol</b>, dan <b>Asumsi</b>. Empat bagian
+                <b>Hutang &amp; Cicilan</b>, dan <b>Asumsi</b>. Empat bagian
                 pertama wajib; dua terakhir boleh dilewati. Kalau memang
                 <b>tidak ada</b> atau <b>belum tahu</b>, isi <b>“-”</b> supaya
                 tercatat sengaja, bukan terlewat. Tanyakan ke bank atau
@@ -9920,19 +10220,21 @@
                 siap pakai untuk AI.
               </li>
               <li>
-                <b>Arus Kas.</b> Menu sendiri berisi jadwal uang masuk dan
-                keluar bulan demi bulan, rincian utang dan pinjol, serta
+                <b>Arus Kas di menu Pantau.</b> Berisi jadwal uang masuk dan
+                keluar bulan demi bulan, rincian hutang dan cicilan, serta
                 gambaran jangka panjang sampai cicilan terakhir. Bulan defisit,
                 bulan KPR, dan bulan THR diberi tanda.
               </li>
               <li>
-                <b>Health Check.</b> Skor kesiapan 0–100 ada di paling atas,
-                lengkap dengan risiko dan langkah perbaikan. Skor muncul setelah
-                <b>dana darurat</b> (bagian Pengeluaran) dan
-                <b>stabilitas penghasilan</b> (bagian Penghasilan) diisi.
+                <b>Health Check di menu Pantau.</b> Skor kesiapan 0–100 ada di
+                paling atas,
+                lengkap dengan risiko dan langkah perbaikan. Skor muncul jika
+                Isian Data valid serta <b>dana darurat</b> dan cicilan hutang
+                diisi.
               </li>
               <li>
-                <b>Catatan Kas.</b> Catat uang masuk dan keluar setiap bulan
+                <b>Catatan Kas di menu Pantau.</b> Catat uang masuk dan keluar
+                setiap bulan
                 supaya kamu tahu seberapa dekat dengan target dari Isian Data.
                 Suami dan istri bisa mencatat di perangkat masing-masing lalu
                 menyatukannya lewat berkas cadangan.
@@ -9976,7 +10278,7 @@
           penawaran pinjaman, nasihat investasi, atau kepastian persetujuan KPR.
           Gunakan angka bank/developer yang berlaku saat kamu benar-benar
           mengajukan.<span class="credit"
-            >© 2026 KPR Planner Pro by AF Creative Media</span
+            >© 2026 KPR Planner by AF Creative Media</span
           >
         </footer>
       </section>
@@ -9991,7 +10293,7 @@
           penawaran pinjaman, nasihat investasi, atau kepastian persetujuan KPR.
           Gunakan angka bank/developer yang berlaku saat kamu benar-benar
           mengajukan.<span class="credit"
-            >© 2026 KPR Planner Pro by AF Creative Media</span
+            >© 2026 KPR Planner by AF Creative Media</span
           >
         </footer>
       </section>
@@ -10007,7 +10309,7 @@
           penawaran pinjaman, nasihat investasi, atau kepastian persetujuan KPR.
           Gunakan angka bank/developer yang berlaku saat kamu benar-benar
           mengajukan.<span class="credit"
-            >© 2026 KPR Planner Pro by AF Creative Media</span
+            >© 2026 KPR Planner by AF Creative Media</span
           >
         </footer>
       </section>
@@ -10025,7 +10327,7 @@
           penawaran pinjaman, nasihat investasi, atau kepastian persetujuan KPR.
           Gunakan angka bank/developer yang berlaku saat kamu benar-benar
           mengajukan.<span class="credit"
-            >© 2026 KPR Planner Pro by AF Creative Media</span
+            >© 2026 KPR Planner by AF Creative Media</span
           >
         </footer>
       </section>
@@ -10040,7 +10342,7 @@
           penawaran pinjaman, nasihat investasi, atau kepastian persetujuan KPR.
           Gunakan angka bank/developer yang berlaku saat kamu benar-benar
           mengajukan.<span class="credit"
-            >© 2026 KPR Planner Pro by AF Creative Media</span
+            >© 2026 KPR Planner by AF Creative Media</span
           >
         </footer>
       </section>
@@ -10069,7 +10371,7 @@
           penawaran pinjaman, nasihat investasi, atau kepastian persetujuan KPR.
           Gunakan angka bank/developer yang berlaku saat kamu benar-benar
           mengajukan.<span class="credit"
-            >© 2026 KPR Planner Pro by AF Creative Media</span
+            >© 2026 KPR Planner by AF Creative Media</span
           >
         </footer>
       </section>
@@ -10094,13 +10396,13 @@
           penawaran pinjaman, nasihat investasi, atau kepastian persetujuan KPR.
           Gunakan angka bank/developer yang berlaku saat kamu benar-benar
           mengajukan.<span class="credit"
-            >© 2026 KPR Planner Pro by AF Creative Media</span
+            >© 2026 KPR Planner by AF Creative Media</span
           >
         </footer>
       </section>
     </div>
     <script id="rc-engine">
-      /* ============ RCEngine: mesin hitung murni (tanpa DOM) untuk KPR Planner Pro ============
+      /* ============ RCEngine: mesin hitung murni (tanpa DOM) untuk KPR Planner ============
    Semua fungsi murni. Satuan: rupiah, bulan, bunga dalam % per tahun.
    Konvensi: bulan ke-k (k = 1, 2, ...) = cicilan ke-k dari pinjaman yang dimodelkan. */
       (function (root, factory) {
@@ -10742,7 +11044,7 @@
             if (s >= b[0]) return { name: b[1], tone: b[2] };
           return { name: "Berisiko", tone: "bad" };
         };
-        /* input: {income,living (total pengeluaran bulanan, sudah termasuk cicilan utang),debt,inst,instFirst,after,upfront,available,gap,principal,emergencyFund,stability,dpRatio,months,dateText} */
+        /* input: {income,living (total pengeluaran bulanan, sudah termasuk cicilan hutang),debt,inst,instFirst,after,upfront,available,gap,principal,emergencyFund,dpRatio,months,dateText} */
         E.health = function (i) {
           const W = E.HC.weights,
             missing = [];
@@ -10750,9 +11052,7 @@
             if (!fin(i[k])) missing.push({ id: k, label });
           };
           need("emergencyFund", "Dana darurat yang dimiliki");
-          need("debt", "Cicilan utang lain");
-          if (!["tetap", "campuran", "tidak"].includes(i.stability))
-            missing.push({ id: "stability", label: "Stabilitas penghasilan" });
+          need("debt", "Cicilan hutang lain");
           for (const k of [
             "income",
             "living",
@@ -10766,7 +11066,7 @@
             missing.push({
               id: "debt",
               label:
-                "Cicilan utang tidak boleh melebihi “Pengeluaran bulanan” di Isian Data",
+                "Cicilan hutang tidak boleh melebihi “Pengeluaran bulanan” di Isian Data",
               invalid: true,
             });
           if (!(i.income > 0))
@@ -10795,13 +11095,6 @@
           };
           let rk = 100;
           const rkNotes = [];
-          if (i.stability === "campuran") {
-            rk -= 15;
-            rkNotes.push("Penghasilan campuran (−15)");
-          } else if (i.stability === "tidak") {
-            rk -= 40;
-            rkNotes.push("Penghasilan tidak tetap (−40)");
-          }
           if (m.floatRatio >= 1.25) {
             rk -= 20;
             rkNotes.push("Cicilan naik ≥25% dari tahun 1 (−20)");
@@ -10826,7 +11119,7 @@
             },
             {
               id: "dsr",
-              name: "Debt Service Ratio (cicilan utang + KPR)",
+              name: "Debt Service Ratio (cicilan hutang + KPR)",
               value: m.dsr,
               valueText: pf(m.dsr),
               rule: "≤30% = 100; 35% = 80; 40% = 55; 45% = 30; ≥55% = 0",
@@ -10862,7 +11155,7 @@
             },
             {
               id: "risk",
-              name: "Risiko struktur (penghasilan, kenaikan cicilan, DP)",
+              name: "Risiko struktur (kenaikan cicilan, DP)",
               value: sc.risk,
               valueText: rkNotes.length
                 ? rkNotes.join("; ")
@@ -10963,7 +11256,7 @@
               "high",
               "dsr",
               "DSR tinggi",
-              "Total cicilan utang + KPR " +
+              "Total cicilan hutang + KPR " +
                 pf(m.dsr) +
                 " dari penghasilan; banyak bank menilai DSR sekitar 35–40% sebagai batas atas (kebijakan tiap bank berbeda).",
             );
@@ -10972,7 +11265,7 @@
               "medium",
               "dsr",
               "DSR di atas 35%",
-              "Total cicilan utang + KPR " + pf(m.dsr) + " dari penghasilan.",
+              "Total cicilan hutang + KPR " + pf(m.dsr) + " dari penghasilan.",
             );
           if (m.floatRatio >= 1.1)
             R(
@@ -10986,20 +11279,6 @@
                 " → " +
                 rpf(i.inst) +
                 ").",
-            );
-          if (i.stability === "tidak")
-            R(
-              "high",
-              "income",
-              "Penghasilan tidak tetap",
-              "Penghasilan yang naik-turun membuat cicilan tetap lebih berisiko; siapkan dana darurat lebih besar.",
-            );
-          else if (i.stability === "campuran")
-            R(
-              "medium",
-              "income",
-              "Sebagian penghasilan tidak tetap",
-              "Pastikan cicilan bisa dibayar hanya dari bagian penghasilan yang tetap.",
             );
           if (fin(i.dpRatio) && i.dpRatio < 10)
             R(
@@ -11041,14 +11320,14 @@
                   " (misalnya lewat DP lebih besar atau harga rumah lebih rendah), atau naikkan penghasilan.";
               }
             } else if (c.id === "dsr") {
-              t = "Turunkan beban cicilan utang";
+              t = "Turunkan beban cicilan hutang";
               d = "DSR " + pf(m.dsr) + ". Targetkan ≤35% = " + rpf(tgt35) + ".";
               const ex = i.debt + i.inst - tgt35;
               if (ex > 0)
                 d +=
-                  " Kurangi total cicilan utang + KPR minimal " +
+                  " Kurangi total cicilan hutang + KPR minimal " +
                   rpf(ex) +
-                  "/bulan, misalnya dengan melunasi utang konsumtif dulu.";
+                  "/bulan, misalnya dengan melunasi hutang konsumtif dulu.";
             } else if (c.id === "cash") {
               t = "Perbesar sisa uang bulanan";
               d =
@@ -11203,7 +11482,7 @@
       });
     </script>
     <script id="rc-flow">
-      /* ============ RCFlow: mesin arus kas bulanan KPR Planner Pro (murni, tanpa DOM) ============
+      /* ============ RCFlow: mesin arus kas bulanan KPR Planner (murni, tanpa DOM) ============
    Satu fungsi simulate() menghasilkan satu objek baris untuk SETIAP bulan. Ringkasan, Informasi Simulasi,
    Arus Kas, grafik, dan peringatan semuanya membaca baris yang sama.
    Pengodean bulan di seluruh aplikasi: ym = tahun*12 + (bulan-1).
@@ -11326,9 +11605,10 @@
           ],
         ];
         const FUND_SRC = [
-          ["koperasi", "Koperasi"],
           ["bank", "Bank"],
-          ["pribadi", "Pinjaman pribadi"],
+          ["koperasi", "Koperasi"],
+          ["pribadi", "Keluarga atau teman"],
+          ["kantor", "Kantor atau tempat kerja"],
           ["lain", "Lainnya"],
         ];
         const DEBT_KINDS = [
@@ -11342,7 +11622,7 @@
         ];
         const srcName = (k) => {
           const f = FUND_SRC.find((x) => x[0] === k);
-          return f ? f[1].toLowerCase() : "koperasi";
+          return f ? f[1].toLowerCase() : "lainnya";
         };
         Object.assign(F, {
           METHODS,
@@ -11389,14 +11669,12 @@
           method: "anuitas",
           disbYM: start,
           firstYM: start,
-          reserveMode: "auto",
-          reserveAmt: 0,
         });
         F.blankFund = (start) => ({
           mode: "saving",
           save: 0,
           saveFromYM: null,
-          src: "koperasi",
+          src: "lain",
           extras: [],
           loan: F.blankLoan(start),
         });
@@ -11523,7 +11801,7 @@
               : "saving";
             t.save = money(f.save);
             t.saveFromYM = ymOr(f.saveFromYM, null);
-            t.src = FUND_SRC.some((m) => m[0] === f.src) ? f.src : "koperasi";
+            t.src = FUND_SRC.some((m) => m[0] === f.src) ? f.src : "lain";
             t.extras = (Array.isArray(f.extras) ? f.extras : [])
               .slice(0, 60)
               .map((x) =>
@@ -11546,10 +11824,6 @@
               : "anuitas";
             l.disbYM = ymOr(L.disbYM, start);
             l.firstYM = ymOr(L.firstYM, start);
-            l.reserveMode = ["auto", "none", "custom"].includes(L.reserveMode)
-              ? L.reserveMode
-              : "auto";
-            l.reserveAmt = money(L.reserveAmt);
           }
           d.set.growth = clampN(S.growth, -50, 100, 0);
           d.set.infl = clampN(S.infl, -50, 100, 0);
@@ -11599,7 +11873,7 @@
               );
           });
           X.debts.forEach((d, i) => {
-            const n = "Utang " + (d.name || i + 1);
+            const n = "Hutang " + (d.name || i + 1);
             bad(d.installment, "Cicilan " + n);
             if (d.payoff !== null) bad(d.payoff, "Angka pelunasan " + n);
             if (isNum(d.startYM) && isNum(d.endYM) && d.endYM < d.startYM)
@@ -11637,8 +11911,6 @@
                 e.push(
                   "Bulan cair dan bulan cicilan pertama " + N + " harus diisi.",
                 );
-              if (L.reserveMode === "custom")
-                bad(L.reserveAmt, "Nominal cadangan " + N);
             }
           }
           if (!(S.ratioLimit >= 5 && S.ratioLimit <= 100))
@@ -11661,7 +11933,7 @@
           return e;
         };
 
-        /* ---------------- jadwal utang ---------------- */
+        /* ---------------- jadwal hutang ---------------- */
         F.debtLabels = (list) => {
           const lab = (k) => {
             const f = DEBT_KINDS.find((x) => x[0] === k);
@@ -11756,7 +12028,7 @@
           const coopLastYM = useLoan ? C.firstYM + C.tenor - 1 : st - 1;
           const disbYM = C.disbYM,
             firstYM = C.firstYM;
-          /* utang: kebijakan per strategi */
+          /* hutang: kebijakan per strategi */
           const DLs = F.debtLabels(X.debts),
             debts = [],
             payoffAt = new Map();
@@ -11775,17 +12047,20 @@
               estimated: false,
               total: schedTotal(sm),
               fromCash: false,
+              noDate: false,
             };
             let payAt = null;
             if (pol === "lunas") {
-              if (useLoan) payAt = d.payoffYM !== null ? d.payoffYM : disbYM;
-              else if (d.payoffYM !== null) {
+              if (d.payoffYM !== null) {
                 payAt = Math.max(d.payoffYM, st);
                 info.fromCash = true;
               } else if (sm.size === 0 && d.payoff !== null) {
                 payAt = st;
                 info.fromCash = true;
-              } else pol = "cicil";
+              } else {
+                pol = "cicil";
+                info.noDate = true;
+              }
               info.pol = pol;
             }
             if (pol === "lunas") {
@@ -11809,24 +12084,12 @@
             }
             debts.push(info);
           });
-          const valid = !useLoan || loanAmt >= needPayoff - 0.5;
-          const available = useLoan && valid ? loanAmt - needPayoff : 0;
-          let capacity = 0;
-          for (const di of debts)
-            if (di.pol === "cicil")
-              for (const [kk, v] of di.sm) if (kk >= disbYM) capacity += v;
-          let reserve = 0;
-          if (useLoan && capacity > 0 && valid) {
-            if (C.reserveMode === "none") reserve = 0;
-            else if (C.reserveMode === "custom")
-              reserve = Math.min(
-                available,
-                capacity,
-                Math.max(0, C.reserveAmt),
-              );
-            else reserve = Math.min(available, capacity);
-          }
-          const loanDp = available - reserve;
+          /* pinjaman DP adalah sumber dana DP biasa: seluruh pencairan masuk dana DP. Hutang lain berjalan sendiri (dicicil dari penghasilan atau dilunasi dari kas pada bulan pilihanmu). */
+          const valid = true,
+            available = useLoan ? loanAmt : 0,
+            capacity = 0,
+            reserve = 0,
+            loanDp = available;
           /* loop bulanan */
           const free0 = have;
           let cash = free0,
@@ -11896,8 +12159,7 @@
             const kk = y - firstYM;
             let loanPay = 0;
             if (useLoan && kk >= 0 && kk < C.tenor) loanPay = coopInst;
-            let debtTotal = 0,
-              reserveEligible = 0;
+            let debtTotal = 0;
             const debtLines = [];
             for (const di of debts) {
               let a = di.sm.get(y) || 0;
@@ -11905,18 +12167,10 @@
               if (a > 0) {
                 debtLines.push([di.name, a]);
                 debtTotal += a;
-                if (di.pol === "cicil" && useLoan && y >= disbYM)
-                  reserveEligible += a;
               }
             }
-            if (useLoan && y === disbYM) {
-              resRem += reserve;
-              earmark += reserve;
-            }
-            const reserveUsed = Math.min(reserveEligible, resRem);
-            resRem -= reserveUsed;
-            earmark -= reserveUsed;
-            const debtFromIncome = debtTotal - reserveUsed;
+            const reserveUsed = 0,
+              debtFromIncome = debtTotal;
             lines.out.unshift(["Pengeluaran bulanan", living]);
             if (variable > 0)
               lines.out.splice(1, 0, ["Pengeluaran variabel", variable]);
@@ -11925,14 +12179,8 @@
                 "Kontrakan / sewa",
                 rent,
               ]);
-            if (loanPay > 0)
-              lines.out.push(["Cicilan pinjaman DP (" + SRC + ")", loanPay]);
+            if (loanPay > 0) lines.out.push(["Cicilan pinjaman DP", loanPay]);
             for (const [n, a] of debtLines) lines.out.push(["Cicilan " + n, a]);
-            if (reserveUsed > 0)
-              lines.out.push([
-                "(dikurangi) dibayar dari cadangan pinjaman",
-                -reserveUsed,
-              ]);
             if (kprPay > 0) lines.out.push(["Cicilan KPR", kprPay]);
             const outflow =
               living +
@@ -11964,9 +12212,8 @@
                 extraIn += x.amount;
                 extraNow.push(x);
               }
-            const reservedNow = useLoan && y === disbYM ? reserve : 0;
-            if (loanIn > 0)
-              lines.fin.push(["Pencairan pinjaman " + SRC, loanIn]);
+            const reservedNow = 0;
+            if (loanIn > 0) lines.fin.push(["Pencairan pinjaman DP", loanIn]);
             if (saveIn > 0) lines.fin.push(["Setoran tabungan DP", saveIn]);
             for (const x of extraNow)
               lines.fin.push([
@@ -11975,8 +12222,6 @@
               ]);
             for (const p of payoffList)
               lines.fin.push(["Pelunasan " + p.name, -p.amount]);
-            if (reserveUsed > 0)
-              lines.fin.push(["Cicilan dibayar dari cadangan", -reserveUsed]);
             let dpPaid = 0;
             const isKpr = i === kprIdx;
             const sameIn = loanIn - payoffOut - reservedNow + extraIn;
@@ -12084,12 +12329,12 @@
             events.push({
               ym: disbYM,
               kind: "cair",
-              text: "Pencairan pinjaman " + SRC + " " + rp(loanAmt),
+              text: "Pencairan pinjaman DP " + rp(loanAmt),
             });
             events.push({
               ym: firstYM,
               kind: "cicil",
-              text: "Cicilan " + SRC + " pertama " + rp(coopInst),
+              text: "Cicilan pinjaman DP pertama " + rp(coopInst),
             });
           }
           for (const [yy, list] of payoffAt)
@@ -12156,7 +12401,7 @@
             events.push({
               ym: coopLastYM,
               kind: "selesai",
-              text: "Cicilan " + SRC + " berakhir",
+              text: "Cicilan pinjaman DP berakhir",
             });
           if (kprEndYM !== null)
             events.push({
@@ -12165,7 +12410,7 @@
               text: "Cicilan KPR selesai",
             });
           events.sort((a, b) => a.ym - b.ym);
-          /* rencana tiap utang */
+          /* rencana tiap hutang */
           const debtPlan = debts.map((di) => {
             const keys = [...di.sm.keys()].sort((a, b) => a - b);
             let before = 0,
@@ -12173,13 +12418,13 @@
             for (const [kk2, v] of di.sm) {
               if (di.pol === "lunas") {
                 if (kk2 < di.payYM) before += v;
-              } else if (kk2 < (useLoan ? disbYM : Infinity)) before += v;
-              else after += v;
+              } else before += v;
             }
             return {
               id: di.id,
               name: di.name,
               pol: di.pol,
+              noDate: di.noDate,
               payYM: di.payYM,
               payoff: di.payoff,
               estimated: di.estimated,
@@ -12193,12 +12438,9 @@
             };
           });
           const debtFlow = {
-            reserveUsed: sum(rows.map((x) => x.reserveUsed)),
             fromIncome: sum(rows.map((x) => x.debtFromIncome)),
             payoffTotal: needPayoff,
-            shortfallLoan: useLoan ? Math.max(0, needPayoff - loanAmt) : 0,
-            payoffFromCash: useLoan ? 0 : needPayoff,
-            reserveMode: C.reserveMode,
+            payoffFromCash: needPayoff,
           };
           /* rincian dana DP (harus cocok dengan ownDP) */
           const dpItems = [];
@@ -12214,21 +12456,9 @@
           if (acc.extra > 0)
             dpItems.push(["Dana lain yang masuk", acc.extra, "dana"]);
           if (acc.loan > 0)
-            dpItems.push(["Pencairan pinjaman " + SRC, acc.loan, "pinjaman"]);
+            dpItems.push(["Pencairan pinjaman DP", acc.loan, "pinjaman"]);
           if (acc.payoff > 0)
-            dpItems.push([
-              useLoan
-                ? "Pelunasan utang dari pencairan"
-                : "Pelunasan utang dari kas",
-              -acc.payoff,
-              "utang",
-            ]);
-          if (acc.reserve > 0)
-            dpItems.push([
-              "Cadangan cicilan utang (bukan dana DP)",
-              -acc.reserve,
-              "cadangan",
-            ]);
+            dpItems.push(["Pelunasan hutang dari kas", -acc.payoff, "utang"]);
           const dpBreak = {
             items: dpItems,
             total: sum(dpItems.map((x) => x[1])),
@@ -12237,7 +12467,7 @@
               surplus: acc.surplus,
               save: acc.save,
               extra: acc.extra,
-              loanNet: acc.loan - acc.payoff - acc.reserve,
+              loanNet: acc.loan - acc.payoff,
             },
           };
           /* kapan DP cukup bila KPR ditunda (simulasi pembanding: KPR jauh di depan) */
@@ -12359,7 +12589,7 @@
           );
           return r.rows[0].routineSurplusExKpr;
         };
-        /* cicilan utang tercatat (di luar Pengeluaran bulanan) yang berjalan pada bulan ym, sebelum pelunasan */
+        /* cicilan hutang tercatat (di luar Pengeluaran bulanan) yang berjalan pada bulan ym, sebelum pelunasan */
         F.debtNow = (X, ym) => {
           let t = 0;
           for (const d of X.debts) {
@@ -12491,19 +12721,6 @@
               body,
               tab: tab || "view:cash",
             });
-          if (!r.valid)
-            add(
-              "penting",
-              "Plafon belum cukup untuk melunasi utang yang dipilih",
-              "Pelunasan yang direncanakan membutuhkan " +
-                rp(r.needPayoff) +
-                ", sedangkan plafon " +
-                rp(r.loan) +
-                " (kurang " +
-                rp(r.needPayoff - r.loan) +
-                "). Selisih ini dibayar dari arus kas bulan pelunasan, sehingga angka ikut berubah. Naikkan plafon atau ubah pilihan pelunasan.",
-              "data:sumberdp",
-            );
           const dr = r.deficitRows;
           if (dr.length) {
             const worst = dr.reduce((a, b) => (b.surplus < a.surplus ? b : a)),
@@ -12534,7 +12751,7 @@
                   rp(pc[0].surplus) +
                   ", saldo kas " +
                   rp(pc[0].cash) +
-                  "). Saldo kas tidak otomatis boleh dipakai menutup defisit: sebagian bisa merupakan dana cadangan utang atau dana DP yang disiapkan.",
+                  "). Saldo kas tidak otomatis boleh dipakai menutup defisit: sebagian bisa merupakan dana DP yang sedang disiapkan.",
                 "view:cash",
               );
           }
@@ -12555,7 +12772,7 @@
               "Beban cicilan saat KPR mulai " +
                 Math.round(r.ratioKpr * 100) +
                 "% dari penghasilan",
-              "Dihitung dari cicilan KPR tertinggi, cicilan pinjaman DP, dan utang yang dibayar dari gaji (" +
+              "Dihitung dari cicilan KPR tertinggi, cicilan pinjaman DP, dan hutang yang dibayar dari gaji (" +
                 rp(r.obligKpr) +
                 ") dibagi penghasilan rutin bulanan (" +
                 rp(r.baseIncome) +
@@ -12567,9 +12784,7 @@
           if (r.loan > 0 && r.baseIncome > 0 && r.coop / r.baseIncome >= 0.25)
             add(
               "perhatian",
-              "Cicilan " +
-                r.srcName +
-                " memakai " +
+              "Cicilan pinjaman DP memakai " +
                 Math.round((r.coop / r.baseIncome) * 100) +
                 "% dari penghasilan rutin",
               "Cicilan pinjaman DP " +
@@ -12580,7 +12795,7 @@
           if (r.debtsAtKpr.length)
             add(
               "perhatian",
-              "Cicilan utang masih berjalan saat KPR dimulai",
+              "Cicilan hutang masih berjalan saat KPR dimulai",
               r.debtsAtKpr
                 .map(
                   (d) =>
@@ -12600,7 +12815,7 @@
           if (r.coopAtKprMonths > 0 && r.loan > 0)
             add(
               "info",
-              "Cicilan " + r.srcName + " masih berjalan bersamaan dengan KPR",
+              "Cicilan pinjaman DP masih berjalan bersamaan dengan KPR",
               "Sisa " +
                 r.coopAtKprMonths +
                 " bulan setelah KPR dimulai (berakhir " +
@@ -12620,7 +12835,7 @@
                 rp(r.shortfall) +
                 " pada " +
                 lbl(r.kprYM) +
-                ". Dana cadangan pembayaran utang tidak dihitung sebagai dana DP." +
+                ". " +
                 (r.earliestKprYM !== null && r.earliestKprYM > r.kprYM
                   ? " Dengan sumber dana strategi ini, DP baru cukup untuk KPR mulai " +
                     lbl(r.earliestKprYM) +
@@ -12637,9 +12852,7 @@
               "perhatian",
               "Pinjaman DP cair setelah KPR dimulai",
               tag +
-                ": pinjaman " +
-                r.srcName +
-                " " +
+                ": pinjaman DP " +
                 rp(r.loan) +
                 " cair " +
                 lbl(r.disbYM) +
@@ -12649,17 +12862,21 @@
               "data:sumberdp",
             );
           for (const p of r.payoffs)
-            if (p.fromCash)
+            add(
+              "perhatian",
+              p.name + " dilunasi dari kas pada " + lbl(p.payYM),
+              tag +
+                ": pelunasan " +
+                rp(p.amount) +
+                " diambil dari saldo kas dan mengurangi dana DP. Atur bulan pelunasan atau pilih Tetap dicicil di Hutang & Cicilan.",
+              "data:utang",
+            );
+          for (const d of r.debtPlan)
+            if (d.noDate)
               add(
                 "perhatian",
-                p.name +
-                  " dilunasi dari kas pada " +
-                  lbl(p.payYM) +
-                  " (tanpa pinjaman)",
-                tag +
-                  " tidak memakai pinjaman, jadi pelunasan " +
-                  rp(p.amount) +
-                  " diambil dari saldo kas dan mengurangi dana DP. Atur tanggal pelunasan atau pilih Tetap dicicil di Utang & Pinjol.",
+                d.name + " dipilih Lunasi, tetapi bulan pelunasan belum diisi",
+                "Hutang ini dihitung tetap dicicil sampai bulan pelunasan diisi di Hutang & Cicilan.",
                 "data:utang",
               );
           for (const x of r.extraList)
@@ -12713,7 +12930,7 @@
                 "penting",
                 d.name +
                   " dipilih tetap dicicil, tetapi jadwal cicilannya kosong",
-                "Tanpa cicilan dan bulan berakhir, aplikasi tidak menghitung pembayaran apa pun untuk utang ini, sehingga dana DP dan sisa uang terlihat lebih besar dari yang sebenarnya. Isi cicilan dan bulan berakhir, atau tandai Lunas bila sudah selesai.",
+                "Tanpa cicilan dan bulan berakhir, aplikasi tidak menghitung pembayaran apa pun untuk hutang ini, sehingga dana DP dan sisa uang terlihat lebih besar dari yang sebenarnya. Isi cicilan dan bulan berakhir, atau tandai Lunas bila sudah selesai.",
                 "data:utang",
               );
           for (const p of r.payoffs)
@@ -12734,13 +12951,6 @@
                   " dihitung dari sisa cicilan. Bila penyedia pinjaman memberi angka pelunasan yang berbeda karena bunga atau denda, ketik angkanya di kolom Angka pelunasan.",
                 "data:utang",
               );
-          if (r.reserveLeft > 1)
-            add(
-              "info",
-              "Cadangan pinjaman tersisa " + rp(r.reserveLeft),
-              "Dana ini masih dicadangkan untuk cicilan utang setelah periode simulasi dan tidak dihitung sebagai dana DP.",
-              "view:cash",
-            );
           if (r.loan > 0 && r.firstYM < r.disbYM)
             add(
               "info",
@@ -12792,7 +13002,7 @@
                   lbl(d.endYM) +
                   ", sebelum awal simulasi (" +
                   lbl(ref) +
-                  "). Aplikasi tidak melunaskan utang otomatis. Bila sudah selesai, tandai Lunas; bila belum, perbarui bulan berakhirnya.",
+                  "). Aplikasi tidak melunaskan hutang otomatis. Bila sudah selesai, tandai Lunas; bila belum, perbarui bulan berakhirnya.",
                 tab: "data:utang",
               });
             }
@@ -12822,13 +13032,7 @@
           if (r.useLoan && r.loan > 0)
             parts.push({
               k: "pinjaman",
-              t:
-                "Pinjaman " +
-                r.srcName +
-                " " +
-                rp(r.loan) +
-                " cair " +
-                lbl(r.disbYM),
+              t: "Pinjaman DP " + rp(r.loan) + " cair " + lbl(r.disbYM),
             });
           const ex = sum(r.extraList.map((x) => x.amount));
           if (ex > 0) parts.push({ k: "dana", t: "Dana lain " + rp(ex) });
@@ -12839,7 +13043,7 @@
                 ? "DP sedang ditabung"
                 : r.mode === "combo"
                   ? "Kombinasi sumber dana"
-                  : "DP dari pinjaman " + r.srcName;
+                  : "DP dari pinjaman";
           return {
             title,
             parts,
@@ -13018,7 +13222,7 @@
       });
     </script>
     <script id="rc-ledger">
-      /* ============ RCLedger: mesin Catatan Kas (murni, tanpa DOM) untuk KPR Planner Pro ============
+      /* ============ RCLedger: mesin Catatan Kas (murni, tanpa DOM) untuk KPR Planner ============
    Semua fungsi murni. Tanggal "YYYY-MM-DD", bulan "YYYY-MM", uang bilangan bulat rupiah.
    Waktu sekarang selalu dioper lewat parameter (today = "YYYY-MM-DD"), tidak pernah dibaca dari jam. */
       (function (root, factory) {
@@ -13122,13 +13326,13 @@
           },
           {
             id: "koperasi",
-            name: "Cicilan koperasi",
+            name: "Cicilan pinjaman",
             kind: "keluar",
             group: "surplus",
           },
           {
             id: "utang",
-            name: "Cicilan utang dan pinjol",
+            name: "Cicilan hutang lain",
             kind: "keluar",
             group: "surplus",
           },
@@ -13147,7 +13351,7 @@
           },
           {
             id: "pelunasan",
-            name: "Pelunasan utang sekaligus",
+            name: "Pelunasan hutang sekaligus",
             kind: "keluar",
             group: "pelunasan",
           },
@@ -13182,7 +13386,7 @@
         const OUT_LABEL = {
           transfer: "Transfer antar pasangan",
           pinjaman: "Pencairan pinjaman",
-          pelunasan: "Pelunasan utang sekaligus",
+          pelunasan: "Pelunasan hutang sekaligus",
           tabungan: "Setoran tabungan",
           dp: "Pembayaran DP dan biaya awal KPR",
         };
@@ -14475,7 +14679,7 @@
             if (w)
               w.textContent =
                 Number.isFinite(dv) && Number.isFinite(lv) && dv > lv + 0.5
-                  ? "Cicilan utang lebih besar dari pengeluaran bulanan. Periksa lagi angkanya."
+                  ? "Cicilan hutang lebih besar dari pengeluaran bulanan. Periksa lagi angkanya."
                   : "";
           }
           const ids = ["income", "living", "rent"];
@@ -14974,7 +15178,7 @@
             `- Penghasilan bersih keluarga per bulan: ${rp(s.income)}`,
             `- Pengeluaran bulanan (biaya hidup + cicilan lain): ${rp(s.living)}`,
             ...(Number.isFinite(s.debt)
-              ? [`- Dari jumlah itu, cicilan utang per bulan: ${rp(s.debt)}`]
+              ? [`- Dari jumlah itu, cicilan hutang per bulan: ${rp(s.debt)}`]
               : []),
             `- Kontrakan sebelum KPR: ${rp(s.rent)}`,
             `- Potensi sisa uang yang bisa ditabung otomatis per bulan: ${rp(s.saveMonth)}`,
@@ -15973,7 +16177,7 @@
           sumberdp: "Sumber Dana DP",
           penghasilan: "Penghasilan",
           pengeluaran: "Pengeluaran",
-          utang: "Utang & Pinjol",
+          hutang: "Hutang & Cicilan",
           asumsi: "Asumsi",
         };
         const DTAB_REQ = {
@@ -15981,7 +16185,7 @@
           sumberdp: true,
           penghasilan: true,
           pengeluaran: true,
-          utang: false,
+          hutang: false,
           asumsi: false,
         };
         let dtab = "kpr";
@@ -16128,7 +16332,6 @@
         const TAB_EXTRA = {
           debt: "utang",
           hcEmerg: "pengeluaran",
-          hcStab: "penghasilan",
           extraB: "sumberdp",
           saveMonth: "pengeluaran",
         };
@@ -16146,7 +16349,7 @@
             )
           )
             return "sumberdp";
-          if (/Utang|utang|pelunasan/.test(m)) return "utang";
+          if (/Hutang|hutang|pelunasan/.test(m)) return "utang";
           if (/Penghasilan|THR|penerimaan/.test(m)) return "penghasilan";
           if (/Pengeluaran|terjadwal/.test(m)) return "pengeluaran";
           if (
@@ -16543,7 +16746,7 @@
         }
 
         /* Migrasi data tersimpan versi lama: "biaya hidup" + "pengeluaran / cicilan lain" digabung ke living;
-   "cicilan utang" Health Check (penyimpanan alat) dipindah ke Isian Data. Hanya berjalan sekali (data < v6). */
+   "cicilan hutang" Health Check (penyimpanan alat) dipindah ke Isian Data. Hanya berjalan sekali (data < v6). */
         function migNum(v) {
           if (v == null) return NaN;
           if (typeof v === "number") return Number.isFinite(v) ? v : NaN;
@@ -16668,14 +16871,13 @@
           if (typeof arusInit === "function") arusInit();
         }
 
-        /* ================= KPR Planner Pro Pro-tools: Health Check, Pelunasan Dipercepat, Take Over ================= */
+        /* ================= KPR Planner: alat lanjutan: Health Check, Pelunasan Dipercepat, Take Over ================= */
         const E = RCEngine;
         const SC_NAME = { A: "Ambil Cepat", B: "Menabung Dulu" };
         const EXT_KEY = "rumah_cerdas_ext_v1";
         const PRO_LABELS = {
           hcEmerg: "Dana darurat yang dimiliki",
-          debt: "Cicilan utang per bulan (diisi di Isian Data)",
-          hcStab: "Stabilitas penghasilan",
+          debt: "Cicilan hutang per bulan (diisi di Isian Data)",
           ppBal: "Sisa pokok pinjaman",
           ppMonths: "Sisa tenor",
           ppRate: "Bunga saat ini",
@@ -16783,7 +16985,6 @@
           "ppFreq",
           "ppInt",
           "toMethod",
-          "hcStab",
           "hcScn",
           "ppPfS",
           "toPfS",
@@ -16885,7 +17086,6 @@
             "toMode",
             "ppFreq",
             "toMethod",
-            "hcStab",
             "hcScn",
             "ppPfS",
             "toPfS",
@@ -17200,10 +17400,10 @@
         const hcLink = (tab, txt) =>
           `<button type="button" class="hc-link" data-goto-sim="${tab}">${txt}</button>`;
         const HC_COL = {
-          success: "#2fa575",
-          teal: "#3aa391",
-          warning: "#e0a43b",
-          bad: "#d9604f",
+          success: "#6b9659",
+          teal: "#3e7654",
+          warning: "#e5ad61",
+          bad: "#bd6858",
         };
         function gaugeSvg(score, col) {
           const cx = 110,
@@ -17246,7 +17446,6 @@
             gap: z.gap,
             principal: z.principal,
             emergencyFund: readNum("hcEmerg"),
-            stability: $("hcStab").value,
             dpRatio: d.dpRatio,
             months: z.months,
           };
@@ -17271,13 +17470,12 @@
             const idMap = {
               emergencyFund: "hcEmerg",
               debt: "debt",
-              stability: "hcStab",
             };
             const miss = h.missing
               .filter((m) => !m.invalid && idMap[m.id])
               .map((m) => idMap[m.id]);
             const err = h.missing.filter((m) => m.invalid).map((m) => m.label);
-            out.innerHTML = `<div class="card pr-wait"><h2>Skor belum bisa dihitung</h2><p class="sub">Skor kesiapan memerlukan dana darurat, stabilitas penghasilan, dan cicilan utang (diisi di Isian Data). Tanpa data itu, hasilnya hanya tebakan, jadi aplikasi tidak menampilkan skor sebagian.</p>${missingHtml(miss, err, "Data yang masih dibutuhkan")}</div>${HC_LEAD}`;
+            out.innerHTML = `<div class="card pr-wait"><h2>Skor belum bisa dihitung</h2><p class="sub">Skor kesiapan memerlukan dana darurat dan cicilan hutang (diisi di Isian Data). Tanpa data itu, hasilnya hanya tebakan, jadi aplikasi tidak menampilkan skor sebagian.</p>${missingHtml(miss, err, "Data yang masih dibutuhkan")}</div>${HC_LEAD}`;
             return;
           }
           const col = HC_COL[h.tone],
@@ -17302,7 +17500,7 @@
             tile(
               "Debt Service Ratio (DSR)",
               pf1(m.dsr),
-              "Utang " +
+              "Hutang " +
                 rp((Number.isFinite(s.debt) ? s.debt : 0) + oth) +
                 " + KPR " +
                 rp(z.inst),
@@ -17337,20 +17535,6 @@
                 "/bln",
               m.emMonths >= 3 ? (m.emMonths >= 6 ? "ok" : "mid") : "bad",
             ),
-            tile(
-              "Stabilitas penghasilan",
-              { tetap: "Tetap", campuran: "Campuran", tidak: "Tidak tetap" }[
-                $("hcStab").value
-              ],
-              m.floatRatio >= 1.1
-                ? "Cicilan naik " + pf1(m.floatRatio - 1, 0) + " dari tahun 1"
-                : "Cicilan relatif stabil",
-              $("hcStab").value === "tetap"
-                ? "ok"
-                : $("hcStab").value === "campuran"
-                  ? "mid"
-                  : "bad",
-            ),
           ];
           const rows = h.components
             .map(
@@ -17361,12 +17545,12 @@
           const debt = Number.isFinite(s.debt) ? s.debt : 0,
             otherNon = Math.max(0, s.living - debt);
           const segs = [
-            ["Pengeluaran (di luar utang)", otherNon, "#7b8c99"],
-            ["Cicilan utang", debt, "#e29b40"],
+            ["Pengeluaran (di luar hutang)", otherNon, "#7b8c99"],
+            ["Cicilan hutang", debt, "#e5ad61"],
             ...(oth > 0.5
               ? [["Cicilan tercatat di luar pengeluaran", oth, "#b66a2d"]]
               : []),
-            ["Cicilan KPR", z.inst, "#147fa6"],
+            ["Cicilan KPR", z.inst, "#3e7654"],
             ["Sisa uang", Math.max(0, z.after), "#29a57a"],
           ];
           const tot =
@@ -17415,7 +17599,7 @@
         }
 
         /* ---------------- SIMULASI PELUNASAN DIPERCEPAT ---------------- */
-        const PP = { base: "#8aa0ae", A: "#147fa6", B: "#e29b40" };
+        const PP = { base: "#b4c3b4", A: "#3e7654", B: "#e5ad61" };
         const PP_NAME = { A: "Percepat lunas", B: "Turunkan cicilan" };
         let ppLast = null,
           ppSched = "A",
@@ -17730,7 +17914,7 @@
         }
 
         /* ---------------- SIMULASI TAKE OVER KPR ---------------- */
-        const TO = { old: "#8aa0ae", nw: "#147fa6", adv: "#29a57a" };
+        const TO = { old: "#b4c3b4", nw: "#3e7654", adv: "#6b9659" };
         let toLast = null;
 
         function toFormHtml() {
@@ -19763,7 +19947,7 @@
           const plain = raw[0] - raw[1] - raw[2];
           if (Math.abs(plain - left) < 0.5)
             return `Otomatis: ${rp(raw[0])} penghasilan − ${rp(raw[1])} pengeluaran bulanan − ${rp(raw[2])} sewa = ${rp(left)}/bulan. Ini potensi maksimum jika seluruh sisanya ditabung.`;
-          return `Otomatis: sisa uang rutin bulan pertama = ${rp(left)}/bulan, dihitung dari penghasilan (termasuk tambahan) dikurangi pengeluaran bulanan, variabel, terjadwal, sewa, dan cicilan utang tercatat. Ini potensi maksimum jika seluruh sisanya ditabung.`;
+          return `Otomatis: sisa uang rutin bulan pertama = ${rp(left)}/bulan, dihitung dari penghasilan (termasuk tambahan) dikurangi pengeluaran bulanan, variabel, terjadwal, sewa, dan cicilan hutang tercatat. Ini potensi maksimum jika seluruh sisanya ditabung.`;
         }
         const earliestOf = (z) => {
           const e = z.flow.earliestKprYM;
@@ -19884,7 +20068,7 @@
             aktif = d.status !== "lunas";
           const kinds = RF.DEBT_KINDS.map(([v, t]) => [v, t]);
           let h = `<div class="dl-item dl-debt" data-list="debts" data-id="${html(d.id)}"><div class="dl-top"><b class="dl-title" data-debt-title="${i}">${html(names[i])}</b>${aktif ? "" : '<span class="dl-chip">Sudah lunas</span>'}</div>
- <div class="dl-grid g3">${dF("Nama (opsional)", cTxt(P + "name", "Contoh: Pinjol A"))}${dF("Jenis", cSel(P + "kind", kinds))}<div class="field"><span>Status</span>${cSegF(
+ <div class="dl-grid g3">${dF("Nama (opsional)", cTxt(P + "name", "Contoh: Cicilan motor"))}${dF("Jenis", cSel(P + "kind", kinds))}<div class="field"><span>Status</span>${cSegF(
    P + "status",
    [
      ["aktif", "Aktif"],
@@ -19910,10 +20094,10 @@
     "debts",
   )}</div></div>`;
             if (d.polA === "lunas" || d.polB === "lunas")
-              h += `<div class="dl-grid g2">${dF("Angka pelunasan", cRp(P + "payoff"), "Kosong = dihitung dari sisa cicilan. Isi bila pemberi pinjaman menyebut angka lain.")}${dF("Bulan pelunasan", cYMF(P + "payoffYM"), "Kosong = saat pinjaman DP cair, atau awal simulasi bila tanpa pinjaman")}</div>`;
+              h += `<div class="dl-grid g2">${dF("Angka pelunasan", cRp(P + "payoff"), "Kosong = dihitung dari sisa cicilan. Isi bila pemberi pinjaman menyebut angka lain.")}${dF("Bulan pelunasan", cYMF(P + "payoffYM"), "Wajib diisi agar pelunasan dihitung. Dilunasi dari kas pada bulan ini")}</div>`;
             h += `<details class="help dl-more"><summary>Rincian lain</summary><div class="dl-grid g2">${dF("Cicilan mulai bulan", cYMF(P + "startYM"), "Kosongkan bila sudah berjalan")}${dF("Catatan", cTxt(P + "note", "Opsional", 300))}</div></details>`;
           }
-          return h + delBtn("debts", i, "utang " + (i + 1)) + "</div>";
+          return h + delBtn("debts", i, "hutang " + (i + 1)) + "</div>";
         }
         function debtStats() {
           const st = fxStart(),
@@ -19934,7 +20118,68 @@
         }
         function debtsHtml() {
           const names = fxDebtNames();
-          return `<div class="fx-actions dv-addtop">${addBtn("debts", "Tambah utang atau pinjol").replace('class="pr-add"', 'class="pr-add pri"')}</div>${debtTilesHtml()}${FX.debts.length ? FX.debts.map((d, i) => debtItemHtml(d, i, names)).join("") : emptyBox("Belum ada utang yang dicatat. Tekan “Tambah utang atau pinjol” bila ada cicilan di luar Pengeluaran bulanan.")}<p class="fx-note" id="fxDebtSum" aria-live="polite"></p>`;
+          const visibleCount =
+            FX.debts.length - (debtDraftIndex === null ? 0 : 1);
+          const list = FX.debts.map((d, i) =>
+            i === debtDraftIndex ? "" : debtItemHtml(d, i, names),
+          ).join("");
+          return `<div class="fx-actions dv-addtop">${addBtn("debts", "Tambah hutang atau cicilan").replace('class="pr-add"', 'class="pr-add pri"')}</div>${debtTilesHtml()}${visibleCount ? list : emptyBox("Belum ada hutang yang dicatat. Tekan “Tambah hutang atau cicilan” bila ada cicilan di luar Pengeluaran bulanan.")}<p class="fx-note" id="fxDebtSum" aria-live="polite"></p>`;
+        }
+        let debtDraftIndex = null;
+        let debtDialog = null;
+        function renderDebtDialog() {
+          if (debtDraftIndex === null || !debtDialog) return;
+          const host = debtDialog.querySelector("#debtEntryFields");
+          host.innerHTML = debtItemHtml(
+            FX.debts[debtDraftIndex],
+            debtDraftIndex,
+            fxDebtNames(),
+          );
+          fxPaint(host);
+        }
+        function closeDebtDialog(save) {
+          if (debtDraftIndex === null) return;
+          const index = debtDraftIndex;
+          debtDraftIndex = null;
+          if (!save) FX.debts.splice(index, 1);
+          if (debtDialog && debtDialog.open) debtDialog.close();
+          fxRenderBox("debts");
+          fxRenderBox("fund");
+          fxDirty();
+        }
+        function openDebtDialog() {
+          if (debtDraftIndex !== null) return;
+          const root = $("inputsView");
+          if (!root) return;
+          if (!debtDialog) {
+            debtDialog = document.createElement("dialog");
+            debtDialog.id = "debtEntryDialog";
+            debtDialog.className = "debt-entry-dialog";
+            debtDialog.setAttribute("aria-labelledby", "debtEntryTitle");
+            debtDialog.innerHTML =
+              '<div class="debt-entry-card">' +
+              '<div class="debt-entry-head"><h2 id="debtEntryTitle">Tambah hutang atau cicilan</h2>' +
+              '<button type="button" class="debt-entry-close" data-debt-dialog-action="cancel" aria-label="Batal">×</button></div>' +
+              '<div id="debtEntryFields"></div>' +
+              '<div class="debt-entry-actions"><button type="button" data-debt-dialog-action="cancel">Batal</button>' +
+              '<button type="button" data-debt-dialog-action="save">Simpan hutang</button></div></div>';
+            root.appendChild(debtDialog);
+            debtDialog.addEventListener("cancel", (event) => {
+              event.preventDefault();
+              closeDebtDialog(false);
+            });
+          }
+          FX.debts.push(RF.blankDebt());
+          debtDraftIndex = FX.debts.length - 1;
+          renderDebtDialog();
+          debtDialog.showModal();
+          fxRenderBox("debts");
+          fxRenderBox("fund");
+          fxDirty();
+          const nameInput = debtDialog.querySelector(
+            `[data-path="fx.debts.${debtDraftIndex}.name"]`,
+          );
+          if (nameInput) nameInput.focus();
         }
         function fundModesHtml(w) {
           const P = `fx.fund.${w}.`,
@@ -19960,10 +20205,10 @@
             const ex = f.extras
               .map(
                 (x, i) =>
-                  `<div class="dl-item" data-list="extras"><div class="dl-grid g3">${dF("Nama", cTxt(`${P}extras.${i}.name`, "Contoh: dana koperasi", 40))}${dF("Bulan cair", cYMF(`${P}extras.${i}.ym`))}${dF("Jumlah", cRp(`${P}extras.${i}.amount`))}</div>${delBtn("extras:" + w, i, "dana lain " + (i + 1))}</div>`,
+                  `<div class="dl-item" data-list="extras"><div class="dl-grid g3">${dF("Nama", cTxt(`${P}extras.${i}.name`, "Contoh: dana hibah", 40))}${dF("Bulan cair", cYMF(`${P}extras.${i}.ym`))}${dF("Jumlah", cRp(`${P}extras.${i}.amount`))}</div>${delBtn("extras:" + w, i, "dana lain " + (i + 1))}</div>`,
               )
               .join("");
-            h += `<div class="fx-sub"><h4>Dana lain yang akan masuk</h4><p class="tiny">Dana sekali masuk sebelum akad, misalnya cairan koperasi atau hibah.</p>${ex}<div class="fx-actions">${addBtn("extras:" + w, "Tambah dana lain")}</div></div>`;
+            h += `<div class="fx-sub"><h4>Dana lain yang akan masuk</h4><p class="tiny">Dana sekali masuk sebelum akad, misalnya hibah, warisan, atau penjualan aset.</p>${ex}<div class="fx-actions">${addBtn("extras:" + w, "Tambah dana lain")}</div></div>`;
           }
           if (f.mode === "loan" || f.mode === "combo") {
             const L = P + "loan.",
@@ -19971,16 +20216,6 @@
             h += `<div class="fx-sub"><h4>Pinjaman untuk DP</h4><div class="dl-grid g3">${dF("Sumber pinjaman", cSel(P + "src", RF.FUND_SRC))}${dF("Plafon pinjaman", cRp(L + "amount"))}${dF("Tenor", cIntF(L + "tenor", "bulan"))}${dF("Cara hitung bunga", cSel(L + "method", RF.METHODS), null)}${dF(flatM ? "Bunga per bulan" : "Bunga per tahun", cPctF(L + "rate"))}</div>
   <div class="dl-grid g2">${dF("Bulan pinjaman cair", cYMF(L + "disbYM"))}${dF("Bulan cicilan pertama", cYMF(L + "firstYM"))}</div>
   <p class="fx-note" id="fxLoanInfo${W}" aria-live="polite"></p>`;
-            if (FX.debts.length)
-              h += `<div class="field"><span>Cadangan untuk cicilan utang yang tetap dicicil</span>${cSegF(
-                L + "reserveMode",
-                [
-                  ["auto", "Otomatis"],
-                  ["none", "Tanpa cadangan"],
-                  ["custom", "Atur sendiri"],
-                ],
-                "fund",
-              )}<small class="tiny">Sebagian pinjaman bisa disimpan untuk membayar cicilan utang yang tidak dilunasi. Dana cadangan tidak dihitung sebagai dana DP.</small></div>${f.loan.reserveMode === "custom" ? `<div class="dfg">${dF("Nominal cadangan", cRp(L + "reserveAmt"))}</div>` : ""}`;
             h += "</div>";
           }
           return h;
@@ -20010,7 +20245,7 @@
             dCard(
               "Cara menghitung",
               "",
-              `<div class="dv-how"><div><span>Bunga flat per bulan</span><b>pokok ÷ tenor + pokok × bunga%</b></div><div><span>Bunga flat per tahun</span><b>pokok ÷ tenor + pokok × bunga% ÷ 12</b></div><div><span>Anuitas</span><b>cicilan tetap, bunga efektif per tahun</b></div><div><span>Saldo kas</span><b>akumulasi surplus + pencairan − pelunasan − DP</b></div><div><span>Dana DP bebas</span><b>saldo kas − cadangan utang − dana tahap 2</b></div></div>`,
+              `<div class="dv-how"><div><span>Bunga flat per bulan</span><b>pokok ÷ tenor + pokok × bunga%</b></div><div><span>Bunga flat per tahun</span><b>pokok ÷ tenor + pokok × bunga% ÷ 12</b></div><div><span>Anuitas</span><b>cicilan tetap, bunga efektif per tahun</b></div><div><span>Saldo kas</span><b>akumulasi surplus + pencairan − pelunasan − DP</b></div><div><span>Dana DP bebas</span><b>saldo kas − cadangan hutang − dana tahap 2</b></div></div>`,
             )
           );
         }
@@ -20242,7 +20477,7 @@
             const act = FX.debts.filter((d) => d.status !== "lunas"),
               now = RF.debtNow(FX, st);
             ds.textContent = act.length
-              ? `Cicilan berjalan bulan pertama simulasi: ${rp(now)} dari ${act.length} utang. Cicilan ini dibayar dari penghasilan, di luar Pengeluaran bulanan.`
+              ? `Cicilan berjalan bulan pertama simulasi: ${rp(now)} dari ${act.length} hutang. Cicilan ini dibayar dari penghasilan, di luar Pengeluaran bulanan.`
               : "";
           }
           for (const w of ["a", "b"]) {
@@ -20391,9 +20626,9 @@
               m = al.filter((a) => a.level !== "info").length;
             } catch (_) {}
             h +=
-              blk("A", "#147fa6") +
+              blk("A", "#3e7654") +
               '<hr class="pv-hr">' +
-              blk("B", "#e29b40") +
+              blk("B", "#e5ad61") +
               `<div class="pv-act"><button type="button" class="dv-btn" data-go="view:home">${m ? m + " perlu perhatian" + (n ? " (" + n + " penting)" : "") : "Tidak ada peringatan mendesak"}</button><button type="button" class="dv-btn pri" data-dv="results">Lihat hasil simulasi ${HM_IC.arrow}</button></div>`;
           }
           if (host.dataset.h !== h) {
@@ -20434,6 +20669,14 @@
           root.addEventListener("click", (e) => {
             const t = e.target;
             let b;
+            if (t === debtDialog) {
+              closeDebtDialog(false);
+              return;
+            }
+            if ((b = t.closest("[data-debt-dialog-action]"))) {
+              closeDebtDialog(b.dataset.debtDialogAction === "save");
+              return;
+            }
             if ((b = t.closest("[data-dseg] button"))) {
               const g = b.closest("[data-dseg]"),
                 p = g.dataset.dseg;
@@ -20441,7 +20684,10 @@
               setPath(FX, p.slice(3), b.dataset.v);
               if (g.dataset.rerender) {
                 fxRenderBox(g.dataset.rerender);
-                if (g.dataset.rerender === "debts") fxRenderBox("fund");
+                if (g.dataset.rerender === "debts") {
+                  fxRenderBox("fund");
+                  renderDebtDialog();
+                }
               } else
                 g.querySelectorAll("button").forEach((x) => {
                   const on = x === b;
@@ -20452,7 +20698,8 @@
               return;
             }
             if ((b = t.closest("[data-dadd]"))) {
-              fxAdd(b.dataset.dadd);
+              if (b.dataset.dadd === "debts") openDebtDialog();
+              else fxAdd(b.dataset.dadd);
               return;
             }
             if ((b = t.closest("[data-ddel]"))) {
@@ -20658,8 +20905,8 @@
           const tip = $("savTip");
           if (tip)
             tip.innerHTML = savSync
-              ? "<b>Cukup diisi sekali.</b> Uang tabungan yang sama dipakai untuk kedua strategi dan <b>tidak dijumlahkan</b>, karena kamu hanya menjalankan salah satunya. Boleh termasuk dana yang pasti cair sebelum akad, misalnya dana koperasi atau THR. Hilangkan centang bila tabungan awal kedua strategi berbeda."
-              : "<b>Supaya tahu berapa DP yang masih kurang.</b> Kedua strategi adalah pilihan alternatif. Kalau uang tabungan yang dipakai sama, isi angka yang sama di keduanya atau beri centang di atas. Uangnya <b>bukan dijumlahkan</b>. Boleh termasuk dana yang pasti cair sebelum akad, misalnya dana koperasi atau THR.";
+              ? "<b>Cukup diisi sekali.</b> Uang tabungan yang sama dipakai untuk kedua strategi dan <b>tidak dijumlahkan</b>, karena kamu hanya menjalankan salah satunya. Boleh termasuk dana yang pasti cair sebelum akad, misalnya THR atau dana lain yang pasti cair. Hilangkan centang bila tabungan awal kedua strategi berbeda."
+              : "<b>Supaya tahu berapa DP yang masih kurang.</b> Kedua strategi adalah pilihan alternatif. Kalau uang tabungan yang dipakai sama, isi angka yang sama di keduanya atau beri centang di atas. Uangnya <b>bukan dijumlahkan</b>. Boleh termasuk dana yang pasti cair sebelum akad, misalnya THR atau dana lain yang pasti cair.";
         }
         function flowSavSet(on) {
           savSync = !!on;
@@ -20698,8 +20945,7 @@
           if (!r || !r.complete) {
             const nm = {
               emergencyFund: "dana darurat",
-              debt: "cicilan utang",
-              stability: "stabilitas penghasilan",
+              debt: "cicilan hutang",
             };
             const need = r
               ? r.missing
@@ -20711,7 +20957,6 @@
             const idm = {
               emergencyFund: "hcEmerg",
               debt: "debt",
-              stability: "hcStab",
             };
             const first = r
               ? r.missing.find((m) => !m.invalid && idm[m.id])
@@ -20831,14 +21076,14 @@
           hmAllAlerts = false;
         const HM_CH = {};
         const HM_COL = {
-          cash: "#147fa6",
-          free: "#18a999",
-          fam: "#a9bfcd",
-          loan: "#e29b40",
-          debt: "#0f2a43",
-          kpr: "#147fa6",
-          pos: "#1f8a63",
-          neg: "#bb4b40",
+          cash: "#3e7654",
+          free: "#8fa85d",
+          fam: "#c5d0c0",
+          loan: "#e5ad61",
+          debt: "#24483b",
+          kpr: "#3e7654",
+          pos: "#6b9659",
+          neg: "#bd6858",
         };
         const HM_IC = {
           check:
@@ -20968,11 +21213,6 @@
           if (!errs.length) return "";
           return `<div class="hm-banner bad" role="alert">${HM_IC.alert}<div><strong>Perhitungan belum bisa ditampilkan karena ada isian yang perlu diperbaiki.</strong><ul>${errs.map((e) => `<li>${html(e)} <button type="button" class="hm-link" data-go="data:${errTab(e)}">Buka bagian</button></li>`).join("")}</ul></div></div>`;
         }
-        function hmPlafonBanner(k, r) {
-          if (r.valid) return "";
-          return `<div class="hm-banner bad" role="alert">${HM_IC.alert}<div><strong>Plafon pinjaman ${SC_NAME[k]} belum cukup untuk melunasi utang yang dipilih.</strong> Butuh ${rp(r.needPayoff)}, plafon ${rp(r.loan)}. Selisihnya ditutup dari arus kas bulan pelunasan. <button type="button" class="hm-link" data-go="data:sumberdp">Ubah plafon</button></div></div>`;
-        }
-
         function hmRail(r) {
           const evBy = {};
           r.events.forEach((e) => {
@@ -20997,7 +21237,7 @@
               return `<div class="hm-rc${x.surplus < -0.5 ? " def" : ""}${x.isKpr ? " kpr" : ""}" tabindex="0" data-tip="${html(tip.join("\n"))}" aria-label="${html(tip.join(", "))}">${x.isKpr ? '<span class="flag">KPR</span>' : ""}<div class="cell"><i class="sd"></i>${mk.length ? `<span class="mk">${mk.map((m) => `<b class="${m}"></b>`).join("")}</span>` : ""}</div><div class="lb">${RF.MA[RF.mOf(x.ym) - 1]}<small>${yr ? RF.yOf(x.ym) : "&nbsp;"}</small></div></div>`;
             })
             .join("");
-          return `<div class="hm-rail" role="group" aria-label="Rel bulanan: surplus atau defisit tiap bulan dan peristiwa penting"><div class="hm-railin">${cells}</div></div><div class="hm-key"><span><i class="g"></i>Surplus</span><span><i class="r"></i>Defisit</span><span><i class="mk c"></i>Pinjaman cair</span><span><i class="mk l"></i>Pelunasan utang</span><span><i class="mk d"></i>Target DP tercapai</span></div>`;
+          return `<div class="hm-rail" role="group" aria-label="Rel bulanan: surplus atau defisit tiap bulan dan peristiwa penting"><div class="hm-railin">${cells}</div></div><div class="hm-key"><span><i class="g"></i>Surplus</span><span><i class="r"></i>Defisit</span><span><i class="mk c"></i>Pinjaman cair</span><span><i class="mk l"></i>Pelunasan hutang</span><span><i class="mk d"></i>Target DP tercapai</span></div>`;
         }
 
         function hmDpShort(r) {
@@ -21095,7 +21335,7 @@
                 )
                 .join(
                   "",
-                )}</tbody></table></div>${act.length > 6 ? `<p class="hm-note">dan ${act.length - 6} pinjaman lain di Utang & Pinjol.</p>` : ""}`
+                )}</tbody></table></div>${act.length > 6 ? `<p class="hm-note">dan ${act.length - 6} pinjaman lain di Hutang & Cicilan.</p>` : ""}`
             : '<p class="hm-empty">Belum ada pinjaman aktif yang tercatat.</p>';
           return `<div class="card"><div class="hm-cardhead"><div><h3>Pinjaman berjalan</h3><p class="hm-desc">Cicilan berhenti sendiri setelah bulan terakhirnya. Status Lunas tetap kamu yang menentukan.</p></div><button type="button" class="hm-btn" data-go="data:utang">Kelola${HM_IC.arrow}</button></div>${body}<p class="hm-note">Cicilan bulan ${RF.lbl(st)}: <b>${rp(now)}</b>${last !== null ? " · semua pinjaman aktif selesai " + RF.lbl(last) : ""}.</p></div>`;
         }
@@ -21137,7 +21377,7 @@
           const c1 = hmChartCard(
             "hm1",
             "Pertumbuhan dana menuju target DP",
-            "Garis datar putus-putus adalah kebutuhan dana saat KPR. Saldo kas turun pada bulan KPR karena DP dibayarkan. Bila kedua garis berhimpit, tidak ada dana yang ditahan; selisihnya adalah dana cadangan cicilan utang.",
+            "Garis datar putus-putus adalah kebutuhan dana saat KPR. Saldo kas turun pada bulan KPR karena DP dibayarkan.",
             {
               type: "line",
               labels: xl,
@@ -21172,7 +21412,7 @@
           const c3 = hmChartCard(
             "hm2",
             "Ke mana uang pemasukan pergi",
-            "Tiap batang adalah pengeluaran satu bulan. Pengeluaran keluarga mencakup pengeluaran bulanan, variabel, sewa, dan terjadwal. Bagian utang yang ditutup cadangan pinjaman tidak ikut. Selisih dengan pemasukan ada di keterangan saat batang disentuh.",
+            "Tiap batang adalah pengeluaran satu bulan. Pengeluaran keluarga mencakup pengeluaran bulanan, variabel, sewa, dan terjadwal. Selisih dengan pemasukan ada di keterangan saat batang disentuh.",
             {
               type: "bars",
               stack: true,
@@ -21194,7 +21434,7 @@
                   values: r.rows.map((x) => x.loanPay),
                 },
                 {
-                  name: "Utang dan pinjol dari gaji",
+                  name: "Cicilan hutang lain",
                   color: HM_COL.debt,
                   values: r.rows.map((x) => x.debtFromIncome),
                 },
@@ -21222,9 +21462,9 @@
           const fs = RF.fundSummary(r);
           return (
             `<div class="section-lead hm-lead"><div><h2>Ringkasan</h2><p>Dihitung ulang setiap Isian Data berubah. Simulasi ${first.label} sampai ${last.label}.</p></div>${rcScnHtml()}</div>` +
-            `<div class="hm-stack">${hmSampleBanner()}${hmSetupCard()}${hmPlafonBanner(k, r)}${hmHero(k, z)}${hmScenCards(k)}${c1}` +
+            `<div class="hm-stack">${hmSampleBanner()}${hmSetupCard()}${hmHero(k, z)}${hmScenCards(k)}${c1}` +
             `<div class="hm-cols">${c3}<div class="card"><h3>Garis waktu</h3><p class="hm-desc">Urutan kejadian penting menurut tanggal di Isian Data.</p>${tlst}</div></div>` +
-            `<div class="hm-cols"><div class="card"><div class="hm-cardhead"><div><h3>Sumber dana DP · ${SC_NAME[k]}</h3><p class="hm-desc">${html(fs.title)}. Dana yang ditahan sebagai cadangan cicilan utang tidak dihitung sebagai dana DP.</p></div><button type="button" class="hm-btn" data-go="data:sumberdp">Ubah${HM_IC.arrow}</button></div>${src}</div>${hmDebtCard()}</div>` +
+            `<div class="hm-cols"><div class="card"><div class="hm-cardhead"><div><h3>Sumber dana DP · ${SC_NAME[k]}</h3><p class="hm-desc">${html(fs.title)}.</p></div><button type="button" class="hm-btn" data-go="data:sumberdp">Ubah${HM_IC.arrow}</button></div>${src}</div>${hmDebtCard()}</div>` +
             hmAlertCard(k) +
             "</div>"
           );
@@ -21617,7 +21857,7 @@
           window.addEventListener("scroll", hmTipHide, { passive: true });
           if (homeVisible()) homeRender();
         }
-        /* ---------------- ARUS KAS: tabel bulanan, utang dan pinjol, jangka panjang ----------------
+        /* ---------------- ARUS KAS: tabel bulanan, hutang dan cicilan, jangka panjang ----------------
    Satu deret baris bulanan (RCFlow.simulate) dibaca juga oleh Ringkasan dan Informasi Simulasi.
    Tabel hanya memformat baris itu; total dijumlahkan dari baris yang tampil. */
         let arusView = "bulan",
@@ -21666,7 +21906,7 @@
           },
           {
             g: "Pengeluaran",
-            h: "Utang dari gaji",
+            h: "Hutang dari gaji",
             f: (x) => x.debtFromIncome,
             t: "sum",
           },
@@ -21700,15 +21940,8 @@
           },
           {
             g: "Pinjaman dan DP",
-            h: "Pelunasan utang",
+            h: "Pelunasan hutang",
             f: (x) => -x.payoffOut,
-            t: "sum",
-            sg: 1,
-          },
-          {
-            g: "Pinjaman dan DP",
-            h: "Cicilan dari cadangan",
-            f: (x) => -x.reserveUsed,
             t: "sum",
             sg: 1,
           },
@@ -21723,13 +21956,7 @@
             g: "Pinjaman dan DP",
             h: "Pembiayaan bersih",
             b: 1,
-            f: (x) =>
-              x.loanIn +
-              x.saveIn +
-              x.extraIn -
-              x.payoffOut -
-              x.reserveUsed -
-              x.dpPaid,
+            f: (x) => x.loanIn + x.saveIn + x.extraIn - x.payoffOut - x.dpPaid,
             t: "sum",
             sg: 1,
           },
@@ -21811,7 +22038,7 @@
           const name = SC_NAME[k],
             intro = {
               bulan: `Tabel bulanan untuk ${name}.`,
-              utang: `Pilihan pelunasan utang dan pinjol, dan ke mana uangnya mengalir, untuk ${name}.`,
+              utang: `Pilihan pelunasan dan cicilan hutang untuk ${name}.`,
               panjang: `Proyeksi bulanan yang dijumlahkan per tahun, sampai cicilan terakhir selesai, untuk ${name}.`,
             }[arusView];
           return `<div class="section-lead hm-lead"><div><h2>Arus Kas</h2><p>${intro}</p></div>${rcScnHtml()}</div>`;
@@ -21824,7 +22051,7 @@
             "Jenis tampilan arus kas",
             [
               ["bulan", "Arus kas bulanan"],
-              ["utang", "Utang dan pinjol"],
+              ["utang", "Hutang dan cicilan"],
               ["panjang", "Jangka panjang"],
             ],
             arusView,
@@ -21890,7 +22117,7 @@
             det ? "1" : "0",
             "detail",
           )}<button type="button" class="hm-btn ar-csv" data-ar="csv">↓ Unduh CSV</button></div>`;
-          const how = `<details class="card ar-how"><summary>Cara membaca tabel</summary><p class="hm-note">Surplus adalah pemasukan dikurangi pengeluaran pada bulan itu. Saldo kas adalah akumulasinya bersama pencairan, pelunasan, dan DP. Dana DP bebas adalah saldo kas dikurangi dana yang ditahan untuk cicilan utang. Kesiapan DP membandingkan dana DP bebas dengan kebutuhan DP sampai bulan sebelum KPR. Bulan defisit tetap tampil walau saldo kumulatif masih positif. <b>Sesudah KPR</b> dimulai dari bulan KPR itu sendiri. Tanda <b>–</b> berarti nol. Klik nama bulan untuk melihat rinciannya. Baris total menjumlahkan arus dan mengambil saldo bulan terakhir yang tampil.</p></details>`;
+          const how = `<details class="card ar-how"><summary>Cara membaca tabel</summary><p class="hm-note">Surplus adalah pemasukan dikurangi pengeluaran pada bulan itu. Saldo kas adalah akumulasinya bersama pencairan, pelunasan, dan DP. Dana DP bebas adalah saldo kas dikurangi dana yang ditahan untuk cicilan hutang. Kesiapan DP membandingkan dana DP bebas dengan kebutuhan DP sampai bulan sebelum KPR. Bulan defisit tetap tampil walau saldo kumulatif masih positif. <b>Sesudah KPR</b> dimulai dari bulan KPR itu sendiri. Tanda <b>–</b> berarti nol. Klik nama bulan untuk melihat rinciannya. Baris total menjumlahkan arus dan mengambil saldo bulan terakhir yang tampil.</p></details>`;
           return (
             bar +
             how +
@@ -21898,7 +22125,7 @@
           );
         }
 
-        /* ---------- 2. utang dan pinjol ---------- */
+        /* ---------- 2. hutang dan cicilan ---------- */
         function arUtang(k, z, r) {
           const ws = ["A", "B"],
             R_ = (w) => cache[w].flow,
@@ -21916,27 +22143,9 @@
           const foot2 = (lab, f) =>
             `<tr class="tot"><td class="l">${lab}</td>${ws.map((w) => `<td class="l${sel(w)}">${f(R_(w))}</td>`).join("")}</tr>`;
           const t1 = none
-            ? '<p class="hm-empty">Belum ada utang aktif yang dicatat. Tambahkan di Isian Data, bagian Utang & Pinjol.</p>'
-            : `<div class="tablewrap"><table class="hm-tbl ar-plan"><caption class="sr">Pilihan pelunasan per utang</caption><thead><tr><th scope="col" class="l">Utang</th>${ws.map((w) => `<th scope="col" class="l${sel(w)}">${SC_NAME[w]}</th>`).join("")}</tr></thead><tbody>${plan0.map((d, i) => `<tr><td class="l">${html(d.name)}</td>${ws.map((w) => `<td class="l${sel(w)}">${planCell(R_(w).debtPlan[i])}</td>`).join("")}</tr>`).join("")}</tbody><tfoot>${foot2("Total pelunasan sekaligus", (x) => rp(x.debtFlow.payoffTotal))}${foot2("Cicilan ditutup dari cadangan pinjaman", (x) => rp(x.debtFlow.reserveUsed))}${foot2("Cicilan dibayar dari gaji", (x) => rp(x.debtFlow.fromIncome))}</tfoot></table></div>`;
-          const anyLoan = ws.some((w) => R_(w).useLoan && R_(w).loan > 0);
-          const resMode = (rr) =>
-            rr.debtFlow.reserveMode === "none"
-              ? "tanpa cadangan"
-              : rr.debtFlow.reserveMode === "custom"
-                ? "diatur manual"
-                : "otomatis";
-          const st = (rr) =>
-            rr.loan <= 0
-              ? '<span class="dim">Tidak ada pinjaman DP</span>'
-              : rr.valid
-                ? "Plafon cukup"
-                : `<span class="ar-bd d">Kurang</span> ${rp(rr.debtFlow.shortfallLoan)}, ditutup dari kas bulan pelunasan`;
-          const fl = (lab, f, cls) =>
-            `<tr${cls ? ` class="${cls}"` : ""}><td class="l">${lab}</td>${ws.map((w) => `<td class="${sel(w)}">${f(R_(w))}</td>`).join("")}</tr>`;
-          const t2 = !anyLoan
-            ? '<p class="hm-empty">Kedua strategi tidak memakai pinjaman DP, jadi tidak ada plafon yang dialirkan. Pelunasan utang (bila ada) diambil dari kas.</p>'
-            : `<div class="tablewrap"><table class="hm-tbl ar-plan"><caption class="sr">Aliran dana pinjaman DP</caption><thead><tr><th scope="col" class="l">Uraian</th>${ws.map((w) => `<th scope="col" class="${sel(w)}">${SC_NAME[w]}</th>`).join("")}</tr></thead><tbody>${fl("Plafon pinjaman DP", (x) => rp(x.loan) + (x.loan > 0 ? `<span class="dsub">cair ${RF.lbl(x.disbYM)}</span>` : ""))}${fl("Dikurangi pelunasan utang", (x) => rp(-x.needPayoff) + (x.payoffs.length ? `<span class="dsub">${x.payoffs.map((p) => html(p.name)).join(", ")}</span>` : ""))}${fl("Dikurangi cadangan cicilan", (x) => rp(-x.reserve) + `<span class="dsub">${resMode(x)}</span>`)}</tbody><tfoot>${fl("Sisa plafon untuk dana DP", (x) => rp(x.loanDp), "tot")}${fl("Status plafon", st)}</tfoot></table></div>`;
-          /* bulanan: dari awal simulasi sampai bulan terakhir yang masih ada urusan utang (atau bulan KPR) */
+            ? '<p class="hm-empty">Belum ada hutang aktif yang dicatat. Tambahkan di Isian Data, bagian Hutang & Cicilan.</p>'
+            : `<div class="tablewrap"><table class="hm-tbl ar-plan"><caption class="sr">Pilihan pelunasan per hutang</caption><thead><tr><th scope="col" class="l">Hutang</th>${ws.map((w) => `<th scope="col" class="l${sel(w)}">${SC_NAME[w]}</th>`).join("")}</tr></thead><tbody>${plan0.map((d, i) => `<tr><td class="l">${html(d.name)}</td>${ws.map((w) => `<td class="l${sel(w)}">${planCell(R_(w).debtPlan[i])}</td>`).join("")}</tr>`).join("")}</tbody><tfoot>${foot2("Total pelunasan dari kas", (x) => rp(x.debtFlow.payoffTotal))}${foot2("Cicilan dibayar dari penghasilan", (x) => rp(x.debtFlow.fromIncome))}</tfoot></table></div>`;
+          /* bulanan: dari awal simulasi sampai bulan terakhir yang masih ada urusan hutang (atau bulan KPR) */
           let last = r.kprIdx;
           r.rows.forEach((x) => {
             if (x.debtTotal > 0.5 || x.payoffOut > 0.5 || x.loanIn > 0.5)
@@ -21951,10 +22160,12 @@
               t: "sum",
               sg: 1,
             },
-            { h: "Cicilan utang jatuh tempo", f: (x) => x.debtTotal, t: "sum" },
-            { h: "Ditutup dari cadangan", f: (x) => x.reserveUsed, t: "sum" },
-            { h: "Dibayar dari gaji", f: (x) => x.debtFromIncome, t: "sum" },
-            { h: "Sisa cadangan", f: (x) => x.resLeft, t: "last", bal: 1 },
+            { h: "Cicilan hutang jatuh tempo", f: (x) => x.debtTotal, t: "sum" },
+            {
+              h: "Dibayar dari penghasilan",
+              f: (x) => x.debtFromIncome,
+              t: "sum",
+            },
             { h: "Saldo kas", f: (x) => x.cash, t: "last", sg: 1, bal: 1 },
             { h: "Dana DP bebas", f: (x) => x.free, t: "last", sg: 1, bal: 1 },
           ];
@@ -21965,12 +22176,11 @@
             )
             .join("");
           const tot = `<tr class="tot"><td class="mo">Total / akhir</td>${UC.map((c) => arCell(c, c.t === "sum" ? RF.sum(rows.map(c.f)) : c.f(rows[rows.length - 1])).replace('<td class="dim">', '<td class="dim">')).join("")}</tr>`;
-          const t3 = `<div class="tablewrap ar-wrap" id="arWrap"><table class="ar-tbl"><caption class="sr">Arus kas utang bulanan ${SC_NAME[k]}</caption><thead><tr class="cols"><th scope="col">Bulan</th>${UC.map((c) => `<th scope="col">${c.h}</th>`).join("")}</tr></thead><tbody>${body}</tbody><tfoot>${tot}</tfoot></table></div>`;
+          const t3 = `<div class="tablewrap ar-wrap" id="arWrap"><table class="ar-tbl"><caption class="sr">Arus kas hutang bulanan ${SC_NAME[k]}</caption><thead><tr class="cols"><th scope="col">Bulan</th>${UC.map((c) => `<th scope="col">${c.h}</th>`).join("")}</tr></thead><tbody>${body}</tbody><tfoot>${tot}</tfoot></table></div>`;
           return (
-            `<div class="ar-toolbar">${arViewSeg()}</div><details class="card ar-how"><summary>Cara membaca halaman ini</summary><p class="hm-note"><b>Dilunasi</b>: pelunasan keluar sekaligus dari pinjaman DP pada bulan pencairan (atau dari kas bila strategi itu tidak memakai pinjaman). <b>Dicicil</b>: cicilan tiap bulan ditutup lebih dulu dari cadangan pinjaman; bila cadangan habis atau belum cair, dibayar dari gaji. Cadangan ditahan dan tidak dihitung sebagai dana DP. Tiap strategi punya pilihannya sendiri, diatur di Isian Data, bagian Utang & Pinjol.</p></details>` +
-            `<div class="hm-stack"><div class="card"><div class="hm-cardhead"><div><h3>Pilihan pelunasan per utang</h3></div><button type="button" class="hm-btn" data-go="data:utang">Kelola utang${HM_IC.arrow}</button></div>${t1}</div>` +
-            `<div class="card"><div class="hm-cardhead"><div><h3>Ke mana plafon pinjaman DP pergi</h3></div></div>${t2}</div>` +
-            `<div class="card"><div class="hm-cardhead"><div><h3>Arus kas utang bulanan ${SC_NAME[k]}</h3></div></div>${rows.length ? t3 : '<p class="hm-empty">Tidak ada bulan pada periode simulasi.</p>'}</div></div>`
+            `<div class="ar-toolbar">${arViewSeg()}</div><details class="card ar-how"><summary>Cara membaca halaman ini</summary><p class="hm-note"><b>Dilunasi</b>: pelunasan keluar sekaligus dari kas pada bulan yang kamu pilih, jadi dana DP berkurang sebesar itu. <b>Dicicil</b>: cicilan tiap bulan dibayar dari penghasilan. Pinjaman DP berdiri sendiri: seluruh pencairannya masuk dana DP. Tiap strategi punya pilihannya sendiri, diatur di Isian Data, bagian Hutang & Cicilan.</p></details>` +
+            `<div class="hm-stack"><div class="card"><div class="hm-cardhead"><div><h3>Pilihan pelunasan per hutang</h3></div><button type="button" class="hm-btn" data-go="data:utang">Kelola hutang${HM_IC.arrow}</button></div>${t1}</div>` +
+            `<div class="card"><div class="hm-cardhead"><div><h3>Arus kas hutang bulanan ${SC_NAME[k]}</h3></div></div>${rows.length ? t3 : '<p class="hm-empty">Tidak ada bulan pada periode simulasi.</p>'}</div></div>`
           );
         }
 
@@ -21998,7 +22208,7 @@
               "Bebas cicilan selain KPR",
               L.clearYM !== null ? RF.lbl(L.clearYM) : "Tidak ada",
               L.clearYM !== null
-                ? "sesudah cicilan pinjaman DP dan utang terakhir selesai"
+                ? "sesudah cicilan pinjaman DP dan hutang terakhir selesai"
                 : "tidak ada cicilan berjalan",
             ) +
             arTile(
@@ -22058,7 +22268,7 @@
                   values: L.years.map((y) => y.loan),
                 },
                 {
-                  name: "Utang dan pinjol",
+                  name: "Hutang dan cicilan",
                   color: HM_COL.debt,
                   values: L.years.map((y) => y.debts),
                 },
@@ -22097,7 +22307,7 @@
             ? `<ul class="ar-steps">${L.steps.map((t) => `<li><span class="m">${RF.lbl(t.ym)}</span><span><b>Beban turun ${rp(t.drop)} per bulan</b> · ${html(t.items.map((i) => i.name + (i.payoff ? " (dilunasi)" : " selesai")).join(", "))}<small>Cicilan bulanan dari ${rp(t.before)} menjadi ${rp(t.after)}</small></span></li>`).join("")}</ul>`
             : '<p class="hm-empty">Tidak ada cicilan yang berakhir dalam rentang proyeksi.</p>';
           const head =
-            '<tr class="cols"><th scope="col">Tahun</th><th scope="col">Pemasukan</th><th scope="col">Pengeluaran keluarga</th><th scope="col">Cicilan pinjaman DP</th><th scope="col">Utang dan pinjol</th><th scope="col">KPR</th><th scope="col">Total pengeluaran</th><th scope="col">Surplus</th><th scope="col">Saldo kas akhir</th><th scope="col">Cicilan rata-rata per bulan</th><th scope="col">% penghasilan</th></tr>';
+            '<tr class="cols"><th scope="col">Tahun</th><th scope="col">Pemasukan</th><th scope="col">Pengeluaran keluarga</th><th scope="col">Cicilan pinjaman DP</th><th scope="col">Hutang dan cicilan</th><th scope="col">KPR</th><th scope="col">Total pengeluaran</th><th scope="col">Surplus</th><th scope="col">Saldo kas akhir</th><th scope="col">Cicilan rata-rata per bulan</th><th scope="col">% penghasilan</th></tr>';
           const body = L.years
             .map(
               (y) =>
@@ -22279,13 +22489,10 @@
               : arusView === "panjang"
                 ? arLong(k, z, r)
                 : arMonthly(k, z, r);
-          return (
-            arHead(k, r) +
-            `<div class="ar-page">${hmPlafonBanner(k, r)}${inner}</div>`
-          );
+          return arHead(k, r) + `<div class="ar-page">${inner}</div>`;
         }
         function arusBuildEmpty() {
-          return `<div class="section-lead hm-lead"><div><h2>Arus Kas</h2><p>Jadwal uang masuk dan keluar tiap bulan dihitung dari Isian Data.</p></div></div><div class="card pr-wait"><h3>Arus kas belum bisa dihitung</h3><p class="hm-desc">Lengkapi Isian Data lebih dulu. Tabel bulanan, utang dan pinjol, serta proyeksi jangka panjang dihitung dari angka itu.</p><button type="button" class="hm-btn pri" data-go="data:kpr">Ke Isian Data</button></div>`;
+          return `<div class="section-lead hm-lead"><div><h2>Arus Kas</h2><p>Jadwal uang masuk dan keluar tiap bulan dihitung dari Isian Data.</p></div></div><div class="card pr-wait"><h3>Arus kas belum bisa dihitung</h3><p class="hm-desc">Lengkapi Isian Data lebih dulu. Tabel bulanan, hutang dan cicilan, serta proyeksi jangka panjang dihitung dari angka itu.</p><button type="button" class="hm-btn pri" data-go="data:kpr">Ke Isian Data</button></div>`;
         }
         function arusRender() {
           const root = $("cashRoot");
@@ -22570,7 +22777,8 @@
           ["Semua angka per bulan, setelah dipotong pajak", "tip"],
           ["Gaji atau penghasilan tetap utama setelah potongan", "tip"],
           ["Biaya hidup rutin keluarga setiap bulan", "tip"],
-          ["Catat cicilan utang dan pinjol yang masih berjalan", "tip"],
+          ["Catat hutang atau cicilan lain yang masih berjalan", "tip"],
+          ["Wajib diisi agar pelunasan dihitung", "tip"],
           ["Pasangan atau anggota lain yang ikut menanggung", "tip"],
           ["THR masuk ke arus kas pada bulan yang dipilih", "tip"],
           ["Tanpa centang: hanya sekali", "tip"],
@@ -22591,7 +22799,6 @@
           ["Uang DP sudah ada. Isi jumlahnya", "tip"],
           ["Isi hanya bila uang ini bukan bagian dari sisa arus kas", "tip"],
           ["Kosong = sejak awal simulasi", "tip"],
-          ["Sebagian pinjaman bisa disimpan untuk membayar cicilan", "tip"],
           [
             "Pendapatan dikurangi pengeluaran bulanan dan kontrakan. Sebesar ini",
             "tip",
@@ -22652,10 +22859,6 @@
           ["Dua skenario alternatif dari Isian Data yang sama", "tip"],
           ["Garis datar putus-putus adalah kebutuhan dana", "tip"],
           ["Tiap batang adalah pengeluaran satu bulan", "tip"],
-          [
-            "Dana yang ditahan sebagai cadangan cicilan utang tidak dihitung",
-            "tip",
-          ],
           ["Cicilan berhenti sendiri setelah bulan terakhirnya", "tip"],
           ["Setiap pinjaman yang berakhir mengurangi cicilan bulanan", "tip"],
           ["Berapa cicilan, berapa yang jadi bunga dan pokok", "tip"],
@@ -22918,19 +23121,7 @@
         function hcFormEmerg() {
           return `<div class="hc-extra-in"><h2>Dana darurat</h2>
   <p class="dfc-d">Dipakai untuk skor kesiapan KPR Health Check. Boleh dikosongkan dulu. Simulasi KPR tetap berjalan tanpa ini; skor kesiapan tampil “Belum dinilai”.</p>
-  <div class="pr-fields">${fRp("hcEmerg", "Dana darurat yang benar-benar kamu miliki sekarang", "Uang tunai atau tabungan yang bisa diambil kapan saja, di luar dana untuk DP dan akad. Isi “-” bila belum punya.")}</div></div>`;
-        }
-        function hcFormStab() {
-          return `<div class="hc-extra-in"><h2>Stabilitas penghasilan</h2><p class="dfc-d">Dipakai untuk skor kesiapan KPR Health Check.</p>
-  <div class="seg-wrap"><span class="seg-title">Seberapa stabil penghasilanmu?</span>${fSeg(
-    "hcStab",
-    [
-      ["tetap", "Tetap (gaji bulanan)"],
-      ["campuran", "Sebagian tidak tetap"],
-      ["tidak", "Tidak tetap"],
-    ],
-  )}<p class="tiny">Pilih “Sebagian tidak tetap” bila ada penghasilan sampingan atau komisi yang naik-turun. Boleh dikosongkan dulu.</p></div>
-  <input id="hcScn" type="hidden"></div>`;
+  <div class="pr-fields">${fRp("hcEmerg", "Dana darurat yang benar-benar kamu miliki sekarang", "Uang tunai atau tabungan yang bisa diambil kapan saja, di luar dana untuk DP dan akad. Isi “-” bila belum punya.")}</div><input id="hcScn" type="hidden"></div>`;
         }
         function prefillHtml(p, title, lead) {
           return `<details class="card pro-pre" id="${p}Pre"><summary>${title}</summary><div class="pr-pre-body"><p class="sub" id="${p}PreText">${lead}</p>
@@ -22945,7 +23136,6 @@
         }
         function proBuild() {
           $("hcFormEmerg").innerHTML = hcFormEmerg();
-          $("hcFormStab").innerHTML = hcFormStab();
           $("ppForm").innerHTML =
             prefillHtml(
               "pp",
@@ -23047,7 +23237,7 @@
           if (c) {
             const d = cache;
             c.innerHTML = d
-              ? `<b>Dari Isian Data:</b> penghasilan ${rp(d.s.income)}, pengeluaran bulanan ${rp(d.s.living)}, cicilan utang ${Number.isFinite(d.s.debt) ? rp(d.s.debt) : "<b>belum diisi</b>"} <button type="button" class="hc-link hc-inl" data-goto-pro="debt">${Number.isFinite(d.s.debt) ? "ubah" : "isi di Isian Data"}</button>, harga rumah ${rp(d.s.housePrice)}, DP ${rp(d.s.dpTarget)}, cicilan KPR ${stepped() ? rpShort(d.A.instFirst) + " → " + rpShort(d.A.inst) : rp(d.A.inst)} per bulan.`
+              ? `<b>Dari Isian Data:</b> penghasilan ${rp(d.s.income)}, pengeluaran bulanan ${rp(d.s.living)}, cicilan hutang ${Number.isFinite(d.s.debt) ? rp(d.s.debt) : "<b>belum diisi</b>"} <button type="button" class="hc-link hc-inl" data-goto-pro="debt">${Number.isFinite(d.s.debt) ? "ubah" : "isi di Isian Data"}</button>, harga rumah ${rp(d.s.housePrice)}, DP ${rp(d.s.dpTarget)}, cicilan KPR ${stepped() ? rpShort(d.A.instFirst) + " → " + rpShort(d.A.inst) : rp(d.A.inst)} per bulan.`
               : "<b>Isian Data belum lengkap.</b> Lengkapi dulu di menu Isian Data agar skor bisa dihitung.";
           }
         }
@@ -23091,7 +23281,6 @@
             "toMode",
             "ppFreq",
             "toMethod",
-            "hcStab",
             "hcScn",
             "ppPfS",
             "toPfS",
@@ -23158,7 +23347,7 @@
             }
             if ((b = t.closest("[data-goto-pro]"))) {
               const id = b.dataset.gotoPro;
-              if (id === "debt" || id === "hcEmerg" || id === "hcStab") {
+              if (id === "debt" || id === "hcEmerg") {
                 if (window.RCView) window.RCView.set("inputs", false);
                 if (window.RC)
                   window.RC.goTab(window.RC.tabOf(id), {
@@ -23295,8 +23484,8 @@
           prepay: document.getElementById("prepayView"),
           takeover: document.getElementById("takeoverView"),
         };
-        let viewAllowed = () => true;
-        let viewDenied = () => {};
+        let viewAllowed = () => true,
+          viewDenied = () => {};
         function setView(name, shouldScroll = true) {
           if (!pages[name]) name = "home";
           if (!viewAllowed(name)) {
@@ -23384,15 +23573,18 @@
           '<div class="g-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-8h6v8"/></svg></div>';
 
         function escapeHtml(value) {
-          return String(value == null ? "" : value).replace(/[&<>"']/g, function (c) {
-            return {
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              '"': "&quot;",
-              "'": "&#39;",
-            }[c];
-          });
+          return String(value == null ? "" : value).replace(
+            /[&<>"']/g,
+            function (c) {
+              return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+              }[c];
+            },
+          );
         }
 
         function showCard(title, message, buttons, extra) {
@@ -23479,15 +23671,16 @@
           home: "rencana",
           inputs: "rencana",
           simulation: "rencana",
-          cash: "rencana",
-          ledger: "rencana",
+          cash: "tools",
           health: "tools",
-          prepay: "tools",
-          takeover: "tools",
+          ledger: "tools",
+          prepay: "semua",
+          takeover: "semua",
         };
         var packageNames = {
-          rencana: "Rencana Rumahku",
-          tools: "Financial Tools",
+          rencana: "Paket 1",
+          tools: "Paket 2",
+          semua: "Paket 3",
         };
 
         function setupFeatureLocks(user) {
@@ -23495,32 +23688,39 @@
             title = document.getElementById("featureLockTitle"),
             message = document.getElementById("featureLockMessage"),
             purchase = document.getElementById("featureLockPurchase");
+          function canAccessFeatureGroup(group) {
+            return (
+              A.hasPlanAccess(user, "semua") ||
+              A.hasPlanAccess(user, group) ||
+              (group === "rencana" && A.hasPlanAccess(user, "tools"))
+            );
+          }
           var planningActions = document.querySelector(".hero-actions");
           if (planningActions)
             planningActions.classList.toggle(
               "hidden",
-              !A.hasPlanAccess(user, "rencana"),
+              !canAccessFeatureGroup("rencana"),
             );
 
           function promptForView(name) {
             var group = featureGroups[name];
             if (!group) return;
-            title.textContent = "Perlu paket " + packageNames[group];
+            title.textContent = "Perlu " + packageNames[group];
             message.textContent =
-              "Fitur ini termasuk paket " +
+              "Fitur ini termasuk dalam " +
               packageNames[group] +
               ". Beli paket tersebut untuk membuka fitur ini.";
             purchase.href = "index.html?paket=" + group;
-            purchase.textContent = "Lihat paket " + packageNames[group];
+            purchase.textContent = "Lihat " + packageNames[group];
             if (!dialog.open) dialog.showModal();
           }
 
           document.querySelectorAll(".primary-tab").forEach(function (tab) {
             var group = featureGroups[tab.dataset.view],
-              locked = group && !A.hasPlanAccess(user, group);
+              locked = group && !canAccessFeatureGroup(group);
             tab.classList.toggle("package-locked", !!locked);
             tab.setAttribute("aria-disabled", String(!!locked));
-            tab.title = locked ? "Perlu paket " + packageNames[group] : "";
+            tab.title = locked ? "Perlu " + packageNames[group] : "";
             var mark = tab.querySelector(".package-lock");
             if (locked && !mark) {
               mark = document.createElement("span");
@@ -23534,13 +23734,10 @@
             }
           });
 
-          window.RCView.restrict(
-            function (name) {
-              var group = featureGroups[name];
-              return !group || A.hasPlanAccess(user, group);
-            },
-            promptForView,
-          );
+          window.RCView.restrict(function (name) {
+            var group = featureGroups[name];
+            return !group || canAccessFeatureGroup(group);
+          }, promptForView);
           dialog.addEventListener("click", function (event) {
             if (
               event.target === dialog ||
@@ -23591,7 +23788,7 @@
             access = "Paket aktif: <b>" + accessParts.join(" · ") + "</b>";
           }
           bar.innerHTML =
-            '<div class="b-in"><span>KPR PINTAR · ' +
+            '<div class="b-in"><span>KPR Planner · ' +
             access +
             '</span><span class="b-r"><span>' +
             escapeHtml(user.nama || user.email) +
@@ -23607,7 +23804,10 @@
         }
 
         function showFailure(error) {
-          var detail = error && error.message ? error.message : "Terjadi masalah saat memuat halaman.";
+          var detail =
+            error && error.message
+              ? error.message
+              : "Terjadi masalah saat memuat halaman.";
           var lower = detail.toLowerCase();
           var suggestion =
             lower.indexOf("supabase") !== -1 ||
@@ -23670,6 +23870,5 @@
           .catch(showFailure);
       })();
     </script>
-
   </body>
 </html>

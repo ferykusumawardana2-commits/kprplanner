@@ -4,14 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>
-      KPR PINTAR — Simulator KPR: beli rumah sekarang atau menabung dulu
+      KPR Planner — Simulator KPR: beli rumah sekarang atau menabung dulu
     </title>
     <meta
       name="description"
       content="Simulator KPR yang membandingkan ambil KPR sekarang dengan menabung dulu. Subsidi dan Premium, bunga bertahap, arus kas per tahun, dan rekomendasi dari angkamu sendiri."
     />
     <meta name="theme-color" content="#147fa6" />
-    <meta property="og:title" content="KPR PINTAR — Simulator KPR" />
+    <meta property="og:title" content="KPR Planner — Simulator KPR" />
     <meta
       property="og:description"
       content="Beli rumah sekarang, atau menabung dulu? Bandingkan dua strategi KPR dari angkamu sendiri."
@@ -983,7 +983,7 @@
   <body>
     <header class="nav" id="top">
       <div class="container">
-        <a class="brand" href="index.html" aria-label="KPR PINTAR — beranda">
+        <a class="brand" href="index.html" aria-label="KPR Planner — beranda">
           <span class="brand-mark"
             ><svg
               viewBox="0 0 24 24"
@@ -996,7 +996,7 @@
               <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />
               <path d="M9 21v-8h6v8" /></svg
           ></span>
-          <span><b>KPR PINTAR</b><small>by AF Creative Media</small></span>
+          <span><b>KPR Planner</b><small>by AF Creative Media</small></span>
         </a>
         <nav class="nav-links" aria-label="Menu utama">
           <a href="#masalah">Kenapa perlu</a><a href="#fitur">Fitur</a
@@ -1244,7 +1244,7 @@
                   width="1600"
                   height="937"
                   loading="lazy"
-                  alt="Tabel ikhtisar dua strategi di KPR PINTAR"
+                  alt="Tabel ikhtisar dua strategi di KPR Planner"
                 />
               </div>
             </article>
@@ -1432,7 +1432,7 @@
               </div>
               <div class="frame">
                 <div class="frame-bar">
-                  <i></i><i></i><i></i><span>KPR PINTAR — Simulator KPR</span>
+                  <i></i><i></i><i></i><span>KPR Planner — Simulator KPR</span>
                 </div>
                 <img
                   id="shotImg"
@@ -1453,7 +1453,7 @@
                   src="assets/img/app-mobile.webp"
                   width="780"
                   height="1560"
-                  alt="Tampilan KPR PINTAR di layar HP"
+                  alt="Tampilan KPR Planner di layar HP"
                 />
               </div>
             </div>
@@ -1469,7 +1469,7 @@
             <details>
               <summary>Apakah hasilnya sama dengan hitungan bank?</summary>
               <p>
-                Tidak selalu. KPR PINTAR memakai perhitungan anuitas dari angka
+                Tidak selalu. KPR Planner memakai perhitungan anuitas dari angka
                 yang kamu isi, jadi hasilnya perkiraan. Persetujuan, plafon,
                 bunga final, dan biaya tambahan tetap ditentukan bank dan
                 developer. Gunakan hasilnya untuk mempersiapkan diri sebelum
@@ -1523,7 +1523,7 @@
               <summary>Apa arti paket Lifetime?</summary>
               <p>
                 Akses tanpa batas waktu untuk akunmu, tanpa biaya perpanjangan,
-                selama layanan KPR PINTAR masih berjalan. Rinciannya ada di
+                selama layanan KPR Planner masih berjalan. Rinciannya ada di
                 Syarat &amp; Ketentuan.
               </p>
             </details>
@@ -1590,7 +1590,7 @@
                   <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />
                   <path d="M9 21v-8h6v8" /></svg></span
               ><span
-                ><b>KPR PINTAR</b><small>by AF Creative Media</small></span
+                ><b>KPR Planner</b><small>by AF Creative Media</small></span
               ></a
             >
             <p style="margin-top: 14px; max-width: 38ch">
@@ -1628,7 +1628,7 @@
           penawaran, persetujuan, ataupun nasihat keuangan dari bank, developer,
           maupun kami. Bunga, DP, dan syarat KPR berbeda di tiap bank dan dapat
           berubah, jadi selalu konfirmasikan ke pihak bank sebelum mengambil
-          keputusan.<br />© 2026 KPR PINTAR by AF Creative Media.
+          keputusan.<br />© 2026 KPR Planner by AF Creative Media.
         </p>
       </div>
     </footer>
@@ -1673,16 +1673,21 @@
         };
         var requestedPackage = new URLSearchParams(location.search).get("paket");
         var packageLabels = {
-          rencana: "Rencana Rumahku",
-          tools: "Financial Tools",
+          rencana: "Paket 1",
+          tools: "Paket 2",
+          semua: "Paket 3",
         };
         if (packageLabels[requestedPackage]) {
           $("subscriptionTitle").textContent =
-            "Paket " + packageLabels[requestedPackage];
+            requestedPackage === "semua"
+              ? packageLabels[requestedPackage]
+              : packageLabels[requestedPackage] + " & Upgrade";
           $("subscriptionDescription").textContent =
-            "Pilih akses " +
-            packageLabels[requestedPackage] +
-            ". Akses dibuka setelah pembayaran diverifikasi.";
+            requestedPackage === "semua"
+              ? "Pilih Paket 3. Akses dibuka setelah pembayaran diverifikasi."
+              : "Pilih " +
+                packageLabels[requestedPackage] +
+                " atau paket lebih tinggi. Harga upgrade dihitung otomatis jika kamu memiliki paket aktif.";
         }
 
         /* ---------- simulasi cepat: kapan DP cukup ---------- */
@@ -1913,23 +1918,55 @@
 
         /* ---------- harga ---------- */
         var CHECK = RCUI.icon.check;
-        function planCard(p, user) {
+        function packageGroupLabel(group) {
+          return group === "rencana"
+            ? "Paket 1"
+            : group === "tools"
+              ? "Paket 2"
+              : "Paket 3";
+        }
+        function planCard(p, user, orders) {
           var life = p.durasi_hari == null,
             group = RCApi.planGroup(p),
             admin = !!(user && user.is_admin),
             legacy = !!(user && RCApi.hasLegacyAccess(user)),
             own =
               !admin && !legacy && RCApi.hasPlanAccess(user, group),
-            isLife = !admin && RCApi.hasLifetimeAccess(user, group);
-          var per = life
-            ? "sekali bayar, tanpa batas waktu"
-            : "untuk " + RCApi.durasiLabel(p.durasi_hari);
-          var eq =
-            !life && p.durasi_hari >= 90
+            isLife = !admin && RCApi.hasLifetimeAccess(user, group),
+            quote = RCApi.quoteUpgrade(user, p, orders),
+            upgrade = quote;
+          var per = upgrade
+            ? "Upgrade dari " +
+              packageGroupLabel(upgrade.group) +
+              " · " +
+              (upgrade.lifetime
+                ? "masa aktif seumur hidup"
+                : "sampai " + RCApi.tgl(upgrade.expiry))
+            : life
+              ? "sekali bayar, tanpa batas waktu"
+              : "untuk " + RCApi.durasiLabel(p.durasi_hari);
+          var eq = upgrade
+            ? upgrade.total === 0
+              ? "Harga normal " +
+                RCApi.rp(p.harga) +
+                " tertutup kredit " +
+                RCApi.rp(upgrade.credit) +
+                (upgrade.surplus
+                  ? " · sisa " +
+                    RCApi.rp(upgrade.surplus) +
+                    " dibawa ke upgrade berikutnya"
+                  : " · akses langsung tanpa transfer")
+              : "Harga normal " +
+                RCApi.rp(p.harga) +
+                " − kredit " +
+                RCApi.rp(upgrade.credit) +
+                " · tanpa kode unik"
+            : !life && p.durasi_hari >= 90
               ? "≈ " +
                 RCApi.rp(Math.round(p.harga / (p.durasi_hari / 30))) +
                 " per bulan"
               : "";
+          var price = upgrade ? upgrade.total : p.harga;
           var label;
           if (admin) label = "Pilih paket " + p.nama;
           else if (isLife) label = "Kamu sudah Lifetime";
@@ -1950,7 +1987,7 @@
             RCUI.esc(p.deskripsi || "") +
             "</p>" +
             '<div class="price">' +
-            RCApi.rp(p.harga) +
+            RCApi.rp(price) +
             '</div><div class="per">' +
             per +
             '</div><div class="eq">' +
@@ -1984,21 +2021,27 @@
         }
         RCUI.start().then(function (user) {
           if (user === null && RCApi.blocked) return;
-          RCApi.getPlans().then(
-            function (plans) {
+          var orderRequest =
+            user && !user.is_admin
+              ? RCApi.getMyOrders()
+              : Promise.resolve([]);
+          Promise.all([RCApi.getPlans(), orderRequest]).then(
+            function (result) {
+              var plans = result[0],
+                orders = result[1],
+                packageRanks = { rencana: 1, tools: 2, semua: 3 },
+                minimumRank = packageRanks[requestedPackage] || 0;
               var visiblePlans = plans.filter(function (p) {
                 return (
-                  !packageLabels[requestedPackage] ||
-                  RCApi.planGroup(p) === requestedPackage ||
-                  RCApi.planGroup(p) === "semua"
+                  !minimumRank ||
+                  (packageRanks[RCApi.planGroup(p)] || 0) >= minimumRank
                 );
               });
               if (!visiblePlans.length) {
                 $("subscriptionPlans").innerHTML =
                   '<div class="plans-state">' +
                   (packageLabels[requestedPackage]
-                    ? "Paket " +
-                      RCUI.esc(packageLabels[requestedPackage]) +
+                    ? RCUI.esc(packageLabels[requestedPackage]) +
                       " belum tersedia."
                     : "Paket belum tersedia.") +
                   " Silakan kembali lagi nanti.</div>";
@@ -2007,7 +2050,7 @@
               $("subscriptionPlans").innerHTML =
                 visiblePlans
                   .map(function (p) {
-                    return planCard(p, user);
+                    return planCard(p, user, orders);
                   })
                   .join("");
             },

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <title>Pembayaran — KPR PINTAR</title>
+    <title>Pembayaran — KPR Planner</title>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23147fa6'/%3E%3Cpath d='m14 31 18-14 18 14v18a2 2 0 0 1-2 2H16a2 2 0 0 1-2-2z' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E"
@@ -118,6 +118,26 @@
       .bank .an {
         font-size: 13.5px;
         color: var(--muted);
+      }
+      .bank .qr-transfer {
+        display: grid;
+        justify-items: center;
+        gap: 5px;
+        width: 140px;
+      }
+      .bank .qr-transfer img {
+        display: block;
+        width: 130px;
+        height: 130px;
+        object-fit: contain;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+      }
+      .bank .qr-transfer span {
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
       }
       .form {
         display: grid;
@@ -347,7 +367,7 @@
             >
               <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />
               <path d="M9 21v-8h6v8" /></svg></span
-          ><span><b>KPR PINTAR</b><small>by AF Creative Media</small></span></a
+          ><span><b>KPR Planner</b><small>by AF Creative Media</small></span></a
         >
         <nav class="nav-links" aria-label="Menu">
           <a href="index.html?paket=semua">Paket harga</a
@@ -386,7 +406,7 @@
     <footer class="site-foot">
       <div class="container" style="padding: 24px 0">
         <p class="foot-note" style="margin: 0; padding: 0; border: 0">
-          © 2026 KPR PINTAR by AF Creative Media. ·
+          © 2026 KPR Planner by AF Creative Media. ·
           <a href="legal.html#syarat">Syarat &amp; Ketentuan</a> ·
           <a href="legal.html#privasi">Kebijakan Privasi</a>
         </p>
@@ -443,28 +463,80 @@
           return /^62[1-9]\d{7,12}$/.test(number) ? number : "";
         }
         function waLink(msg) {
-          var n = settings && settings.bisnis.whatsapp;
+          var n = normalizeWhatsApp(settings && settings.bisnis.whatsapp);
           return n
             ? "https://wa.me/" + n + "?text=" + encodeURIComponent(msg)
             : "";
         }
+        function paymentWhatsAppMessage(o) {
+          return (
+            "Halo admin, saya sudah transfer " +
+            A.rp(o.total) +
+            " untuk paket " +
+            o.plan_nama +
+            " (pesanan #" +
+            short(o.id) +
+            ").\nNama pengirim: " +
+            (o.nama_pengirim || "–") +
+            "\nBank/e-wallet: " +
+            (o.bank_pengirim || "–") +
+            "\nTanggal transfer: " +
+            A.tgl(o.tgl_transfer) +
+            "\nNomor kontak WhatsApp: +" +
+            (o.nomor_telepon || "") +
+            "\nBukti transfer sudah saya unggah. Mohon dicek, terima kasih."
+          );
+        }
+        function packageLabel(group) {
+          return group === "rencana"
+            ? "Paket 1"
+            : group === "tools"
+              ? "Paket 2"
+              : "Paket 3";
+        }
 
         function summary(o) {
           var canCancel =
-            o.status === "menunggu_bayar" || o.status === "ditolak";
+              o.status === "menunggu_bayar" || o.status === "ditolak",
+            isUpgrade = (o.harga_upgrade_kredit || 0) > 0,
+            upgradeSurplus = isUpgrade
+              ? Math.max(0, o.harga_upgrade_kredit - o.harga_dasar)
+              : 0;
           return (
             '<aside class="blk sum" aria-label="Ringkasan pesanan"><h2>Ringkasan pesanan</h2><dl>' +
             "<div><dt>Paket</dt><dd>" +
             U.esc(o.plan_nama) +
             "</dd></div>" +
             "<div><dt>Akses</dt><dd>" +
-            (o.durasi_hari == null
-              ? "Seumur hidup"
-              : A.durasiLabel(o.durasi_hari)) +
+            (isUpgrade
+              ? o.upgrade_lifetime
+                ? "Seumur hidup"
+                : "Sampai " + A.tgl(o.upgrade_akses_sampai)
+              : o.durasi_hari == null
+                ? "Seumur hidup"
+                : A.durasiLabel(o.durasi_hari)) +
             "</dd></div>" +
-            "<div><dt>Harga paket</dt><dd>" +
-            A.rp(o.harga_dasar) +
-            "</dd></div>" +
+            (isUpgrade
+              ? "<div><dt>Upgrade dari</dt><dd>" +
+                packageLabel(o.upgrade_dari) +
+                "</dd></div><div><dt>Harga paket tujuan</dt><dd>" +
+                A.rp(o.harga_dasar) +
+                "</dd></div><div><dt>Kredit paket sebelumnya</dt><dd>−" +
+                A.rp(o.harga_upgrade_kredit) +
+                "</dd></div>" +
+                (upgradeSurplus
+                  ? "<div><dt>Sisa kredit untuk upgrade berikutnya</dt><dd>" +
+                    A.rp(upgradeSurplus) +
+                    "</dd></div>"
+                  : "") +
+                (o.upgrade_lifetime
+                  ? "<div><dt>Batas persetujuan</dt><dd>Selama paket Lifetime aktif</dd></div>"
+                  : "<div><dt>Batas persetujuan upgrade</dt><dd>" +
+                    A.tglJam(o.upgrade_akses_sampai) +
+                    "</dd></div>")
+              : "<div><dt>Harga paket</dt><dd>" +
+                A.rp(o.harga_dasar) +
+                "</dd></div>") +
             (o.kode_unik
               ? "<div><dt>Kode unik</dt><dd>" +
                 A.rp(o.kode_unik) +
@@ -513,6 +585,13 @@
                   '</div><div class="an">a.n. ' +
                   U.esc(b.atas_nama) +
                   "</div></div>" +
+                  (b.qr_image
+                    ? '<div class="qr-transfer"><img src="' +
+                      U.esc(b.qr_image) +
+                      '" alt="QR pembayaran ' +
+                      U.esc(b.bank) +
+                      '"><span>Pindai QR dan pastikan nominal sesuai tagihan</span></div>'
+                    : "") +
                   '<button class="btn btn-ghost btn-sm" type="button" data-copy="' +
                   U.esc(String(b.nomor).replace(/\s/g, "")) +
                   '" data-label="Nomor rekening">' +
@@ -544,10 +623,10 @@
             '</datalist><span class="errmsg" id="eBank" hidden></span></div></div>' +
             '<div class="field"><label for="fWa">Nomor WhatsApp</label><input class="inp" id="fWa" type="tel" inputmode="tel" autocomplete="tel" value="' +
             U.esc(wa) +
-            '" placeholder="081234567890"><span class="hint">Nomor ini menerima notifikasi saat bukti pembayaran berhasil dikirim. Masukkan nomor aktif, misalnya 0812… atau +62812…</span><span class="errmsg" id="eWa" hidden></span></div>' +
+            '" placeholder="081234567890"><span class="hint">Nomor ini dapat digunakan admin untuk menghubungimu terkait pembayaran. Masukkan nomor aktif, misalnya 0812… atau +62812…</span><span class="errmsg" id="eWa" hidden></span></div>' +
             '<label class="wa-consent"><input type="checkbox" id="fWaConsent"' +
             (o.whatsapp_opt_in ? " checked" : "") +
-            '> Saya setuju menerima notifikasi WhatsApp terkait pembayaran ini.</label><span class="errmsg" id="eWaConsent" hidden></span>' +
+            '> Saya setuju dihubungi admin melalui WhatsApp terkait pembayaran ini.</label><span class="errmsg" id="eWaConsent" hidden></span>' +
             '<div class="field"><label for="fTgl">Tanggal transfer</label><input class="inp" id="fTgl" type="date" value="' +
             (o.tgl_transfer || today()) +
             '" max="' +
@@ -664,7 +743,7 @@
             whatsappOptIn,
             "fWaConsent",
             "eWaConsent",
-            "Setujui notifikasi WhatsApp untuk melanjutkan.",
+            "Setujui untuk dihubungi admin via WhatsApp terkait pembayaran.",
           );
           chk(!!tgl, "fTgl", "eTgl", "Pilih tanggal transfer.");
           var hasFile = !!file;
@@ -687,6 +766,18 @@
             return;
           }
           var btn = $("sendBtn");
+          var whatsappWindow = null;
+          if (
+            A.mode === "supabase" &&
+            normalizeWhatsApp(settings && settings.bisnis.whatsapp)
+          ) {
+            whatsappWindow = window.open("about:blank", "_blank");
+            if (whatsappWindow) {
+              whatsappWindow.document.title = "Menyiapkan WhatsApp";
+              whatsappWindow.document.body.textContent =
+                "Konfirmasi pembayaran sedang disimpan. Chat WhatsApp akan dibuka setelah berhasil.";
+            }
+          }
           btn.disabled = true;
           btn.innerHTML = '<span class="spin"></span>Mengirim…';
           A.uploadProof(file, order.id)
@@ -708,28 +799,35 @@
               window.scrollTo({ top: 0, behavior: "smooth" });
               if (A.mode !== "supabase") {
                 U.toast(
-                  "Konfirmasi demo terkirim. Notifikasi WhatsApp tidak dikirim dalam mode demo.",
+                  "Konfirmasi demo tersimpan. Tidak ada pesan WhatsApp yang dikirim dalam mode demo.",
                   "ok",
                 );
                 return;
               }
-              return A.sendPaymentNotification(o.id).then(
-                function () {
-                  U.toast(
-                    "Konfirmasi terkirim dan notifikasi WhatsApp sudah dikirim.",
-                    "ok",
-                  );
-                },
-                function (e) {
-                  U.toast(
-                    "Konfirmasi terkirim, tetapi notifikasi WhatsApp gagal: " +
-                      e.message,
-                    "bad",
-                  );
-                },
-              );
+              var whatsappUrl = waLink(paymentWhatsAppMessage(o));
+              if (whatsappWindow && whatsappUrl && !whatsappWindow.closed) {
+                whatsappWindow.opener = null;
+                whatsappWindow.location.href = whatsappUrl;
+                U.toast(
+                  "Konfirmasi tersimpan. Periksa pesan di WhatsApp lalu tekan Kirim.",
+                  "ok",
+                );
+              } else if (whatsappUrl) {
+                U.toast(
+                  "Konfirmasi tersimpan. Lanjutkan melalui tombol WhatsApp untuk mengirim pesan ke admin.",
+                  "ok",
+                );
+              } else {
+                U.toast(
+                  "Konfirmasi tersimpan, tetapi nomor WhatsApp admin belum diatur. Admin dapat memeriksa pesanan di panel.",
+                  "ok",
+                );
+              }
             })
             .catch(function (e) {
+              if (whatsappWindow && !whatsappWindow.closed) {
+                whatsappWindow.close();
+              }
               btn.disabled = false;
               btn.textContent = "Kirim konfirmasi pembayaran";
               U.toast(e.message, "bad");
@@ -739,7 +837,7 @@
         function render() {
           var o = order,
             main = "";
-          document.title = "Pembayaran #" + short(o.id) + " — KPR PINTAR";
+          document.title = "Pembayaran #" + short(o.id) + " — KPR Planner";
           clearInterval(poll);
           if (o.status === "menunggu_bayar" || o.status === "ditolak") {
             var rj =
@@ -781,19 +879,19 @@
               "</section>" +
               formBlock(o);
           } else if (o.status === "menunggu_verifikasi") {
-            var wa = waLink(
-              "Halo admin, saya sudah transfer " +
-                A.rp(o.total) +
-                " untuk paket " +
-                o.plan_nama +
-                " (pesanan #" +
-                short(o.id) +
-                "). Mohon dicek ya, terima kasih.",
-            );
+            var wa =
+              A.mode === "supabase"
+                ? waLink(paymentWhatsAppMessage(o))
+                : "";
             main =
               '<section class="blk done"><div class="big blue">' +
               U.icon.check +
-              "</div><h2>Konfirmasi terkirim</h2><p>Admin sedang memeriksa pembayaranmu. Setelah disetujui, akses kalkulator terbuka otomatis dan halaman ini akan ikut diperbarui.</p>" +
+              "</div><h2>Konfirmasi tersimpan</h2><p>Admin sedang memeriksa pembayaranmu. Jika melanjutkan ke WhatsApp, periksa draf pesan dan tekan Kirim agar admin menerima pemberitahuan. Setelah pembayaran disetujui, akses kalkulator terbuka otomatis.</p>" +
+              (o.harga_upgrade_kredit > 0 && !o.upgrade_lifetime
+                ? '<p class="hint">Upgrade harus disetujui sebelum paket sebelumnya berakhir: <b>' +
+                  A.tglJam(o.upgrade_akses_sampai) +
+                  "</b>.</p>"
+                : "") +
               '<dl class="det"><div><dt>Pengirim</dt><dd>' +
               U.esc(o.nama_pengirim || "–") +
               "</dd></div><div><dt>Bank / e-wallet</dt><dd>" +
@@ -807,18 +905,24 @@
               (wa
                 ? '<a class="btn btn-aqua" target="_blank" rel="noopener" href="' +
                   U.esc(wa) +
-                  '">Beri tahu admin via WhatsApp</a>'
+                  '">Lanjutkan ke WhatsApp</a>'
                 : "") +
               "</div></section>";
             poll = setInterval(refresh, 20000);
           } else if (o.status === "disetujui") {
+            var freeUpgrade =
+              (o.harga_upgrade_kredit || 0) > 0 && o.total === 0;
             main =
               '<section class="blk done"><div class="big">' +
               U.icon.check +
-              "</div><h2>Pembayaran disetujui</h2><p>" +
-              (o.durasi_hari == null
-                ? "Aksesmu sekarang berlaku seumur hidup."
-                : "Aksesmu sudah aktif.") +
+              "</div><h2>" +
+              (freeUpgrade ? "Upgrade berhasil" : "Pembayaran disetujui") +
+              "</h2><p>" +
+              (freeUpgrade
+                ? "Selisih harga tertutup oleh kredit paket sebelumnya. Akses barumu sudah aktif tanpa transfer."
+                : o.durasi_hari == null
+                  ? "Aksesmu sekarang berlaku seumur hidup."
+                  : "Aksesmu sudah aktif.") +
               ' Selamat menghitung rencana rumahmu.</p><div class="row"><a class="btn btn-primary btn-lg" href="app.html">Buka kalkulator</a><a class="btn btn-ghost btn-lg" href="akun.html">Lihat akun</a></div></section>';
           } else {
             main =

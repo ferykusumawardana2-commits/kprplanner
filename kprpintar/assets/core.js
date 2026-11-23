@@ -1,4 +1,4 @@
-/* KPR PINTAR — lapisan data.
+/* KPR Planner — lapisan data.
    Satu antarmuka (window.RCApi), dua penyedia data:
      • Supabase  (SUPABASE_URL + SUPABASE_ANON_KEY terisi di config.js)
      • Demo      (data di localStorage browser, untuk mencoba tampilan)
@@ -115,6 +115,77 @@
     if (!p) return "semua";
     return packageGroupForId(p.id) || p.akses_grup || "semua";
   }
+  function activePackage(p) {
+    if (!p) return null;
+    if (p.lifetime || (p.akses_sampai && new Date(p.akses_sampai) > Date.now()))
+      return {
+        group: "semua",
+        expiry: p.akses_sampai,
+        lifetime: !!p.lifetime,
+      };
+    if (
+      p.tools_lifetime ||
+      (p.akses_tools_sampai && new Date(p.akses_tools_sampai) > Date.now())
+    )
+      return {
+        group: "tools",
+        expiry: p.akses_tools_sampai,
+        lifetime: !!p.tools_lifetime,
+      };
+    if (
+      p.rencana_lifetime ||
+      (p.akses_rencana_sampai &&
+        new Date(p.akses_rencana_sampai) > Date.now())
+    )
+      return {
+        group: "rencana",
+        expiry: p.akses_rencana_sampai,
+        lifetime: !!p.rencana_lifetime,
+      };
+    return null;
+  }
+  function orderUpgradeBasis(o) {
+    var credit = Number(o.harga_upgrade_kredit) || 0;
+    return credit > 0
+      ? credit + (Number(o.total) || 0) - (Number(o.kode_unik) || 0)
+      : Number(o.harga_dasar) || 0;
+  }
+  function quoteUpgrade(user, targetPlan, orders) {
+    var current = activePackage(user),
+      ranks = { rencana: 1, tools: 2, semua: 3 };
+    if (
+      !user ||
+      user.is_admin ||
+      !current ||
+      (ranks[planGroup(targetPlan)] || 0) <= ranks[current.group]
+    )
+      return null;
+    var priorOrder = (orders || [])
+      .filter(function (o) {
+        return (
+          o.user_id === user.id &&
+          o.status === "disetujui" &&
+          (packageGroupForId(o.plan_id) || o.akses_grup || "semua") ===
+            current.group
+        );
+      })
+      .sort(function (a, b) {
+        return (
+          new Date(b.diproses_at || b.created_at) -
+          new Date(a.diproses_at || a.created_at)
+        );
+      })[0];
+    if (!priorOrder || !(priorOrder.harga_dasar > 0)) return null;
+      var credit = orderUpgradeBasis(priorOrder);
+    return {
+      group: current.group,
+      expiry: current.expiry,
+      lifetime: current.lifetime,
+        credit: credit,
+        surplus: Math.max(0, credit - targetPlan.harga),
+        total: Math.max(0, targetPlan.harga - credit),
+    };
+  }
   function hasAccess(p) {
     return hasPlanAccess(p, "rencana") || hasPlanAccess(p, "tools");
   }
@@ -149,32 +220,6 @@
       );
     return new Error(m);
   }
-  function edgeFunctionError(e) {
-    var response = e && e.context;
-    if (!response || typeof response.clone !== "function")
-      return Promise.resolve(nice(e));
-    return response
-      .clone()
-      .json()
-      .then(
-        function (body) {
-          if (response.status === 404 && body && body.code === "NOT_FOUND")
-            return new Error(
-              "Fungsi WhatsApp belum di-deploy ke proyek Supabase ini.",
-            );
-          var message =
-            body && typeof body.message === "string"
-              ? body.message
-              : body && typeof body.error === "string"
-                ? body.error
-                : "";
-          return new Error(message || nice(e).message);
-        },
-        function () {
-          return nice(e);
-        },
-      );
-  }
   function must(res) {
     if (res && res.error) throw nice(res.error);
     return res ? res.data : null;
@@ -197,7 +242,7 @@
       p = raw.pembayaran || {};
     return {
       bisnis: {
-        nama: b.nama || "KPR PINTAR",
+        nama: b.nama || "KPR Planner",
         by: b.by || "AF Creative Media",
         whatsapp: (b.whatsapp || "").replace(/[^0-9]/g, ""),
         email: b.email || "",
@@ -293,6 +338,7 @@
     hasPlanAccess: hasPlanAccess,
     hasLifetimeAccess: hasLifetimeAccess,
     planGroup: planGroup,
+    quoteUpgrade: quoteUpgrade,
     sisaHari: sisaHari,
     durasiLabel: durasiLabel,
     slug: slug,
@@ -566,17 +612,6 @@
         })
         .then(must);
     },
-    sendPaymentNotification: function (orderId) {
-      return A._sb.functions
-        .invoke("send-payment-whatsapp", { body: { order_id: orderId } })
-        .then(function (res) {
-          if (res.error)
-            return edgeFunctionError(res.error).then(function (error) {
-              throw error;
-            });
-          return res.data;
-        });
-    },
     cancelOrder: function (id) {
       return A._sb.rpc("cancel_order", { p_order_id: id }).then(must);
     },
@@ -662,22 +697,30 @@
       {
         id: "rencana-rumahku",
         nama: "Rencana Rumahku",
-        deskripsi: "Akses fitur perencanaan rumah dan simulasi KPR.",
+        deskripsi: "Akses Ringkasan, Isian Data, dan Informasi Simulasi.",
         harga: 0,
         durasi_hari: 30,
         akses_grup: "rencana",
-        fitur: ["Isian Data", "Informasi Simulasi", "Catatan Kas"],
+        fitur: ["Ringkasan", "Isian Data", "Informasi Simulasi"],
         aktif: false,
         urutan: 1,
       },
       {
         id: "financial-tools",
         nama: "Financial Tools",
-        deskripsi: "Akses alat bantu analisis keuangan KPR.",
+        deskripsi:
+          "Akses fitur Paket 1 serta Arus Kas, Health Check, dan Catatan Kas.",
         harga: 0,
         durasi_hari: 30,
         akses_grup: "tools",
-        fitur: ["Health Check", "Pelunasan Dipercepat", "Take Over KPR"],
+        fitur: [
+          "Ringkasan",
+          "Isian Data",
+          "Informasi Simulasi",
+          "Arus Kas",
+          "Health Check",
+          "Catatan Kas",
+        ],
         aktif: false,
         urutan: 2,
       },
@@ -783,7 +826,7 @@
       ].concat(demoAccessPlans()),
       settings: {
         bisnis: {
-          nama: "KPR PINTAR",
+          nama: "KPR Planner",
           by: "AF Creative Media",
           whatsapp: "",
           email: "",
@@ -996,9 +1039,13 @@
             return p.id === planId && p.aktif;
           })[0];
         if (!pl) throw new Error("Paket tidak tersedia.");
-          if (!(pl.harga > 0))
-            throw new Error("Harga paket belum ditentukan oleh admin.");
-          var group = planGroup(pl);
+        if (!(pl.harga > 0))
+          throw new Error("Harga paket belum ditentukan oleh admin.");
+        var group = planGroup(pl),
+          upgrade = quoteUpgrade(u, pl, db.orders);
+        if (upgrade && upgrade.error) throw new Error(upgrade.error);
+        var upgradeCredit = upgrade ? upgrade.credit : 0,
+          freeUpgrade = !!(upgrade && upgrade.total === 0);
         var open = db.orders
           .filter(function (o) {
             return o.user_id === u.id && pending(o);
@@ -1017,7 +1064,9 @@
         var pakai = db.settings.pembayaran.kode_unik !== false,
           kode = 0,
           total = pl.harga;
-        if (pakai && pl.harga > 0) {
+        if (upgradeCredit > 0) {
+          total = Math.max(0, pl.harga - upgradeCredit);
+        } else if (pakai && pl.harga > 0) {
           for (var i = 0; i < 60; i++) {
             kode = 1 + Math.floor(Math.random() * 999);
             total = pl.harga + kode;
@@ -1029,6 +1078,7 @@
               break;
           }
         }
+        var now = new Date().toISOString();
         var o = {
           id: uuid(),
           user_id: u.id,
@@ -1039,7 +1089,12 @@
           harga_dasar: pl.harga,
           kode_unik: kode,
           total: total,
-          status: "menunggu_bayar",
+          harga_upgrade_kredit: upgradeCredit,
+          upgrade_dari: upgrade ? upgrade.group : null,
+          upgrade_akses_sampai:
+            upgrade && !upgrade.lifetime ? upgrade.expiry : null,
+          upgrade_lifetime: !!(upgrade && upgrade.lifetime),
+          status: freeUpgrade ? "disetujui" : "menunggu_bayar",
           bukti_path: null,
           nama_pengirim: null,
           bank_pengirim: null,
@@ -1047,10 +1102,41 @@
           catatan: null,
           alasan_tolak: null,
           dikirim_at: null,
-          diproses_at: null,
+          diproses_at: freeUpgrade ? now : null,
           diproses_oleh: null,
-          created_at: new Date().toISOString(),
+          created_at: now,
         };
+        if (freeUpgrade) {
+          if (upgrade.lifetime && group === "tools") {
+            u.tools_lifetime = true;
+            u.akses_tools_sampai = null;
+          } else if (upgrade.lifetime && group === "semua") {
+            u.lifetime = true;
+            u.akses_sampai = null;
+            u.plan_id = pl.id;
+          } else if (
+            !upgrade.lifetime &&
+            upgrade.expiry &&
+            new Date(upgrade.expiry) > Date.now() &&
+            group === "tools"
+          ) {
+            u.tools_lifetime = false;
+            u.akses_tools_sampai = upgrade.expiry;
+          } else if (
+            !upgrade.lifetime &&
+            upgrade.expiry &&
+            new Date(upgrade.expiry) > Date.now() &&
+            group === "semua"
+          ) {
+            u.lifetime = false;
+            u.akses_sampai = upgrade.expiry;
+            u.plan_id = pl.id;
+          } else {
+            throw new Error(
+              "Masa aktif paket asal berakhir atau grup paket tujuan tidak valid.",
+            );
+          }
+        }
         db.orders.push(o);
         dbSave();
         return copy(o);
@@ -1118,7 +1204,9 @@
         if (!/^62[1-9]\d{7,12}$/.test(f.nomor_telepon || ""))
           throw new Error("Masukkan nomor WhatsApp Indonesia yang valid.");
         if (!f.whatsapp_opt_in)
-          throw new Error("Setujui notifikasi WhatsApp untuk melanjutkan.");
+          throw new Error(
+            "Setujui untuk dihubungi admin via WhatsApp terkait pembayaran.",
+          );
         o.status = "menunggu_verifikasi";
         o.bukti_path = f.bukti_path;
         o.nama_pengirim = f.nama_pengirim.trim();
@@ -1226,12 +1314,57 @@
           throw new Error("Pesanan ini sudah dibatalkan pembeli.");
         var u = userOf(o.user_id);
         var group =
-          o.plan_id === "rencana-rumahku"
-            ? "rencana"
-            : o.plan_id === "financial-tools"
-              ? "tools"
-              : o.akses_grup || "semua";
-        if (group === "rencana") {
+          packageGroupForId(o.plan_id) || o.akses_grup || "semua";
+        if (o.harga_upgrade_kredit > 0) {
+          var sourceActive = false;
+          if (o.upgrade_lifetime) {
+            sourceActive =
+              (o.upgrade_dari === "rencana" && u.rencana_lifetime) ||
+              (o.upgrade_dari === "tools" && u.tools_lifetime);
+          } else if (o.upgrade_dari === "rencana") {
+            sourceActive =
+              u.akses_rencana_sampai === o.upgrade_akses_sampai &&
+              new Date(u.akses_rencana_sampai) > Date.now() &&
+              new Date(o.upgrade_akses_sampai) > Date.now();
+          } else if (o.upgrade_dari === "tools") {
+            sourceActive =
+              u.akses_tools_sampai === o.upgrade_akses_sampai &&
+              new Date(u.akses_tools_sampai) > Date.now() &&
+              new Date(o.upgrade_akses_sampai) > Date.now();
+          }
+          if (!sourceActive)
+            throw new Error(
+              "Upgrade tidak dapat disetujui karena paket sebelumnya sudah kedaluwarsa atau berubah. Tolak pesanan ini dan minta pembeli membuat pesanan baru.",
+            );
+          if (o.upgrade_lifetime) {
+            if (group === "tools") {
+              u.tools_lifetime = true;
+              u.akses_tools_sampai = null;
+            } else if (group === "semua") {
+              u.lifetime = true;
+              u.akses_sampai = null;
+              u.plan_id = o.plan_id;
+            } else {
+              throw new Error("Grup paket tujuan untuk upgrade tidak valid.");
+            }
+          } else if (
+            !o.upgrade_akses_sampai ||
+            new Date(o.upgrade_akses_sampai) <= Date.now()
+          ) {
+            throw new Error(
+              "Masa aktif paket sebelumnya sudah berakhir. Upgrade tidak dapat disetujui.",
+            );
+          } else if (group === "tools") {
+            u.tools_lifetime = false;
+            u.akses_tools_sampai = o.upgrade_akses_sampai;
+          } else if (group === "semua") {
+            u.lifetime = false;
+            u.akses_sampai = o.upgrade_akses_sampai;
+            u.plan_id = o.plan_id;
+          } else {
+            throw new Error("Grup paket tujuan untuk upgrade tidak valid.");
+          }
+        } else if (group === "rencana") {
           if (o.durasi_hari == null) {
             u.rencana_lifetime = true;
             u.akses_rencana_sampai = null;

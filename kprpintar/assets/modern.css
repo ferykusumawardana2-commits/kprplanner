@@ -1,4 +1,4 @@
-/* KPR PINTAR — visual layer 2026 */
+/* KPR Planner — visual layer 2026 */
 :root {
   --modern-bg: #f3f7f9;
   --modern-ink: #102a43;
@@ -358,5 +358,251 @@ dialog::backdrop {
   }
   .primary-wrap {
     margin-inline: -6px;
+  }
+}
+
+/* KPR Planner visual system: forest green, soft sage, and warm ivory. */
+:root {
+  --ink: #19392f;
+  --ink2: #4f6258;
+  --muted: #748278;
+  --line: #dce5d9;
+  --line2: #c9d7c8;
+  --brand: #3e7654;
+  --brand-d: #25553d;
+  --brand-50: #edf4e9;
+  --aqua: #6b9659;
+  --aqua-d: #355d3d;
+  --aqua-50: #edf4e8;
+  --amber: #e5ad61;
+  --amber-d: #80551e;
+  --amber-50: #fff4e1;
+  --navy: #173b33;
+  --on-navy: #ffffff;
+  --on-navy-2: #d3e2d5;
+  --navy-line: #ffffff24;
+  --paper: #f5f6ef;
+  --white: #ffffff;
+  --modern-bg: #f5f6ef;
+  --modern-ink: #19392f;
+  --modern-brand: #3e7654;
+  --modern-teal: #6b9659;
+  --modern-line: #dce5d9;
+  --modern-shadow: 0 20px 46px -32px rgba(37, 76, 53, .36);
+}
+
+html {
+  scrollbar-color: #b7c8ad #f5f6ef;
+}
+
+body {
+  background:
+    radial-gradient(circle at 8% 2%, rgba(161, 190, 122, .16), transparent 25rem),
+    radial-gradient(circle at 96% 14%, rgba(225, 173, 97, .10), transparent 22rem),
+    #f5f6ef;
+}
+
+:focus-visible {
+  outline-color: #6b9659aa;
+}
+
+.nav {
+  border-color: rgba(207, 219, 202, .9);
+  background: rgba(250, 251, 247, .9);
+}
+
+.brand-mark {
+  background: linear-gradient(145deg, #5c9161, #285943);
+  box-shadow: 0 10px 22px -10px rgba(49, 104, 67, .58);
+}
+
+.nav-links a:hover,
+.menu a:hover,
+.menu button:hover {
+  background: #edf4e9;
+  color: #25553d;
+}
+
+.nav-toggle {
+  border-color: #c9d7c8;
+}
+
+.btn-primary,
+.btn-aqua {
+  background: #3e7654;
+  box-shadow: 0 10px 24px -12px rgba(45, 98, 62, .7);
+}
+
+.btn-primary:hover,
+.btn-aqua:hover {
+  background: #25553d;
+}
+
+.btn-ghost {
+  color: #25553d;
+  border-color: #c9d7c8;
+}
+
+.btn-ghost:hover,
+.btn-light:hover {
+  background: #edf4e9;
+}
+
+.inp:focus,
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #6b9659;
+  box-shadow: 0 0 0 4px rgba(107, 150, 89, .14);
+}
+
+.hero {
+  color: #fff !important;
+  background:
+    radial-gradient(circle at 84% 8%, rgba(210, 232, 142, .2), transparent 20rem),
+    linear-gradient(122deg, #173b33 0%, #285943 60%, #49764c 100%) !important;
+}
+
+.hero::before {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .075) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .075) 1px, transparent 1px) !important;
+  opacity: .7 !important;
+}
+
+.hero h1,
+.hero h1 span {
+  color: #fff !important;
+}
+
+.hero h1 span {
+  color: #d4e987 !important;
+}
+
+.hero .lead,
+.hero-note {
+  color: #e0eadf;
+}
+
+.hero-note svg {
+  color: #d4e987;
+}
+
+.hero .btn-primary {
+  background: #d4e987;
+  color: #19392f;
+  box-shadow: 0 12px 25px -12px rgba(8, 24, 16, .6);
+}
+
+.hero .btn-primary:hover {
+  background: #e0f39e;
+}
+
+.sim,
+.card,
+.panel,
+.blk,
+.price,
+.access,
+.hist {
+  border-color: #dce5d9;
+  box-shadow: 0 18px 42px -32px rgba(37, 76, 53, .42);
+}
+
+.sec.alt {
+  background: linear-gradient(180deg, #eff3e9, #f7f8f2) !important;
+}
+
+.bx.dark,
+.stat.hot,
+.site-foot {
+  background-color: #173b33;
+  border-color: #173b33;
+}
+
+.bx.dark {
+  background: linear-gradient(145deg, #173b33, #285943);
+}
+
+.site-foot {
+  background:
+    radial-gradient(circle at 86% 100%, rgba(212, 233, 135, .12), transparent 20rem),
+    #173b33 !important;
+}
+
+.pill,
+.chip {
+  border-color: #d5e1d1;
+}
+
+.pill.on,
+.chip[aria-pressed="true"] {
+  background: #285943;
+  border-color: #285943;
+  color: #fff;
+}
+
+.amount {
+  background: linear-gradient(135deg, #edf4e9, #f8f8f0) !important;
+  border-color: #dce5d9 !important;
+}
+
+.drop {
+  background: #fafbf7;
+}
+
+.drop:hover,
+.drop.over {
+  border-color: #6b9659;
+  background: #f1f6e9;
+}
+
+.adm .side a:hover,
+.tbl tbody tr:hover,
+.tbl tr.rowlink:hover td {
+  background: #f0f5eb;
+}
+
+.adm .side a[aria-current="page"] {
+  background: #285943;
+  color: #fff;
+}
+
+.stat.hot small {
+  color: #d3e2d5;
+}
+
+.stat.hot b {
+  color: #fff;
+}
+
+.tbl th {
+  background: #f1f5eb;
+}
+
+.page-simple {
+  background:
+    radial-gradient(circle at 100% 0, rgba(107, 150, 89, .1), transparent 28rem),
+    transparent;
+}
+
+@media (max-width: 900px) {
+  .hero .container {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero {
+    padding-block: 48px !important;
+  }
+
+  .hero .container {
+    gap: 28px;
+  }
+
+  .sec {
+    padding-block: 60px;
   }
 }

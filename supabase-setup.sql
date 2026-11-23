@@ -1,5 +1,5 @@
 -- =====================================================================
---  KPR PINTAR — skema database untuk Supabase
+--  KPR Planner — skema database untuk Supabase
 --
 --  Cara pakai: buka Supabase → SQL Editor → New query → tempel SELURUH
 --  isi file ini → Run. Aman dijalankan ulang (idempotent).
@@ -61,7 +61,11 @@ create table if not exists public.orders (
   akses_grup     text not null default 'semua' check (akses_grup in ('semua', 'rencana', 'tools')),
   harga_dasar    bigint not null,
   kode_unik      integer not null default 0,
-  total          bigint not null,                 -- harga_dasar + kode_unik = nominal transfer
+  total          bigint not null,                 -- harga_dasar - kredit upgrade + kode_unik
+  harga_upgrade_kredit bigint not null default 0 check (harga_upgrade_kredit >= 0),
+  upgrade_dari   text check (upgrade_dari is null or upgrade_dari in ('rencana', 'tools')),
+  upgrade_akses_sampai timestamptz,
+  upgrade_lifetime boolean not null default false,
   status         text not null default 'menunggu_bayar'
                  check (status in ('menunggu_bayar','menunggu_verifikasi','disetujui','ditolak','dibatalkan')),
   bukti_path     text,
@@ -95,6 +99,11 @@ alter table public.orders
   add column if not exists nomor_telepon text,
   add column if not exists whatsapp_opt_in boolean not null default false,
   add column if not exists whatsapp_notified_at timestamptz;
+alter table public.orders
+  add column if not exists harga_upgrade_kredit bigint not null default 0,
+  add column if not exists upgrade_dari text,
+  add column if not exists upgrade_akses_sampai timestamptz,
+  add column if not exists upgrade_lifetime boolean not null default false;
 
 create index if not exists orders_user_idx   on public.orders (user_id, created_at desc);
 create index if not exists orders_status_idx on public.orders (status, created_at desc);
@@ -131,16 +140,41 @@ begin
 end
 $$;
 
-insert into public.plans (id, nama, deskripsi, harga, durasi_hari, akses_grup, fitur, aktif, urutan) values
-  ('rencana-rumahku', 'Rencana Rumahku', 'Akses fitur perencanaan rumah dan simulasi KPR.', 0, 30, 'rencana',
-     array['Isian Data','Informasi Simulasi','Catatan Kas'], false, 1),
-  ('financial-tools', 'Financial Tools', 'Akses alat bantu analisis keuangan KPR.', 0, 30, 'tools',
-     array['Health Check','Pelunasan Dipercepat','Take Over KPR'], false, 2)
-on conflict (id) do update set akses_grup = excluded.akses_grup;
+insert into public.plans as current_plan (
+  id, nama, deskripsi, harga, durasi_hari, akses_grup, fitur, aktif, urutan
+) values
+  ('rencana-rumahku', 'Rencana Rumahku', 'Akses Ringkasan, Isian Data, dan Informasi Simulasi.', 0, 30, 'rencana',
+     array['Ringkasan','Isian Data','Informasi Simulasi'], false, 1),
+  ('financial-tools', 'Financial Tools', 'Akses fitur Paket 1 serta Arus Kas, Health Check, dan Catatan Kas.', 0, 30, 'tools',
+     array['Ringkasan','Isian Data','Informasi Simulasi','Arus Kas','Health Check','Catatan Kas'], false, 2)
+on conflict (id) do update
+  set akses_grup = excluded.akses_grup,
+      deskripsi = excluded.deskripsi,
+      fitur = excluded.fitur
+  where current_plan.aktif = false and current_plan.harga = 0;
+
+do $$
+begin
+  if not exists (
+    select 1 from public.settings where key = 'package_upgrade_prices_v1'
+  ) then
+    update public.plans set harga = 50000
+     where lower(btrim(nama)) = 'paket basic';
+    update public.plans set harga = 100000
+     where lower(btrim(nama)) = 'paket pro';
+    update public.plans set harga = 120000
+     where lower(btrim(nama)) = 'paket premium';
+
+    insert into public.settings (key, value, publik)
+    values ('package_upgrade_prices_v1', 'true'::jsonb, false)
+    on conflict (key) do nothing;
+  end if;
+end
+$$;
 
 insert into public.settings (key, value, publik) values
   ('bisnis',
-   '{"nama":"KPR PINTAR","by":"AF Creative Media","whatsapp":"","email":""}'::jsonb, true),
+   '{"nama":"KPR Planner","by":"AF Creative Media","whatsapp":"","email":""}'::jsonb, true),
   ('pembayaran',
    '{"rekening":[{"bank":"BCA","nomor":"0000000000","atas_nama":"GANTI DENGAN NAMA REKENINGMU"}],"kode_unik":true,"catatan":"Transfer sesuai nominal tepat sampai 3 digit terakhir agar pembayaranmu cepat dikenali."}'::jsonb, false)
 on conflict (key) do nothing;
@@ -216,9 +250,18 @@ as $$
 declare
   v_uid   uuid := auth.uid();
   v_plan  public.plans%rowtype;
+  v_profile public.profiles%rowtype;
   v_open  public.orders%rowtype;
   v_order public.orders%rowtype;
   v_akses_grup text;
+  v_current_group text;
+  v_current_rank integer := 0;
+  v_target_rank integer;
+  v_current_price bigint;
+  v_upgrade_credit bigint := 0;
+  v_upgrade_expiry timestamptz;
+  v_upgrade_lifetime boolean := false;
+  v_free_upgrade boolean := false;
   v_kode  integer := 0;
   v_total bigint;
   v_pakai boolean;
@@ -232,6 +275,12 @@ begin
   if not found then
     raise exception 'Paket tidak tersedia.';
   end if;
+  select * into v_profile
+    from public.profiles where id = v_uid for update;
+  if not found then
+    raise exception 'Profil pengguna tidak ditemukan.';
+  end if;
+
   v_akses_grup := case v_plan.id
     when 'rencana-rumahku' then 'rencana'
     when 'financial-tools' then 'tools'
@@ -240,6 +289,55 @@ begin
   if v_plan.harga <= 0 then
     raise exception 'Harga paket belum ditentukan oleh admin.';
   end if;
+
+  if v_profile.lifetime or coalesce(v_profile.akses_sampai > now(), false) then
+    v_current_group := 'semua';
+    v_upgrade_expiry := v_profile.akses_sampai;
+    v_upgrade_lifetime := v_profile.lifetime;
+  elsif v_profile.tools_lifetime or coalesce(v_profile.akses_tools_sampai > now(), false) then
+    v_current_group := 'tools';
+    v_upgrade_expiry := v_profile.akses_tools_sampai;
+    v_upgrade_lifetime := v_profile.tools_lifetime;
+  elsif v_profile.rencana_lifetime or coalesce(v_profile.akses_rencana_sampai > now(), false) then
+    v_current_group := 'rencana';
+    v_upgrade_expiry := v_profile.akses_rencana_sampai;
+    v_upgrade_lifetime := v_profile.rencana_lifetime;
+  end if;
+
+  v_current_rank := case v_current_group
+    when 'rencana' then 1
+    when 'tools' then 2
+    when 'semua' then 3
+    else 0
+  end;
+  v_target_rank := case v_akses_grup
+    when 'rencana' then 1
+    when 'tools' then 2
+    else 3
+  end;
+
+  if v_current_rank > 0 and v_target_rank > v_current_rank then
+    select case
+             when o.harga_upgrade_kredit > 0
+               then o.harga_upgrade_kredit + o.total - o.kode_unik
+             else o.harga_dasar
+           end into v_current_price
+      from public.orders o
+     where o.user_id = v_uid
+       and o.status = 'disetujui'
+       and (case o.plan_id
+         when 'rencana-rumahku' then 'rencana'
+         when 'financial-tools' then 'tools'
+         else o.akses_grup
+       end) = v_current_group
+     order by o.diproses_at desc nulls last, o.created_at desc
+     limit 1;
+
+    if v_current_price is not null then
+      v_upgrade_credit := v_current_price;
+    end if;
+  end if;
+
   -- Satu pembeli hanya punya satu pesanan terbuka.
   select * into v_open from public.orders
    where user_id = v_uid and status in ('menunggu_bayar','menunggu_verifikasi')
@@ -259,7 +357,10 @@ begin
   v_pakai := coalesce(v_pakai, true);
 
   v_total := v_plan.harga;
-  if v_pakai and v_plan.harga > 0 then
+  if v_upgrade_credit > 0 then
+    v_total := greatest(v_plan.harga - v_upgrade_credit, 0);
+    v_kode := 0;
+  elsif v_pakai and v_plan.harga > 0 then
     loop
       v_kode  := 1 + floor(random() * 999)::integer;
       v_total := v_plan.harga + v_kode;
@@ -273,8 +374,52 @@ begin
     v_kode := 0;
   end if;
 
-  insert into public.orders (user_id, plan_id, plan_nama, durasi_hari, akses_grup, harga_dasar, kode_unik, total)
-  values (v_uid, v_plan.id, v_plan.nama, v_plan.durasi_hari, v_akses_grup, v_plan.harga, v_kode, v_total)
+  v_free_upgrade := v_upgrade_credit > 0 and v_total = 0;
+  if v_free_upgrade then
+    if v_upgrade_lifetime then
+      if v_akses_grup = 'tools' then
+        update public.profiles
+           set tools_lifetime = true, akses_tools_sampai = null
+         where id = v_uid;
+      elsif v_akses_grup = 'semua' then
+        update public.profiles
+           set lifetime = true, akses_sampai = null, plan_id = v_plan.id
+         where id = v_uid;
+      else
+        raise exception 'Grup paket tujuan untuk upgrade gratis tidak valid.';
+      end if;
+    elsif v_upgrade_expiry is null or v_upgrade_expiry <= now() then
+      raise exception 'Masa aktif paket asal berakhir. Upgrade tidak dapat diberikan.';
+    elsif v_akses_grup = 'tools' then
+      update public.profiles
+         set tools_lifetime = false,
+             akses_tools_sampai = v_upgrade_expiry
+       where id = v_uid;
+    elsif v_akses_grup = 'semua' then
+      update public.profiles
+         set lifetime = false,
+             akses_sampai = v_upgrade_expiry,
+             plan_id = v_plan.id
+       where id = v_uid;
+    else
+      raise exception 'Grup paket tujuan untuk upgrade gratis tidak valid.';
+    end if;
+  end if;
+
+  insert into public.orders (
+    user_id, plan_id, plan_nama, durasi_hari, akses_grup, harga_dasar,
+    kode_unik, total, harga_upgrade_kredit, upgrade_dari,
+    upgrade_akses_sampai, upgrade_lifetime, status, diproses_at
+  )
+  values (
+    v_uid, v_plan.id, v_plan.nama, v_plan.durasi_hari, v_akses_grup,
+    v_plan.harga, v_kode, v_total, v_upgrade_credit,
+    case when v_upgrade_credit > 0 then v_current_group end,
+    case when v_upgrade_credit > 0 then v_upgrade_expiry end,
+    case when v_upgrade_credit > 0 then v_upgrade_lifetime else false end,
+    case when v_free_upgrade then 'disetujui' else 'menunggu_bayar' end,
+    case when v_free_upgrade then now() else null end
+  )
   returning * into v_order;
 
   return v_order;
@@ -324,7 +469,7 @@ begin
     raise exception 'Masukkan nomor WhatsApp Indonesia yang valid.';
   end if;
   if not coalesce(p_whatsapp_opt_in, false) then
-    raise exception 'Persetujuan notifikasi WhatsApp diperlukan.';
+    raise exception 'Persetujuan untuk dihubungi via WhatsApp diperlukan.';
   end if;
 
   update public.orders
@@ -414,7 +559,9 @@ language plpgsql security definer set search_path = public
 as $$
 declare
   v_order public.orders%rowtype;
+  v_profile public.profiles%rowtype;
   v_akses_grup text;
+  v_source_active boolean;
 begin
   if not public.is_admin() then
     raise exception 'Khusus admin.';
@@ -437,7 +584,65 @@ begin
     else v_order.akses_grup
   end;
 
-  if v_akses_grup = 'rencana' then
+  select * into v_profile
+    from public.profiles where id = v_order.user_id for update;
+  if not found then
+    raise exception 'Profil pembeli tidak ditemukan.';
+  end if;
+
+  if v_order.harga_upgrade_kredit > 0 then
+    if v_order.upgrade_lifetime then
+      v_source_active := case v_order.upgrade_dari
+        when 'rencana' then v_profile.rencana_lifetime
+        when 'tools' then v_profile.tools_lifetime
+        else false
+      end;
+    else
+      v_source_active := case v_order.upgrade_dari
+        when 'rencana' then
+          coalesce(v_profile.akses_rencana_sampai > now(), false)
+          and v_profile.akses_rencana_sampai = v_order.upgrade_akses_sampai
+        when 'tools' then
+          coalesce(v_profile.akses_tools_sampai > now(), false)
+          and v_profile.akses_tools_sampai = v_order.upgrade_akses_sampai
+        else false
+      end;
+    end if;
+
+    if not coalesce(v_source_active, false) then
+      raise exception 'Upgrade tidak dapat disetujui karena paket sebelumnya sudah kedaluwarsa atau berubah. Tolak pesanan ini dan minta pembeli membuat pesanan baru.';
+    end if;
+
+    if v_order.upgrade_lifetime then
+      if v_akses_grup = 'tools' then
+        update public.profiles
+           set tools_lifetime = true, akses_tools_sampai = null
+         where id = v_order.user_id;
+      elsif v_akses_grup = 'semua' then
+        update public.profiles
+           set lifetime = true, akses_sampai = null, plan_id = v_order.plan_id
+         where id = v_order.user_id;
+      else
+        raise exception 'Grup paket tujuan untuk upgrade tidak valid.';
+      end if;
+    elsif v_order.upgrade_akses_sampai is null
+       or v_order.upgrade_akses_sampai <= now() then
+      raise exception 'Masa aktif paket sebelumnya sudah berakhir. Upgrade tidak dapat disetujui.';
+    elsif v_akses_grup = 'tools' then
+      update public.profiles
+         set tools_lifetime = false,
+             akses_tools_sampai = v_order.upgrade_akses_sampai
+       where id = v_order.user_id;
+    elsif v_akses_grup = 'semua' then
+      update public.profiles
+         set lifetime = false,
+             akses_sampai = v_order.upgrade_akses_sampai,
+             plan_id = v_order.plan_id
+       where id = v_order.user_id;
+    else
+      raise exception 'Grup paket tujuan untuk upgrade tidak valid.';
+    end if;
+  elsif v_akses_grup = 'rencana' then
     if v_order.durasi_hari is null then
       update public.profiles
          set rencana_lifetime = true, akses_rencana_sampai = null

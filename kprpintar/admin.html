@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
-    <title>Admin — KPR PINTAR</title>
+    <title>Admin — KPR Planner</title>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230f2a43'/%3E%3Cpath d='m14 31 18-14 18 14v18a2 2 0 0 1-2 2H16a2 2 0 0 1-2-2z' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E"
@@ -295,6 +295,26 @@
         align-items: end;
         margin-bottom: 10px;
       }
+      .rek .qr-field,
+      .rek .qr-preview {
+        grid-column: 1 / -1;
+      }
+      .qr-preview {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 36px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .qr-preview img {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+      }
       .sect {
         padding: 20px;
         display: grid;
@@ -341,6 +361,10 @@
         .rek .btn {
           grid-column: 1/-1;
         }
+        .rek .qr-field,
+        .rek .qr-preview {
+          grid-column: 1/-1;
+        }
       }
     </style>
   </head>
@@ -359,7 +383,7 @@
             >
               <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" />
               <path d="M9 21v-8h6v8" /></svg></span
-          ><span><b>KPR PINTAR</b><small>Panel admin</small></span></a
+          ><span><b>KPR Planner</b><small>Panel admin</small></span></a
         >
         <nav class="nav-links" aria-label="Menu">
           <a href="index.html">Lihat situs</a><a href="app.html">Kalkulator</a>
@@ -501,7 +525,7 @@
           document.title =
             NAV.filter(function (n) {
               return n[0] === t;
-            })[0][1] + " — Admin KPR PINTAR";
+            })[0][1] + " — Admin KPR Planner";
           loading();
           TABS[t]();
         }
@@ -562,6 +586,13 @@
         }
 
         /* ---------- pesanan ---------- */
+        function packageLabel(group) {
+          return group === "rencana"
+            ? "Paket 1"
+            : group === "tools"
+              ? "Paket 2"
+              : "Paket 3";
+        }
         function ordersTable(rows) {
           return (
             '<div class="wrap-x"><table class="tbl"><thead><tr><th>Dikirim / dibuat</th><th>Pembeli</th><th>Paket</th><th class="num">Total</th><th>Status</th><th></th></tr></thead><tbody>' +
@@ -576,6 +607,11 @@
                   who(o.pengguna) +
                   "</td><td>" +
                   esc(o.plan_nama) +
+                  (o.harga_upgrade_kredit > 0
+                    ? '<br><span class="sub">Upgrade dari ' +
+                      packageLabel(o.upgrade_dari) +
+                      "</span>"
+                    : "") +
                   '</td><td class="num"><b>' +
                   A.rp(o.total) +
                   "</b></td><td>" +
@@ -660,6 +696,9 @@
               "Email",
               "Paket",
               "Harga",
+              "Kredit upgrade",
+              "Upgrade dari",
+              "Batas akses lama",
               "Kode unik",
               "Total",
               "Status",
@@ -682,6 +721,9 @@
                 p.email,
                 o.plan_nama,
                 o.harga_dasar,
+                o.harga_upgrade_kredit,
+                o.upgrade_dari,
+                o.upgrade_akses_sampai,
                 o.kode_unik,
                 o.total,
                 (A.STATUS[o.status] || {}).label,
@@ -711,18 +753,52 @@
           "Dana belum masuk ke rekening",
           "Nama pengirim tidak sesuai",
         ];
+        function buyerWhatsAppLink(o) {
+          if (!o.whatsapp_opt_in) return "";
+          var number = String(o.nomor_telepon || "").replace(/\D/g, "");
+          if (number.indexOf("0") === 0)
+            number = "62" + number.slice(1);
+          else if (number.indexOf("8") === 0)
+            number = "62" + number;
+          if (!/^62[1-9]\d{7,12}$/.test(number)) return "";
+          var name = (o.pengguna || {}).nama || "Pelanggan";
+          var message =
+            "Halo " +
+            name +
+            ", pembayaran Rp" +
+            Number(o.total || 0).toLocaleString("id-ID") +
+            " untuk paket " +
+            o.plan_nama +
+            " (pesanan #" +
+            short(o.id) +
+            ") sudah disetujui. Akses paketmu sudah aktif. Terima kasih.";
+          return (
+            "https://wa.me/" +
+            number +
+            "?text=" +
+            encodeURIComponent(message)
+          );
+        }
         function openOrder(id) {
           var o = S.orders.filter(function (x) {
             return x.id === id;
           })[0];
           if (!o) return;
+          var isUpgrade = (o.harga_upgrade_kredit || 0) > 0;
+          var upgradeSurplus = isUpgrade
+            ? Math.max(0, o.harga_upgrade_kredit - o.harga_dasar)
+            : 0;
           var dlg = U.mk(
             '<dialog class="wide"><div class="dlg" style="position:relative"><button class="dlg-x" type="button" aria-label="Tutup" data-x>&times;</button>' +
               "<h3>Pesanan #" +
               short(o.id) +
               " " +
               U.badge(o.status) +
-              '</h3><p class="sub">Cocokkan nominal dan rekening tujuan di bukti dengan mutasi rekeningmu sebelum menyetujui.</p>' +
+              '</h3><p class="sub">' +
+              (isUpgrade
+                ? "Pesanan upgrade. Pastikan persetujuan dilakukan sebelum paket sebelumnya berakhir."
+                : "Cocokkan nominal dan rekening tujuan di bukti dengan mutasi rekeningmu sebelum menyetujui.") +
+              "</p>" +
               '<div class="ordgrid"><div><div class="proof" id="proofBox"><div class="none">' +
               (o.bukti_path
                 ? "Memuat bukti…"
@@ -742,11 +818,28 @@
                 ? "Lifetime"
                 : A.durasiLabel(o.durasi_hari)) +
               ")</dd></div>" +
-              "<div><dt>Harga + kode unik</dt><dd>" +
-              A.rp(o.harga_dasar) +
-              " + " +
-              A.rp(o.kode_unik) +
-              "</dd></div>" +
+              (isUpgrade
+                ? "<div><dt>Harga paket tujuan</dt><dd>" +
+                  A.rp(o.harga_dasar) +
+                  "</dd></div><div><dt>Kredit dari " +
+                  packageLabel(o.upgrade_dari) +
+                  "</dt><dd>−" +
+                  A.rp(o.harga_upgrade_kredit) +
+                  "</dd></div><div><dt>Batas persetujuan upgrade</dt><dd>" +
+                  (o.upgrade_lifetime
+                    ? "Paket Lifetime aktif"
+                    : A.tglJam(o.upgrade_akses_sampai)) +
+                  "</dd></div>" +
+                  (upgradeSurplus
+                    ? "<div><dt>Sisa kredit untuk upgrade berikutnya</dt><dd>" +
+                      A.rp(upgradeSurplus) +
+                      "</dd></div>"
+                    : "")
+                : "<div><dt>Harga + kode unik</dt><dd>" +
+                  A.rp(o.harga_dasar) +
+                  " + " +
+                  A.rp(o.kode_unik) +
+                  "</dd></div>") +
               "<div><dt>Nama pengirim</dt><dd>" +
               esc(o.nama_pengirim || "–") +
               "</dd></div><div><dt>Bank / e-wallet</dt><dd>" +
@@ -831,15 +924,30 @@
             if (e.target.closest("#okBtn")) {
               var go = function () {
                 var b = dlg.querySelector("#okBtn");
+                var waUrl = buyerWhatsAppLink(o);
+                var waWindow = waUrl ? window.open("about:blank", "_blank") : null;
                 b.disabled = true;
                 b.innerHTML = '<span class="spin"></span>Memproses…';
                 A.adminApprove(o.id).then(
                   function () {
-                    U.toast("Disetujui. Akses pembeli sudah aktif.", "ok");
+                    if (waUrl) {
+                      if (waWindow && !waWindow.closed) {
+                        waWindow.location.href = waUrl;
+                        waWindow.opener = null;
+                      } else {
+                        window.location.href = waUrl;
+                      }
+                    } else {
+                      U.toast(
+                        "Disetujui. Nomor WhatsApp pembeli tidak tersedia atau izinnya tidak tercatat.",
+                        "bad",
+                      );
+                    }
                     dlg.close();
                     refreshTab();
                   },
                   function (er) {
+                    if (waWindow && !waWindow.closed) waWindow.close();
                     b.disabled = false;
                     b.textContent = "Setujui & aktifkan akses";
                     err(er);
@@ -1121,13 +1229,13 @@
             '<div class="field"><label>Fitur yang dibuka</label><select class="inp" data-k="akses_grup">' +
             '<option value="rencana"' +
             (group === "rencana" ? " selected" : "") +
-            ">Rencana Rumahku</option>" +
+            ">Paket 1 — Ringkasan, Isian Data, Simulasi</option>" +
             '<option value="tools"' +
             (group === "tools" ? " selected" : "") +
-            ">Financial Tools</option>" +
+            ">Paket 2 — Paket 1 + Arus Kas, Health Check, Catatan Kas</option>" +
             '<option value="semua"' +
             (group === "semua" ? " selected" : "") +
-            ">Semua fitur (paket lama)</option></select></div>" +
+            ">Paket 3 — Semua fitur</option></select></div>" +
             '<div class="field"><label>Deskripsi singkat</label><input class="inp" data-k="deskripsi" value="' +
             esc(p.deskripsi || "") +
             '"></div>' +
@@ -1253,7 +1361,15 @@
             esc(r.nomor || "") +
             '"></div><div class="field"><label>Atas nama</label><input class="inp" data-r="atas_nama" value="' +
             esc(r.atas_nama || "") +
-            '"></div><button class="btn btn-danger btn-sm" type="button" data-rmrek aria-label="Hapus rekening">Hapus</button></div>'
+            '"></div><button class="btn btn-danger btn-sm" type="button" data-rmrek aria-label="Hapus rekening">Hapus</button><div class="field qr-field"><label>QRIS / QR pembayaran (opsional)</label><input class="inp" type="file" data-r="qr_file" accept="image/png,image/jpeg,image/webp"><span class="hint">Unggah gambar QR resmi (PNG, JPG, atau WebP, maks. 250 KB).</span><input type="hidden" data-r="qr_image" value="' +
+            esc(r.qr_image || "") +
+            '"></div><div class="qr-preview" data-qr-preview>' +
+            (r.qr_image
+              ? '<img src="' +
+                esc(r.qr_image) +
+                '" alt="Pratinjau QR pembayaran"><button class="btn btn-ghost btn-sm" type="button" data-rmqr>Hapus QR</button>'
+              : "<span>Belum ada QR yang diunggah.</span>") +
+            "</div></div>"
           );
         }
         function normWa(v) {
@@ -1289,7 +1405,7 @@
                 '"></div>' +
                 '<div class="field"><label for="bWa">Nomor WhatsApp admin</label><input class="inp" id="bWa" inputmode="tel" value="' +
                 esc(b.whatsapp) +
-                '" placeholder="08123456789"><span class="hint">Tampil sebagai tombol WhatsApp di footer dan halaman pembayaran. Boleh dikosongkan.</span></div><div class="field"><label for="bMail">Email kontak</label><input class="inp" id="bMail" type="email" value="' +
+                '" placeholder="08123456789"><span class="hint">Tampil sebagai tombol WhatsApp di footer dan tujuan pesan konfirmasi pembayaran. Boleh dikosongkan.</span></div><div class="field"><label for="bMail">Email kontak</label><input class="inp" id="bMail" type="email" value="' +
                 esc(b.email) +
                 '"></div></div><div><button class="btn btn-primary" type="button" id="saveBisnis">Simpan kontak</button></div></div></div>';
             })
@@ -1374,7 +1490,22 @@
               t.closest(".rek").remove();
               return;
             }
+            if (t.closest("[data-rmqr]")) {
+              var qrRow = t.closest(".rek");
+              var qrInput = qrRow.querySelector('[data-r="qr_file"]');
+              if (qrInput._qrReader && qrInput._qrReader.readyState === 1)
+                qrInput._qrReader.abort();
+              qrRow.querySelector('[data-r="qr_image"]').value = "";
+              qrInput.value = "";
+              qrRow.querySelector("[data-qr-preview]").innerHTML =
+                "<span>Belum ada QR yang diunggah.</span>";
+              return;
+            }
             if (t.closest("#saveBayar")) {
+              if (document.querySelector("#rekList [data-r=qr_file][data-loading]")) {
+                U.toast("Tunggu hingga gambar QR selesai dibaca.", "bad");
+                return;
+              }
               var rek = [].map
                 .call(document.querySelectorAll("#rekList .rek"), function (r) {
                   function g(k) {
@@ -1384,10 +1515,11 @@
                     bank: g("bank"),
                     nomor: g("nomor"),
                     atas_nama: g("atas_nama"),
+                    qr_image: g("qr_image") || null,
                   };
                 })
                 .filter(function (r) {
-                  return r.bank || r.nomor;
+                  return r.bank || r.nomor || r.qr_image;
                 });
               for (var i = 0; i < rek.length; i++)
                 if (!rek[i].bank || !rek[i].nomor || !rek[i].atas_nama) {
@@ -1418,7 +1550,7 @@
                 {
                   nama:
                     document.getElementById("bNama").value.trim() ||
-                    "KPR PINTAR",
+                    "KPR Planner",
                   by: document.getElementById("bBy").value.trim(),
                   whatsapp: wa,
                   email: document.getElementById("bMail").value.trim(),
@@ -1443,6 +1575,44 @@
             }
           });
           document.addEventListener("change", function (e) {
+            if (e.target.matches && e.target.matches('[data-r="qr_file"]')) {
+              var input = e.target,
+                file = input.files && input.files[0];
+              if (!file) return;
+              if (
+                !/^image\/(png|jpeg|webp)$/.test(file.type) ||
+                file.size > 250 * 1024
+              ) {
+                input.value = "";
+                U.toast("Pilih gambar PNG, JPG, atau WebP maksimal 250 KB.", "bad");
+                return;
+              }
+              input.setAttribute("data-loading", "");
+              var reader = new FileReader();
+              input._qrReader = reader;
+              reader.onload = function () {
+                var row = input.closest(".rek"),
+                  value = typeof reader.result === "string" ? reader.result : "";
+                input.removeAttribute("data-loading");
+                if (!value) {
+                  U.toast("Gambar QR tidak dapat dibaca.", "bad");
+                  return;
+                }
+                row.querySelector('[data-r="qr_image"]').value = value;
+                row.querySelector("[data-qr-preview]").innerHTML =
+                  '<img src="' +
+                  esc(value) +
+                  '" alt="Pratinjau QR pembayaran"><button class="btn btn-ghost btn-sm" type="button" data-rmqr>Hapus QR</button>';
+              };
+              reader.onerror = function () {
+                input.removeAttribute("data-loading");
+                U.toast("Gagal membaca gambar QR.", "bad");
+              };
+              reader.onabort = function () {
+                input.removeAttribute("data-loading");
+              };
+              reader.readAsDataURL(file);
+            }
             if (e.target.matches && e.target.matches("[data-k=life]")) {
               var d = e.target
                 .closest(".plan-ed")

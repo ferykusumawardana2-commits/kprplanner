@@ -1,4 +1,4 @@
-# Panduan memasang KPR PINTAR (website jualan)
+# Panduan memasang KPR Planner (website jualan)
 
 Paket ini adalah website statis: landing page, login email/password, pembayaran transfer manual dengan upload bukti, halaman admin, dan kalkulator yang hanya terbuka untuk pembeli yang aksesnya aktif. Databasenya memakai **Supabase** (gratis untuk skala kecil, tanpa kartu kredit) dan hostingnya bisa **Netlify**, **Cloudflare Pages**, atau **GitHub Pages**.
 
@@ -113,34 +113,17 @@ update public.profiles set is_admin = true where email = 'emailkamu@gmail.com';
 
 Semua lewat `/admin.html`, tidak perlu mengubah kode:
 
-- **Pengaturan → Rekening tujuan transfer:** ganti rekening contoh dengan rekeningmu (boleh lebih dari satu bank atau e-wallet). Isi juga nomor WhatsApp admin bila mau memakai tombol WhatsApp.
-- **Paket harga:** ubah nama, harga, durasi, fitur, label sorotan, dan urutan. Kosongkan durasi dengan mencentang **Lifetime**. Harga bawaan (Rp39.000, Rp89.000, Rp179.000, Rp299.000) hanyalah contoh.
+- **Pengaturan → Rekening tujuan transfer:** ganti rekening contoh dengan rekeningmu (boleh lebih dari satu bank atau e-wallet). Unggah QRIS/QR resmi bank dalam PNG, JPG, atau WebP (maks. 250 KB) agar tampil kepada pembeli di halaman pembayaran. QR statis mungkin meminta pembeli mengisi nominal sesuai tagihan.
+- **Pengaturan → Kontak & identitas:** isi nomor WhatsApp admin agar pembeli dapat mengirim konfirmasi melalui WhatsApp.
+- **Paket harga:** ubah nama, harga, durasi, fitur, label sorotan, dan urutan. Kosongkan durasi dengan mencentang **Lifetime**. Untuk katalog Basic, Pro, dan Premium yang sudah ada, pembaruan SQL sekali ini menetapkan harga Rp50.000, Rp100.000, dan Rp120.000; setelah itu harga dapat diubah kembali dari Admin.
 
-### Aktifkan notifikasi WhatsApp otomatis
+Hak akses menu dibagi menjadi tiga grup: **Paket 1** membuka Ringkasan, Isian Data, dan Informasi Simulasi; **Paket 2** mencakup Paket 1 serta Arus Kas, Health Check, dan Catatan Kas; **Paket 3** membuka semua fitur, termasuk Pelunasan Dipercepat dan Take Over KPR.
 
-Notifikasi dikirim kepada pembeli setelah bukti pembayaran berhasil dikirim. Pembeli harus mengisi nomor WhatsApp dan menyetujui notifikasi. Pengiriman memakai **WhatsApp Cloud API** melalui Supabase Edge Function; token API tidak boleh ditaruh di `assets/config.js`.
+Pengguna dengan akses berbayar yang masih aktif dapat upgrade ke grup paket yang lebih tinggi dengan membayar selisih harga. Kartu paket menampilkan nominal upgrade, harga normal, dan kredit paket asal; ringkasan pembayaran menunjukkan total final. Kredit dihitung dari harga paket pada pesanan sebelumnya yang disetujui, sedangkan harga tujuan mengikuti katalog saat pesanan upgrade dibuat. Pesanan upgrade tidak memakai kode unik. Jika kredit sama dengan atau lebih besar dari harga tujuan, upgrade langsung aktif tanpa transfer; sisa kredit dibawa untuk upgrade berikutnya. Untuk upgrade berbayar, masa aktif paket asal tidak dimulai ulang dan admin harus menyetujui bukti sebelum akses asal berakhir. Jika akses sudah kedaluwarsa atau berubah, admin perlu menolak pesanan dan meminta pengguna membuat pesanan baru. Akses yang diberikan manual tanpa pesanan berbayar sebelumnya tidak memiliki kredit upgrade.
 
-1. Siapkan nomor WhatsApp Business di Meta dan buat template pesan yang sudah disetujui. Nama bawaan template adalah `payment_proof_received`, bahasanya `id`, dengan tiga variabel isi: `{{1}}` nama paket, `{{2}}` nomor pesanan, dan `{{3}}` total transfer. Contoh isi: `Bukti pembayaran untuk paket {{1}} (pesanan {{2}}) telah diterima. Total transfer: {{3}}. Admin sedang memeriksa.`
-2. Pasang dan hubungkan Supabase CLI ke **proyek yang sama dengan `SUPABASE_URL` di `kprpintar/assets/config.js`**. Untuk konfigurasi saat ini, project ref-nya `qqnxanqgqondbovppoay`:
+### Konfirmasi WhatsApp tanpa API
 
-```powershell
-supabase login
-supabase link --project-ref qqnxanqgqondbovppoay
-```
-
-3. Jalankan ulang `supabase-setup.sql`, lalu atur rahasia dan deploy fungsi:
-
-```powershell
-supabase secrets set --project-ref qqnxanqgqondbovppoay `
-  WHATSAPP_ACCESS_TOKEN=TOKEN_META `
-  WHATSAPP_PHONE_NUMBER_ID=ID_NOMOR_META `
-  WHATSAPP_TEMPLATE_NAME=payment_proof_received `
-  WHATSAPP_TEMPLATE_LANGUAGE=id `
-  WHATSAPP_GRAPH_API_VERSION=vVERSI_YANG_DIDUKUNG
-supabase functions deploy send-payment-whatsapp --project-ref qqnxanqgqondbovppoay
-```
-
-Ganti nilai contoh dengan nilai dari Meta; jangan menaruh access token di repository, halaman HTML, atau konfigurasi browser. Pastikan template telah disetujui dan versi Graph API masih didukung Meta. Jika pengiriman gagal, konfirmasi bukti tetap tersimpan dan halaman menampilkan peringatan.
+Isi nomor WhatsApp admin pada **Pengaturan → Kontak & identitas**. Setelah pembeli mengirim bukti, situs mencoba membuka chat WhatsApp admin dengan draf pesan berisi ringkasan pembayaran. Jika tab baru diblokir browser, pembeli bisa memakai tombol **Lanjutkan ke WhatsApp** di halaman konfirmasi. Pembeli perlu meninjau dan menekan **Kirim** di WhatsApp. Alur ini tidak memerlukan WhatsApp Cloud API atau token; unggah bukti dan penyimpanan pesanan tetap menggunakan Supabase.
 
 ## Langkah 8 — Periksa halaman hukum
 
@@ -154,9 +137,10 @@ Jika perlu, minta konsultan hukum memeriksanya sebelum situs dibuka untuk umum. 
 
 ## Cara kerja sehari-hari
 
-1. Pembeli memilih paket, daftar/masuk dengan email dan password, transfer sesuai nominal (harga + kode unik 1–999), mengisi nomor WhatsApp, lalu mengunggah bukti.
+1. Pembeli memilih paket, daftar/masuk dengan email dan password, transfer sesuai nominal yang tertera (pembelian biasa dapat memuat kode unik 1–999; upgrade membayar selisih tanpa kode unik), mengisi nomor WhatsApp sebagai kontak, lalu mengunggah bukti.
 2. Di admin, antrean **Perlu diverifikasi** muncul dengan lencana angka. Cocokkan nominal di bukti dengan mutasi rekeningmu, lalu klik **Setujui & aktifkan akses**. Akses pembeli langsung aktif.
-   Setelah bukti dikirim, pembeli menerima notifikasi WhatsApp otomatis bila Cloud API dan template sudah dikonfigurasi.
+   Setelah bukti tersimpan, pembeli dapat meneruskan ringkasan pembayaran ke WhatsApp admin melalui draf pesan yang sudah disiapkan situs.
+   Setelah pembayaran disetujui, situs membuka chat WhatsApp pembeli dengan draf pemberitahuan. Jika pop-up diblokir, WhatsApp dibuka di tab admin saat ini. Admin tetap perlu menekan **Kirim**.
 3. Jika ada yang salah, klik **Tolak** dan tulis alasannya. Pembeli melihat alasannya dan bisa mengirim ulang.
 4. Perpanjangan menambah sisa akses (sisa hari tidak hilang). Untuk hadiah atau kompensasi, pakai **Pengguna → Atur akses**.
 5. **Pesanan → Ekspor CSV** untuk pembukuan.
@@ -181,7 +165,7 @@ Jika perlu, minta konsultan hukum memeriksanya sebelum situs dibuka untuk umum. 
 | Setelah login Google kembali ke halaman yang salah atau error | Alamat websitemu belum masuk **Redirect URLs** di Supabase, atau **Authorized redirect URI** di Google belum berisi callback Supabase. |
 | "Access blocked: app has not completed verification" | Aplikasi Google masih berstatus Testing. Tambahkan akunmu sebagai test user, atau ubah ke In production. |
 | Setelah dijadikan admin masih "Akun ini bukan admin" | Keluar dan masuk lagi, pastikan emailnya persis sama dengan yang dipakai login. |
-| Membeli Rencana Rumahku ikut membuka Financial Tools (atau sebaliknya) | Perbarui file website dan jalankan ulang seluruh `supabase-setup.sql` di proyek Supabase. Pastikan paket Rencana Rumahku memakai ID `rencana-rumahku` dan Financial Tools memakai ID `financial-tools`, lalu coba pesanan baru. |
+| Kunci paket tidak sesuai | Perbarui file website dan jalankan ulang seluruh `supabase-setup.sql` di proyek Supabase. Paket 1 memakai grup `rencana`, Paket 2 memakai grup `tools`, dan Paket 3 memakai grup `semua`; pastikan paket menggunakan grup yang sesuai sebelum mencoba pesanan baru. |
 | `Could not find the function public.submit_proof(...) in the schema cache` | Jalankan ulang seluruh `supabase-setup.sql` di **SQL Editor** Supabase untuk membuat RPC terbaru. Script meminta PostgREST memuat ulang schema cache; tunggu sebentar, lalu muat ulang halaman pembayaran. |
 | Unggah bukti gagal | File bukan gambar atau terlalu besar. Pakai JPG/PNG/WebP. |
 | "Rekening tujuan belum diatur" di halaman bayar | Isi rekening di **Admin → Pengaturan**. |

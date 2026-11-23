@@ -1,4 +1,4 @@
-/* KPR PINTAR — komponen tampilan bersama: navbar akun, dialog masuk, toast, konfirmasi. */
+/* KPR Planner — komponen tampilan bersama: navbar akun, dialog masuk, toast, konfirmasi. */
 (function () {
   'use strict';
   var A = window.RCApi;
@@ -60,7 +60,7 @@
     var recovery = /type=recovery/.test(location.hash || '') || new URLSearchParams(location.search).get('recovery') === '1';
     loginDlg = mk('<dialog id="loginDlg" aria-labelledby="loginTitle"><div class="dlg" style="position:relative">' +
       '<button class="dlg-x" type="button" aria-label="Tutup" data-close>&times;</button>' +
-      '<h3 id="loginTitle">' + (recovery ? 'Buat password baru' : 'Masuk ke KPR PINTAR') + '</h3>' +
+      '<h3 id="loginTitle">' + (recovery ? 'Buat password baru' : 'Masuk ke KPR Planner') + '</h3>' +
       '<p class="sub" id="authIntro">' + (demo ? 'Ini mode demo: pilih peran untuk mencoba alurnya.' : 'Gunakan email dan password untuk mengakses akun Rumah Cerdas.') + '</p>' +
       (demo
         ? '<div style="display:grid;gap:10px"><button class="btn btn-primary btn-lg btn-block" data-demo="user">Masuk sebagai Pengguna Demo</button><button class="btn btn-ghost btn-lg btn-block" data-demo="admin">Masuk sebagai Admin Demo</button></div>'
@@ -88,7 +88,7 @@
       $('#authEmail', loginDlg).required = mode !== 'recovery';
       $('#authPassword', loginDlg).required = mode !== 'forgot';
       $('#authConfirm', loginDlg).required = mode === 'register';
-      title.textContent = mode === 'register' ? 'Buat akun Rumah Cerdas' : mode === 'forgot' ? 'Reset password' : mode === 'recovery' ? 'Buat password baru' : 'Masuk ke KPR PINTAR';
+      title.textContent = mode === 'register' ? 'Buat akun Rumah Cerdas' : mode === 'forgot' ? 'Reset password' : mode === 'recovery' ? 'Buat password baru' : 'Masuk ke KPR Planner';
       intro.textContent = mode === 'register' ? 'Daftar menggunakan email aktif. Kami akan mengirim tautan verifikasi jika konfirmasi email diaktifkan.' : mode === 'forgot' ? 'Masukkan email akunmu untuk menerima tautan reset password.' : mode === 'recovery' ? 'Masukkan password baru untuk akunmu.' : 'Gunakan email dan password untuk mengakses akun Rumah Cerdas.';
       submit.textContent = mode === 'register' ? 'Daftar' : mode === 'forgot' ? 'Kirim tautan reset' : mode === 'recovery' ? 'Simpan password baru' : 'Masuk';
       links.innerHTML = mode === 'login' ? '<button class="btn btn-ghost btn-sm" type="button" data-auth-mode="register">Buat akun</button><button class="btn btn-ghost btn-sm" type="button" data-auth-mode="forgot">Lupa password?</button>' :
